@@ -59,9 +59,9 @@ public class User {
 
 
     //회원가입 생성자
-    public User(SignupRequestDto requestDto, UserRoleEnum role) {
+    public User(SignupRequestDto requestDto,String password, UserRoleEnum role) {
         this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
+        this.password = password;
         this.email = requestDto.getEmail();
         this.nickname = requestDto.getNickname();
         this.point = 0L;
