@@ -2,6 +2,7 @@ package com.sparta.quizdemo.answer.service;
 
 import com.sparta.quizdemo.answer.dto.AnswerRequestDto;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
+import com.sparta.quizdemo.common.entity.User;
 import org.springframework.http.ResponseEntity;
 
 public interface AnswerService {

@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.common.entity;
 
+import com.sparta.quizdemo.card.entity.Card;
 import com.sparta.quizdemo.user.SignupRequestDto;
 import com.sparta.quizdemo.user.UserRoleEnum;
 import jakarta.persistence.*;
@@ -40,9 +41,10 @@ public class User {
     private UserRoleEnum role;
 
 
-//    //user는 여러개의 post를 가질 수 있음
-//    @OneToMany(mappedBy = "user")
-//    List<Post> postList = new ArrayList<>();
+    //user는 여러개의 post를 가질 수 있음
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    List<Card> CardList = new ArrayList<>();
+
 //
 //    //user는 여러개의 comment를 가질 수 있음
 //    @OneToMany(mappedBy = "user")

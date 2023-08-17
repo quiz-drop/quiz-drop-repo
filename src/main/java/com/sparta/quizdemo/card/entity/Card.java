@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.quizdemo.answer.entity.Answer;
 import com.sparta.quizdemo.card.dto.CardRequestDto;
 import com.sparta.quizdemo.common.entity.TimeStamped;
+import com.sparta.quizdemo.common.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
