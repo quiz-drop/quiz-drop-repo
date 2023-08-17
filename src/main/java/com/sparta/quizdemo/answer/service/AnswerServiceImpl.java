@@ -6,6 +6,7 @@ import com.sparta.quizdemo.answer.repository.AnswerRepository;
 import com.sparta.quizdemo.card.entity.Card;
 import com.sparta.quizdemo.card.repository.CardRepository;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
+import com.sparta.quizdemo.common.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;

@@ -3,6 +3,7 @@ package com.sparta.quizdemo.answer.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.quizdemo.answer.dto.AnswerRequestDto;
 import com.sparta.quizdemo.card.entity.Card;
+import com.sparta.quizdemo.common.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
