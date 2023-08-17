@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.card.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.quizdemo.answer.entity.Answer;
 import com.sparta.quizdemo.card.dto.CardRequestDto;
 import com.sparta.quizdemo.common.entity.TimeStamped;
@@ -32,18 +33,25 @@ public class Card extends TimeStamped {
     @Column(name = "quiz_answer", nullable = false)
     private Integer quiz_answer;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "user_no", nullable = false)
-//    private User user;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_no", nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
     private List<Answer> answerList = new ArrayList<>();
 
-    public Card(CardRequestDto requestDto, User user) {
-        this.user = user;
+    public Card(CardRequestDto requestDto) {
         this.level = requestDto.getLevel();
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.quiz_answer = requestDto.getQuiz_answer();
+    }
+
+    public void update(CardRequestDto cardRequestDto) {
+        this.level = cardRequestDto.getLevel();
+        this.title = cardRequestDto.getTitle();
+        this.content = cardRequestDto.getContent();
+        this.quiz_answer = cardRequestDto.getQuiz_answer();
     }
 }
