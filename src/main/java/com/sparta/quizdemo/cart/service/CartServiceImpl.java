@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService{
@@ -70,16 +68,5 @@ public class CartServiceImpl implements CartService{
         cartItemRepository.delete(cartItem);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("상품을 장바구니에서 제거했습니다.", HttpStatus.OK.value()));
-    }
-
-    @Override
-    public ResponseEntity<ApiResponseDto> clearCartItems(User user) {
-        List<CartItem> cartItemList = cartItemRepository.findAllByUserId(user.getId());
-
-        for (CartItem cartItem : cartItemList) {
-            cartItemRepository.delete(cartItem);
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("유저의 장바구니를 비웠습니다.", HttpStatus.OK.value()));
     }
 }

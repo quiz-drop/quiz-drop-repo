@@ -5,9 +5,12 @@ import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
+@DynamicInsert
 @NoArgsConstructor
 @Table(name = "products")
 public class Product extends TimeStamped {
@@ -30,7 +33,8 @@ public class Product extends TimeStamped {
     @Column(name = "cooking_time", nullable = false)
     private String cookingTime;
 
-    @Column(name = "product_ordercount", columnDefinition = "0")
+    @Column(name = "product_ordercount")
+    @ColumnDefault("0")
     private Long orderCount;
 
     @Column(name = "category", nullable = false)

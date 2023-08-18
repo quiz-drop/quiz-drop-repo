@@ -19,6 +19,7 @@ import java.util.List;
 public class CartController {
     private final CartServiceImpl cartService;
 
+    // 카트 생성
     @PostMapping("/cart")
     public Cart createCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return cartService.createCart(userDetails.getUser());
@@ -31,7 +32,7 @@ public class CartController {
     }
 
     // 카트에 상품 담기
-    @PostMapping("/cart")
+    @PostMapping("/cartitem")
     public ResponseEntity<ApiResponseDto> getItem(@RequestBody CartItemRequestDto cartItemRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return cartService.getItem(cartItemRequestDto, userDetails.getUser());
     }
@@ -40,11 +41,5 @@ public class CartController {
     @DeleteMapping("/cart/{cartItemNo}")
     public ResponseEntity<ApiResponseDto> deleteItem(@PathVariable Long cartItemNo, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return cartService.deleteItem(cartItemNo, userDetails.getUser());
-    }
-
-    // 카트 내부 상품 모두 제거
-    @DeleteMapping("/cart")
-    public ResponseEntity<ApiResponseDto> clearCartItems(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return cartService.clearCartItems(userDetails.getUser());
     }
 }
