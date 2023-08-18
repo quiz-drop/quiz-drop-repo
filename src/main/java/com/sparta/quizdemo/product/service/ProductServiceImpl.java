@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ResponseEntity<ProductResponseDto> updateProduct(Long productNo, ProductRequestDto productRequestDto) {
         Product product = productRepository.findById(productNo).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
-        product.update(productRequestDto);
+        product.update(productRequestDto, product.getOrderCount());
         productRepository.save(product);
         return ResponseEntity.status(HttpStatus.OK).body(new ProductResponseDto(product));
     }

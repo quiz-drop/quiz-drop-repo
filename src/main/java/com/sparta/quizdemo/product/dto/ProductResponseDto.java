@@ -12,7 +12,7 @@ public class ProductResponseDto {
     private Long productPrice;
     private String productImage;
     private String productIntro;
-    private String cookingTime;
+    private Long cookingTime;
     private Long orderCount;
     private String category;
     private LocalDateTime createdAt;

@@ -42,4 +42,10 @@ public class CartController {
     public ResponseEntity<ApiResponseDto> deleteItem(@PathVariable Long cartItemNo, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return cartService.deleteItem(cartItemNo, userDetails.getUser());
     }
+
+    // 카트 내부 상품 모두 제거
+    @DeleteMapping("/cart")
+    public ResponseEntity<ApiResponseDto> clearCartItems(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return cartService.clearCartItems(userDetails.getUser());
+    }
 }

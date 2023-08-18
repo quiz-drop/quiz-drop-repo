@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService{
@@ -39,7 +41,15 @@ public class CartServiceImpl implements CartService{
     @Override
     public ResponseEntity<CartResponseDto> getCartItems(User user) {
         Cart cart = cartRepository.findByUserId(user.getId()).orElse(createCart(user));
-        return ResponseEntity.status(HttpStatus.OK).body(new CartResponseDto(user, cart));
+        List<CartItem> cartItemList = cartItemRepository.findByCartId(cart.getId());
+        Long totalPrice = 0L;
+        if (cartItemList != null) {
+            for (CartItem cartItem : cartItemList) {
+                totalPrice += (cartItem.getProduct().getProductPrice() * cartItem.getQuantity());
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CartResponseDto(user, cart, totalPrice));
     }
 
     @Override
@@ -68,5 +78,17 @@ public class CartServiceImpl implements CartService{
         cartItemRepository.delete(cartItem);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("상품을 장바구니에서 제거했습니다.", HttpStatus.OK.value()));
+    }
+
+    @Override
+    public ResponseEntity<ApiResponseDto> clearCartItems(User user) {
+        Cart cart = cartRepository.findByUserId(user.getId()).orElse(createCart(user));
+        List<CartItem> cartItemList = cartItemRepository.findAllByCartId(cart.getId());
+
+        for (CartItem cartItem : cartItemList) {
+            cartItemRepository.delete(cartItem);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("장바구니의 모든 상품을 제거했습니다.", HttpStatus.OK.value()));
     }
 }

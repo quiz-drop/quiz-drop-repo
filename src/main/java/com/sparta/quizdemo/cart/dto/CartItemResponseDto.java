@@ -8,7 +8,7 @@ public class CartItemResponseDto {
     private String productName;
     private Long productPrice;
     private String productImage;
-    private String cookingTime;
+    private Long cookingTime;
     private Integer quantity;
 
     public CartItemResponseDto(CartItem cartItem) {

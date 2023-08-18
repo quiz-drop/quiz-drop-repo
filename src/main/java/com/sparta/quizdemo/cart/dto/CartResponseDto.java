@@ -12,11 +12,13 @@ import java.util.stream.Collectors;
 public class CartResponseDto {
     private String username;
     private Long cartId;
+    private Long totalPrice;
     private List<CartItemResponseDto> cartItemList;
 
-    public CartResponseDto(User user, Cart cart) {
+    public CartResponseDto(User user, Cart cart, Long totalPrice) {
         this.username = user.getUsername();
         this.cartId = cart.getId();
+        this.totalPrice = totalPrice;
         this.cartItemList = cart.getCartItemList().stream().map(CartItemResponseDto::new).collect(Collectors.toList());
     }
 }

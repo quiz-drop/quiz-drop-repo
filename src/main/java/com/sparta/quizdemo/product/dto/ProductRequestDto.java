@@ -17,9 +17,9 @@ public class ProductRequestDto {
     private String productIntro;
 
     @NotBlank(message = "필수 입력 값입니다.")
-    private String cookingTime;
+    private Long cookingTime;
 
-    private Long orderCount;
+    private Long orderCount = 0L;
 
     @NotBlank(message = "필수 입력 값입니다.")
     private String category;

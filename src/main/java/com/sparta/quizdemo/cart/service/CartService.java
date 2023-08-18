@@ -35,4 +35,10 @@ public interface CartService {
      * @param user 카트 주인 정보
      */
     ResponseEntity<ApiResponseDto> deleteItem(Long cartItemNo, User user);
+
+    /**
+     * 카트 내부 상품 모두 제거 API
+     * @param user
+     */
+    ResponseEntity<ApiResponseDto> clearCartItems(User user);
 }

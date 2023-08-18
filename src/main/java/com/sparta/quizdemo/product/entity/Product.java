@@ -5,12 +5,9 @@ import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
-@DynamicInsert
 @NoArgsConstructor
 @Table(name = "products")
 public class Product extends TimeStamped {
@@ -18,7 +15,7 @@ public class Product extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_name", nullable = false)
+    @Column(name = "product_name", nullable = false, unique = true)
     private String productName;
 
     @Column(name = "product_price", nullable = false)
@@ -31,10 +28,9 @@ public class Product extends TimeStamped {
     private String productIntro;
 
     @Column(name = "cooking_time", nullable = false)
-    private String cookingTime;
+    private Long cookingTime;
 
     @Column(name = "product_ordercount")
-    @ColumnDefault("0")
     private Long orderCount;
 
     @Column(name = "category", nullable = false)
@@ -50,13 +46,13 @@ public class Product extends TimeStamped {
         this.category = productRequestDto.getCategory();
     }
 
-    public void update(ProductRequestDto productRequestDto) {
+    public void update(ProductRequestDto productRequestDto, Long tempCount) {
         this.productName = productRequestDto.getProductName();
         this.productPrice = productRequestDto.getProductPrice();
         this.productImage = productRequestDto.getProductImage();
         this.productIntro = productRequestDto.getProductIntro();
         this.cookingTime = productRequestDto.getCookingTime();
-        this.orderCount = productRequestDto.getOrderCount();
+        this.orderCount = tempCount;
         this.category = productRequestDto.getCategory();
     }
 }
