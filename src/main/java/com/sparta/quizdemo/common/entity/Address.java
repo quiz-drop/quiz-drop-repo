@@ -1,6 +1,7 @@
 package com.sparta.quizdemo.common.entity;
 
 import com.sparta.quizdemo.user.SignupRequestDto;
+import com.sparta.quizdemo.user.UserRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,5 +35,11 @@ public class Address {
         this.address1 = requestDto.getAddress1();
         this.address2 = requestDto.getAddress2();
         this.user = user;
+    }
+
+    public void update(UserRequestDto requestDto) {
+        this.zip_code = requestDto.getZip_code();
+        this.address1 = requestDto.getAddress1();
+        this.address2 = requestDto.getAddress2();
     }
 }

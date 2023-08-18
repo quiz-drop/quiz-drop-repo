@@ -5,6 +5,7 @@ import com.sparta.quizdemo.common.entity.User;
 import com.sparta.quizdemo.common.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class UserService {
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
+    //회원가입
     public void signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -64,6 +66,50 @@ public class UserService {
         // 사용자 등록
         userRepository.save(user);
         addressRepository.save(address);
+    }
+
+    //회원 정보 수정
+    @Transactional
+    public void updateUser(UserRequestDto requestDto, User user) {
+        User updateUser = userRepository.findUserById(user.getId()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+
+        Address updateAddress = addressRepository.findByUser_id(user.getId()).orElseThrow(
+                () -> new NullPointerException("주소가 존재하지 않습니다.")
+        );
+
+/*        if(updateUser.getGoogleId() != null){
+            throw new IllegalArgumentException("구글로 로그인한 사용자는 수정이 불가합니다.");
+        }
+        if(updateUser.getKakaoId() != null){
+            throw new IllegalArgumentException("카카오로 로그인한 사용자는 수정이 불가합니다.");
+        }*/
+
+        if(!passwordEncoder.matches(requestDto.getPassword(),updateUser.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 틀립니다.");
+        }
+
+        String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+        //String email = requestDto.getEmail();
+
+        updateUser.update(requestDto,newPassword);
+        updateAddress.update(requestDto);
+
+    }
+
+
+    //회원 탈퇴
+    public void deleteUser(UserRequestDto requestDto, User user) {
+        User deleteUser = userRepository.findUserById(user.getId()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+
+        if(!passwordEncoder.matches(requestDto.getPassword(),deleteUser.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 틀립니다.");
+        }
+
+        userRepository.delete(deleteUser);
     }
 
 

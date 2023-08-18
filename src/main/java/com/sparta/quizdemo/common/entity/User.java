@@ -2,6 +2,7 @@ package com.sparta.quizdemo.common.entity;
 
 import com.sparta.quizdemo.card.entity.Card;
 import com.sparta.quizdemo.user.SignupRequestDto;
+import com.sparta.quizdemo.user.UserRequestDto;
 import com.sparta.quizdemo.user.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -55,5 +56,10 @@ public class User extends TimeStamped {
         this.nickname = requestDto.getNickname();
         //this.email = requestDto.getEmail();
         this.role = role;
+    }
+
+    public void update(UserRequestDto requestDto, String newPassword) {
+        this.nickname = requestDto.getNickname();
+        this.password = newPassword;
     }
 }
