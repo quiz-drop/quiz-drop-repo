@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.user;
 
+import com.sparta.quizdemo.common.entity.Address;
 import com.sparta.quizdemo.common.entity.User;
 import com.sparta.quizdemo.common.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,11 +12,13 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.addressRepository = addressRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
@@ -33,12 +36,12 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
-        // email 중복확인
-        String email = requestDto.getEmail();
-        Optional<User> checkEmail = userRepository.findByEmail(email);
-        if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("중복된 Email 입니다.");
-        }
+//        // email 중복확인 to Do
+//        String email = requestDto.getEmail();
+//        Optional<User> checkEmail = userRepository.findByEmail(email);
+//        if (checkEmail.isPresent()) {
+//            throw new IllegalArgumentException("중복된 Email 입니다.");
+//        }
 
         String nickname = requestDto.getNickname();
         Optional<User> checkNickname = userRepository.findByNickname(nickname);
@@ -56,9 +59,11 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
 
-        // 사용자 등록
         User user = new User(requestDto,password, role);
+        Address address = new Address(requestDto, user);
+        // 사용자 등록
         userRepository.save(user);
+        addressRepository.save(address);
     }
 
 

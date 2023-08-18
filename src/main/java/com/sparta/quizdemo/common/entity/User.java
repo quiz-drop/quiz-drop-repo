@@ -24,32 +24,22 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
-    private String nickname;
-
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String nickname;
 
-    @Column(nullable = false)
-    private Long  point;
+//
+//    @Column(nullable = false, unique = true)
+//    private String email;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-
-    //user는 여러개의 post를 가질 수 있음
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    List<Card> CardList = new ArrayList<>();
-
-//
-//    //user는 여러개의 comment를 가질 수 있음
-//    @OneToMany(mappedBy = "user")
-//    List<Comment> commentList = new ArrayList<>();
-
+    @OneToOne(mappedBy = "user")
+    Address address;
 
 //    public void addPostList(Post post){
 //        this.postList.add(post);
@@ -62,9 +52,8 @@ public class User {
     public User(SignupRequestDto requestDto,String password, UserRoleEnum role) {
         this.username = requestDto.getUsername();
         this.password = password;
-        this.email = requestDto.getEmail();
         this.nickname = requestDto.getNickname();
-        this.point = 0L;
+        //this.email = requestDto.getEmail();
         this.role = role;
     }
 }
