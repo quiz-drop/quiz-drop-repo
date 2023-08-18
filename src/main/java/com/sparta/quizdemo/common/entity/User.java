@@ -1,6 +1,5 @@
 package com.sparta.quizdemo.common.entity;
 
-import com.sparta.quizdemo.card.entity.Card;
 import com.sparta.quizdemo.user.SignupRequestDto;
 import com.sparta.quizdemo.user.UserRequestDto;
 import com.sparta.quizdemo.user.UserRoleEnum;
