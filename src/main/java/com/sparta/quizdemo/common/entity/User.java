@@ -1,15 +1,12 @@
 package com.sparta.quizdemo.common.entity;
 
-import com.sparta.quizdemo.card.entity.Card;
+import com.sparta.quizdemo.cart.entity.Cart;
 import com.sparta.quizdemo.user.SignupRequestDto;
 import com.sparta.quizdemo.user.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -40,10 +37,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-
-    //user는 여러개의 post를 가질 수 있음
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    List<Card> CardList = new ArrayList<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Cart cart;
 
 //
 //    //user는 여러개의 comment를 가질 수 있음
