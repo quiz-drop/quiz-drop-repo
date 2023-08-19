@@ -1,5 +1,7 @@
 package com.sparta.quizdemo.order.service;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.cart.entity.Cart;
 import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.cart.repository.CartItemRepository;
@@ -15,13 +17,24 @@ import com.sparta.quizdemo.order.repository.OrderItemRepository;
 import com.sparta.quizdemo.order.repository.OrderRepository;
 import com.sparta.quizdemo.user.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -55,9 +68,23 @@ public class OrderService {
         // 현재 시간에 총 조리시간 더하기
         LocalDateTime completeTime = localDateTime.plusMinutes(totalCookingTime);
 
+//        String userAddress = getKakaoApiFromAddress(user.getAddress().getAddress1() + user.getAddress().getAddress2());
+//        HashMap<String, String> xyMap = getXYMapfromJson(userAddress);
+//
+//        double lat2 = 0;
+//        double lon2 = 0;
+//
+//        for(Map.Entry<String, String> e : xyMap.entrySet()) {
+//            lat2 = Double.parseDouble(e.getKey());
+//            lon2 = Double.parseDouble(e.getValue());
+//        }
+//        Long distance2 = distance(37.330689, 126.593066, lat2, lon2);
+
+        Long distance = distance(37.330689, 126.593066, 37.501025, 127.037701);
+
         if (orderRequestDto.getDelivery()) {
             totalPrice += 2000L;
-            completeTime = completeTime.plusMinutes(10);
+            completeTime = completeTime.plusMinutes(distance);
         }
 
         if (orderRequestDto.getPayment().equals(totalPrice)) {
@@ -132,5 +159,91 @@ public class OrderService {
                 }
             }
         }
+    }
+
+    public String getKakaoApiFromAddress(String roadFullAddr) {
+        String apiKey = "승인키";
+        String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json";
+        String jsonString = null;
+
+        try {
+            roadFullAddr = URLEncoder.encode(roadFullAddr, "UTF-8");
+
+            String addr = apiUrl + "?query=" + roadFullAddr;
+
+            URL url = new URL(addr);
+            URLConnection conn = url.openConnection();
+            conn.setRequestProperty("Authorization", "KakaoAK " + apiKey);
+
+            BufferedReader rd = null;
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            StringBuffer docJson = new StringBuffer();
+
+            String line;
+
+            while ((line=rd.readLine()) != null) {
+                docJson.append(line);
+            }
+
+            jsonString = docJson.toString();
+            rd.close();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jsonString;
+    }
+
+    public HashMap<String, String> getXYMapfromJson(String jsonString) {
+        ObjectMapper mapper = new ObjectMapper();
+        HashMap<String, String> XYMap = new HashMap<String, String>();
+
+        try {
+            com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>> typeRef
+                    = new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>(){};
+            Map<String, Object> jsonMap = mapper.readValue(jsonString, typeRef);
+
+            @SuppressWarnings("unchecked")
+            List<Map<String, String>> docList
+                    =  (List<Map<String, String>>) jsonMap.get("documents");
+
+            Map<String, String> adList = (Map<String, String>) docList.get(0);
+            XYMap.put("x",adList.get("x"));
+            XYMap.put("y", adList.get("y"));
+
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return XYMap;
+    }
+
+    // 두 지점 간의 거리를 킬로미터 단위로 구하는 메서드
+    private static Long distance(double lat1, double lon1, double lat2, double lon2) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344;
+
+        return (long)dist;
+    }
+    // This function converts decimal degrees to radians
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+    // This function converts radians to decimal degrees
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 }
