@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -32,20 +30,20 @@ public class CartController {
     }
 
     // 카트에 상품 담기
-    @PostMapping("/cartitem")
-    public ResponseEntity<ApiResponseDto> getItem(@RequestBody CartItemRequestDto cartItemRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return cartService.getItem(cartItemRequestDto, userDetails.getUser());
+    @PostMapping("/cart/{productNo}")
+    public ResponseEntity<ApiResponseDto> saveCartItem(@PathVariable Long productNo, @RequestBody CartItemRequestDto cartItemRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return cartService.saveCartItem(productNo, cartItemRequestDto, userDetails.getUser());
+    }
+
+    // 카트 상품 개수 수정
+    @PutMapping("/cartitem/{cartItemNo}")
+    public ResponseEntity<CartResponseDto> updateCartItem(@PathVariable Long cartItemNo, @RequestBody CartItemRequestDto cartItemRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return cartService.updateCartItem(cartItemNo, cartItemRequestDto, userDetails.getUser());
     }
 
     // 카트에서 상품 빼기
     @DeleteMapping("/cart/{cartItemNo}")
     public ResponseEntity<ApiResponseDto> deleteItem(@PathVariable Long cartItemNo, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return cartService.deleteItem(cartItemNo, userDetails.getUser());
-    }
-
-    // 카트 내부 상품 모두 제거
-    @DeleteMapping("/cart")
-    public ResponseEntity<ApiResponseDto> clearCartItems(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return cartService.clearCartItems(userDetails.getUser());
     }
 }

@@ -1,5 +1,7 @@
 package com.sparta.quizdemo.product.service;
 
+import com.sparta.quizdemo.cart.entity.CartItem;
+import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import com.sparta.quizdemo.product.dto.ProductResponseDto;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Override
     public ResponseEntity<ProductResponseDto> createProduct(ProductRequestDto productRequestDto) {
@@ -32,7 +35,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ResponseEntity<List<ProductResponseDto>> getProducts() {
-        List<Product> productList = productRepository.findAllByOrderByCreatedAtDesc();
+        List<Product> productList = productRepository.findAllByOrderByCreatedAtAsc();
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
 
         for (Product product : productList) {
@@ -59,6 +62,11 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ResponseEntity<ApiResponseDto> deleteProduct(Long productNo) {
         Product product = productRepository.findById(productNo).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
+        List<CartItem> cartItemList = cartItemRepository.findAllByProductId(productNo);
+
+        for (CartItem cartItem : cartItemList) {
+            cartItemRepository.delete(cartItem);
+        }
         productRepository.delete(product);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("컬럼이 삭제 되었습니다", HttpStatus.OK.value()));
     }
