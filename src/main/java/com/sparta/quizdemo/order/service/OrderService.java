@@ -68,20 +68,17 @@ public class OrderService {
         // 현재 시간에 총 조리시간 더하기
         LocalDateTime completeTime = localDateTime.plusMinutes(totalCookingTime);
 
-//        String userAddress = getKakaoApiFromAddress(user.getAddress().getAddress1() + user.getAddress().getAddress2());
-//        HashMap<String, String> xyMap = getXYMapfromJson(userAddress);
-//
-//        double lat2 = 0;
-//        double lon2 = 0;
-//
-//        for(Map.Entry<String, String> e : xyMap.entrySet()) {
-//            lat2 = Double.parseDouble(e.getKey());
-//            lon2 = Double.parseDouble(e.getValue());
-//        }
-//        Long distance2 = distance(37.330689, 126.593066, lat2, lon2);
+        String userAddress = getKakaoApiFromAddress(user.getAddress().getAddress1() + " " + user.getAddress().getAddress2());
+        HashMap<String, String> xyMap = getXYMapfromJson(userAddress);
 
-        Long distance = distance(37.330689, 126.593066, 37.501025, 127.037701);
+        double lat2 = 0;
+        double lon2 = 0;
 
+        lat2 = Double.parseDouble(xyMap.get("y")); // 위도
+        lon2 = Double.parseDouble(xyMap.get("x")); // 경도
+
+        Long distance = distance(37.330689, 126.593066, lat2, lon2);
+        
         if (orderRequestDto.getDelivery()) {
             totalPrice += 2000L;
             completeTime = completeTime.plusMinutes(distance);
@@ -162,7 +159,7 @@ public class OrderService {
     }
 
     public String getKakaoApiFromAddress(String roadFullAddr) {
-        String apiKey = "승인키";
+        String apiKey = "cd1ccf91994a50633a55d68e5f85d9a2";
         String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json";
         String jsonString = null;
 
