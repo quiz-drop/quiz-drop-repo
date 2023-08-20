@@ -73,12 +73,37 @@ public class OrderService {
 
         double lat2 = 0;
         double lon2 = 0;
+        String city = "";
+        Long distance = 0L;
 
         lat2 = Double.parseDouble(xyMap.get("y")); // 위도
         lon2 = Double.parseDouble(xyMap.get("x")); // 경도
+        city = xyMap.get("z").substring(1);
 
-        Long distance = distance(37.330689, 126.593066, lat2, lon2);
-        
+        switch (city) {
+            case "서울": distance = distance(37.330689, 126.593066, lat2, lon2);
+                break;
+            case "경기": distance = distance(37.569148, 127.243353, lat2, lon2);
+                break;
+            case "강원": distance = distance(37.746002, 128.383841, lat2, lon2);
+                break;
+            case "충북": distance = distance(36.891643, 127.815570, lat2, lon2);
+                break;
+            case "충남": distance = distance(36.583290, 126.866889, lat2, lon2);
+                break;
+            case "전북": distance = distance(35.853520, 127.121177, lat2, lon2);
+                break;
+            case "전남": distance = distance(35.080598, 126.885858, lat2, lon2);
+                break;
+            case "경북": distance = distance(36.460540, 128.915577, lat2, lon2);
+                break;
+            case "경남": distance = distance(35.394316, 128.085717, lat2, lon2);
+                break;
+            case "제주": distance = distance(35.394316, 128.085717, lat2, lon2);
+                break;
+            default: distance = distance(37.27538, 127.05488, lat2, lon2);
+        }
+
         if (orderRequestDto.getDelivery()) {
             totalPrice += 2000L;
             completeTime = completeTime.plusMinutes(distance);
@@ -211,6 +236,7 @@ public class OrderService {
             Map<String, String> adList = (Map<String, String>) docList.get(0);
             XYMap.put("x",adList.get("x"));
             XYMap.put("y", adList.get("y"));
+            XYMap.put("z", adList.get("address_name"));
 
         } catch (JsonParseException e) {
             e.printStackTrace();

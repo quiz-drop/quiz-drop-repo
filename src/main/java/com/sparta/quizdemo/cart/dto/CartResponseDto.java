@@ -12,6 +12,7 @@ public class CartResponseDto {
     private String username;
     private Long cartId;
     private Long totalPrice;
+    private String deliveryMethod = "배달을 선택할 경우 2000원 추가";
     private Long totalCookingTime;
     private List<CartItemResponseDto> cartItemList;
 
