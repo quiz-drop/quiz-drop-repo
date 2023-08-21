@@ -8,13 +8,16 @@ import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.cart.repository.CartRepository;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.product.entity.Option;
 import com.sparta.quizdemo.product.entity.Product;
+import com.sparta.quizdemo.product.repository.OptionRepository;
 import com.sparta.quizdemo.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,6 +26,7 @@ public class CartServiceImpl implements CartService{
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final OptionRepository optionRepository;
 
     @Override
     public Cart createCart(User user) {
@@ -67,14 +71,20 @@ public class CartServiceImpl implements CartService{
             createCart(user);
         }
         Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new NullPointerException("장바구니가 존재하지 않습니다."));
+        List<Option> options = new ArrayList<>();
 
-        if (cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId()).isPresent()) {
-            CartItem cartItem = cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId()).orElseThrow();
+        for (Long optionId : cartItemRequestDto.getOptionList()) {
+            Option option = optionRepository.findById(optionId).orElseThrow(() -> new NullPointerException("해당 번호의 옵션이 존재하지 않습니다."));
+            options.add(option);
+        }
+
+        if (cartItemRepository.findByProductIdAndCartIdAndOptionList(product.getId(), cart.getId(), options).isPresent()) {
+            CartItem cartItem = cartItemRepository.findByProductIdAndCartIdAndOptionList(product.getId(), cart.getId(), options).orElseThrow();
             Integer tempQuantity = cartItem.getQuantity();
             cartItem.setQuantity(tempQuantity + cartItemRequestDto.getQuantity());
             cartItemRepository.save(cartItem);
         } else {
-            CartItem cartItem = new CartItem(cartItemRequestDto.getQuantity(), cart, product);
+            CartItem cartItem = new CartItem(cartItemRequestDto.getQuantity(), cart, product, options);
             cartItemRepository.save(cartItem);
         }
 
