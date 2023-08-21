@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.product.dto;
+package com.sparta.quizdemo.option.dto;
 
 import lombok.Getter;
 

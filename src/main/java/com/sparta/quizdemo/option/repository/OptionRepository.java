@@ -1,6 +1,6 @@
-package com.sparta.quizdemo.product.repository;
+package com.sparta.quizdemo.option.repository;
 
-import com.sparta.quizdemo.product.entity.Option;
+import com.sparta.quizdemo.option.entity.Option;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

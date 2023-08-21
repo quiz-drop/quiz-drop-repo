@@ -1,7 +1,7 @@
 package com.sparta.quizdemo.order.entity;
 
 import com.sparta.quizdemo.cart.entity.CartItem;
-import com.sparta.quizdemo.product.entity.Option;
+import com.sparta.quizdemo.option.entity.Option;
 import com.sparta.quizdemo.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
