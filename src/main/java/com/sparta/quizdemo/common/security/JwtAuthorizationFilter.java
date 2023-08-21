@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.common.security;
 
+import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -7,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -32,6 +34,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
         String tokenValue = jwtUtil.getTokenFromRequest(req);
+        String token = jwtUtil.resolveToken(req);
+
+        if(token != null) {
+            if(!jwtUtil.validateToken(token)){
+                ApiResponseDto responseDto = new ApiResponseDto("토큰이 유효하지 않습니다.", HttpStatus.BAD_REQUEST.value());
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                res.setContentType("application/json; charset=UTF-8");
+                return;
+            }
+            Claims info = jwtUtil.getUserInfoFromToken(token);
+            setAuthentication(info.getSubject());
+        }
 
         if (StringUtils.hasText(tokenValue)) {
             // JWT 토큰 substring

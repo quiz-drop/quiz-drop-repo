@@ -26,7 +26,7 @@ public interface CartService {
      * @param cartItemRequestDto 추가하려는 상품 개수
      * @param user 카트 주인 정보
      */
-    ResponseEntity<ApiResponseDto> saveCartItem(Long productNo, CartItemRequestDto cartItemRequestDto, User user);
+    ResponseEntity<ApiResponseDto> takeItem(Long productNo, CartItemRequestDto cartItemRequestDto, User user);
 
     /**
      * 카트 상품 개수 수정 API
