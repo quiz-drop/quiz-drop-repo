@@ -1,6 +1,7 @@
 package com.sparta.quizdemo.common.entity;
 
 import com.sparta.quizdemo.cart.entity.Cart;
+import com.sparta.quizdemo.order.entity.Order;
 import com.sparta.quizdemo.user.SignupRequestDto;
 import com.sparta.quizdemo.user.UserRequestDto;
 import com.sparta.quizdemo.user.UserRoleEnum;
@@ -44,6 +45,9 @@ public class User extends TimeStamped {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Cart cart;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> order;
 
 //    public void addPostList(Post post){
 //        this.postList.add(post);

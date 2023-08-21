@@ -33,38 +33,48 @@ public class CartServiceImpl implements CartService{
             cartRepository.save(cart);
             return cart;
         }
-
-//        Cart cart = cartRepository.findByUser(user).orElse(new Cart(user));
-//        return cart;
     }
 
     @Override
     public ResponseEntity<CartResponseDto> getCartItems(User user) {
-        Cart cart = cartRepository.findByUserId(user.getId()).orElse(createCart(user));
+//        Cart cart = cartRepository.findByUserId(user.getId()).orElse(createCart(user));
+
+        if (cartRepository.findByUserId(user.getId()).isEmpty()) {
+            createCart(user);
+        }
+
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new NullPointerException("장바구니가 없습니다."));
         List<CartItem> cartItemList = cartItemRepository.findByCartId(cart.getId());
         Long totalPrice = 0L;
+        Long totalCookingTime = 0L;
+
         if (cartItemList != null) {
             for (CartItem cartItem : cartItemList) {
                 totalPrice += (cartItem.getProduct().getProductPrice() * cartItem.getQuantity());
+                totalCookingTime += (cartItem.getProduct().getCookingTime()) * cartItem.getQuantity();
             }
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(new CartResponseDto(user, cart, totalPrice));
+        return ResponseEntity.status(HttpStatus.OK).body(new CartResponseDto(user, cart, totalPrice, totalCookingTime));
     }
 
     @Override
-    public ResponseEntity<ApiResponseDto> getItem(CartItemRequestDto cartItemRequestDto, User user) {
-        Product product = productRepository.findByProductName(cartItemRequestDto.getProductName()).orElseThrow(
-                () -> new NullPointerException("해당 이름의 상품이 존재하지 않습니다."));
-        Cart cart = cartRepository.findByUserId(user.getId()).orElse(createCart(user));
+    public ResponseEntity<ApiResponseDto> saveCartItem(Long productNo, CartItemRequestDto cartItemRequestDto, User user) {
+        Product product = productRepository.findById(productNo).orElseThrow(
+                () -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
 
-        if (cartItemRepository.findByProductId(product.getId()).isPresent()) {
-            CartItem cartItem = cartItemRepository.findByProductId(product.getId()).orElseThrow();
+        if (cartRepository.findByUserId(user.getId()).isEmpty()) {
+            createCart(user);
+        }
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new NullPointerException("장바구니가 존재하지 않습니다."));
+
+        if (cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId()).isPresent()) {
+            CartItem cartItem = cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId()).orElseThrow();
             Integer tempQuantity = cartItem.getQuantity();
-            cartItem.setQuantity(tempQuantity + 1);
+            cartItem.setQuantity(tempQuantity + cartItemRequestDto.getQuantity());
             cartItemRepository.save(cartItem);
         } else {
-            CartItem cartItem = new CartItem(cartItemRequestDto, cart, product);
+            CartItem cartItem = new CartItem(cartItemRequestDto.getQuantity(), cart, product);
             cartItemRepository.save(cartItem);
         }
 
@@ -72,23 +82,21 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
+    public ResponseEntity<CartResponseDto> updateCartItem(Long cartItemNo, CartItemRequestDto cartItemRequestDto, User user) {
+        CartItem cartItem = cartItemRepository.findByIdAndCartId(cartItemNo, user.getCart().getId()).orElseThrow(
+                () -> new NullPointerException("해당 상품이 장바구니에 존재하지 않습니다."));
+
+        cartItem.setQuantity(cartItemRequestDto.getQuantity());
+        cartItemRepository.save(cartItem);
+        return getCartItems(user);
+    }
+
+    @Override
     public ResponseEntity<ApiResponseDto> deleteItem(Long cartItemNo, User user) {
-        CartItem cartItem = cartItemRepository.findById(cartItemNo).orElseThrow(
+        CartItem cartItem = cartItemRepository.findByIdAndCartId(cartItemNo, user.getCart().getId()).orElseThrow(
                 () -> new NullPointerException("해당 상품이 장바구니에 존재하지 않습니다."));
         cartItemRepository.delete(cartItem);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("상품을 장바구니에서 제거했습니다.", HttpStatus.OK.value()));
-    }
-
-    @Override
-    public ResponseEntity<ApiResponseDto> clearCartItems(User user) {
-        Cart cart = cartRepository.findByUserId(user.getId()).orElse(createCart(user));
-        List<CartItem> cartItemList = cartItemRepository.findAllByCartId(cart.getId());
-
-        for (CartItem cartItem : cartItemList) {
-            cartItemRepository.delete(cartItem);
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("장바구니의 모든 상품을 제거했습니다.", HttpStatus.OK.value()));
     }
 }

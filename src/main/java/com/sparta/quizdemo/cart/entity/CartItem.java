@@ -28,11 +28,10 @@ public class CartItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
-    public CartItem(CartItemRequestDto cartItemRequestDto, Cart cart, Product product) {
-        this.quantity = cartItemRequestDto.getQuantity();
+    public CartItem(Integer quantity, Cart cart, Product product) {
+        this.quantity = quantity;
         this.cart = cart;
         this.product = product;
     }
