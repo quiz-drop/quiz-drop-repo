@@ -1,7 +1,7 @@
 package com.sparta.quizdemo.order.dto;
 
+import com.sparta.quizdemo.option.dto.OptionResponseDto;
 import com.sparta.quizdemo.order.entity.OrderItem;
-import com.sparta.quizdemo.product.dto.OptionResponseDto;
 import lombok.Getter;
 
 import java.util.List;
