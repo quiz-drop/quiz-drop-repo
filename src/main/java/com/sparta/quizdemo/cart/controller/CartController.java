@@ -31,8 +31,8 @@ public class CartController {
 
     // 카트에 상품 담기
     @PostMapping("/cart/{productNo}")
-    public ResponseEntity<ApiResponseDto> saveCartItem(@PathVariable Long productNo, @RequestBody CartItemRequestDto cartItemRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return cartService.saveCartItem(productNo, cartItemRequestDto, userDetails.getUser());
+    public ResponseEntity<ApiResponseDto> takeItem(@PathVariable Long productNo, @RequestBody CartItemRequestDto cartItemRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return cartService.takeItem(productNo, cartItemRequestDto, userDetails.getUser());
     }
 
     // 카트 상품 개수 수정

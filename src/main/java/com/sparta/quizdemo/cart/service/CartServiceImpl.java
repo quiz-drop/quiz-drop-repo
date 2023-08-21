@@ -59,7 +59,7 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
-    public ResponseEntity<ApiResponseDto> saveCartItem(Long productNo, CartItemRequestDto cartItemRequestDto, User user) {
+    public ResponseEntity<ApiResponseDto> takeItem(Long productNo, CartItemRequestDto cartItemRequestDto, User user) {
         Product product = productRepository.findById(productNo).orElseThrow(
                 () -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
 
