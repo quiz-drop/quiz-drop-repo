@@ -79,12 +79,9 @@ public class UserService {
                 () -> new NullPointerException("주소가 존재하지 않습니다.")
         );
 
-/*        if(updateUser.getGoogleId() != null){
-            throw new IllegalArgumentException("구글로 로그인한 사용자는 수정이 불가합니다.");
+        if(updateUser.getSocialId() != null){
+            throw new IllegalArgumentException("소셜 로그인한 사용자는 수정이 불가합니다.");
         }
-        if(updateUser.getKakaoId() != null){
-            throw new IllegalArgumentException("카카오로 로그인한 사용자는 수정이 불가합니다.");
-        }*/
 
         if(!passwordEncoder.matches(requestDto.getPassword(),updateUser.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 틀립니다.");
