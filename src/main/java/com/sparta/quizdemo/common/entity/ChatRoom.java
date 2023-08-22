@@ -24,6 +24,8 @@ public class ChatRoom implements Serializable {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.roomId = UUID.randomUUID().toString();
         chatRoom.username = user.getUsername();
+
+        user.setChatRoomId(chatRoom.roomId); // user 객체에 roomId 저장
         return chatRoom;
     }
 }
