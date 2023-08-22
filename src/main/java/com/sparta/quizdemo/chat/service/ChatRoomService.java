@@ -42,14 +42,17 @@ public class ChatRoomService {
     /* 채팅방 생성 및 입장 */
     public ChatRoom createAndEnterChatRoom(User user) {
         String username = user.getUsername();
-        String chatUser = (String) redisTemplate.opsForHash().get(CHAT_ROOMS, username);
 
-        if (chatUser != null) {
-            // 이미 해당 user의 채팅방이 Redis에 존재하면 입장
-            enterChatRoom(chatUser);
+        // key 인 username 으로 value 값인 roomId를 찾아 저장
+        String roomId = (String) redisTemplate.opsForHash().get(CHAT_ROOMS, username);
 
-            log.info("chatRoomId : " + chatUser);
-            return new ChatRoom(chatUser, username);
+        if (roomId != null) {
+            // 이미 해당 user 의 채팅방이 Redis 에 존재하면 입장
+            enterChatRoom(roomId);
+
+            log.info("user : " + username);
+            log.info("ChatRoomId : " + roomId);
+            return new ChatRoom(username, roomId);
         } else {
             // 채팅방이 존재하지 않는 경우에만 생성
             ChatRoom chatRoom = ChatRoom.create(user);
@@ -58,10 +61,10 @@ public class ChatRoomService {
             redisTemplate.opsForHash().put(CHAT_ROOMS, chatRoom.getUsername(), chatRoom.getRoomId());
 
             // 채팅방에 입장
-            enterChatRoom(chatRoom.getUsername());
+            enterChatRoom(chatRoom.getRoomId());
 
-            log.info("ChatRoomId : " + chatRoom.getRoomId());
             log.info("user : " + chatRoom.getUsername());
+            log.info("ChatRoomId : " + chatRoom.getRoomId());
             return chatRoom;
         }
     }
@@ -81,8 +84,8 @@ public class ChatRoomService {
 
     /* chatRoom 단권 조회 */
     public String findRoomByUser(String username) {
-        String chatUser = (String) redisTemplate.opsForHash().get(CHAT_ROOMS, username);
-        return chatUser != null ? "user : " + username + "\nroomId : " + chatUser : null;
+        String roomId = (String) redisTemplate.opsForHash().get(CHAT_ROOMS, username);
+        return roomId != null ? "user : " + username + "\nroomId : " + roomId : null;
     }
 
     /* 채팅방 나가기 */
@@ -90,15 +93,15 @@ public class ChatRoomService {
         redisTemplate.opsForHash().delete(CHAT_ROOMS, username);
     }
 
-    public void enterChatRoom(String username) {
+    public void enterChatRoom(String roomId) {
         // Redis에서 해당 채팅방의 토픽을 가져옴
-        ChannelTopic topic = getTopic(username);
+        ChannelTopic topic = getTopic(roomId);
 
         if (topic == null) {
             // 토픽이 없는 경우 새로 생성하고 메시지 리스너 추가
-            topic = new ChannelTopic(username);
+            topic = new ChannelTopic(roomId);
             redisMessageListener.addMessageListener(redisSubscriber, topic);
-            topics.put(username, topic);
+            topics.put(roomId, topic);
         }
     }
 
