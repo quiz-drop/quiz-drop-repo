@@ -46,7 +46,7 @@ public class OrderController {
     }
 
     // 만료 시간이 된 주문 삭제
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */5 * * * *") // 5분마다 업데이트
     public void completeOrder() {
         orderService.completeOrder();
     }
