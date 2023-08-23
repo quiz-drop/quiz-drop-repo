@@ -5,6 +5,7 @@ import com.sparta.quizdemo.common.entity.ChatRoom;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class ChatRoomController {
 
     /* 채팅방 조회 */
     @GetMapping("/rooms")
+    @Secured("ROLE_ADMIN")
     public List<String> getAllChatRooms() {
         return chatRoomService.findAllRooms();
     }
