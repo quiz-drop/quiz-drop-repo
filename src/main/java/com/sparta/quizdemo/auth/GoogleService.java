@@ -138,7 +138,7 @@ public class GoogleService {
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
 
-                // email: kakao email
+                // email: 구글 email
                 String username = googleUserInfoDto.getUsername();
                 String nickname = googleUserInfoDto.getNickname();
                 googleUser = new User(username, encodedPassword, nickname, UserRoleEnum.USER, googleId, social);

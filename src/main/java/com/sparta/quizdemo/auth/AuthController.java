@@ -34,7 +34,7 @@ public class AuthController {
 
         // Add the cookie to the response
         response.addCookie(jwtCookie);
-        return new RedirectView("/");
+        return new RedirectView("/test");
     }
 
     @GetMapping("/kakao/login")
@@ -49,7 +49,7 @@ public class AuthController {
 
         // Add the cookie to the response
         response.addCookie(jwtCookie);
-        return new RedirectView("/");
+        return new RedirectView("/test");
     }
 
     @GetMapping("/google/login")
@@ -64,6 +64,6 @@ public class AuthController {
 
         // Add the cookie to the response
         response.addCookie(jwtCookie);
-        return new RedirectView("/");
+        return new RedirectView("/test");
     }
 }

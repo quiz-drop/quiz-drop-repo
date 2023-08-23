@@ -10,4 +10,9 @@ public class TestController {
     String test(){
         return "test";
     }
+
+    @GetMapping("/login-test")
+    String loginTest(){
+        return "login-test";
+    }
 }
