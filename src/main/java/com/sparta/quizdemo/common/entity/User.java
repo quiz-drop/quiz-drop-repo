@@ -66,6 +66,7 @@ public class User extends TimeStamped {
         this.nickname = requestDto.getNickname();
         //this.email = requestDto.getEmail();
         this.role = role;
+        this.orderCount = requestDto.getOrderCount();
     }
 
     public void update(UserRequestDto requestDto, String newPassword) {
