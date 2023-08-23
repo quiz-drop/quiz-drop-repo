@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.auth;
+package com.sparta.quizdemo;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
