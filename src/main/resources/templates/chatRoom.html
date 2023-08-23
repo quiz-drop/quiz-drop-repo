@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+<div id="chatRoom" class="chatRoom">
+    <!-- Chat room list will be dynamically generated here -->
+</div>
+<script>
+    let token = Cookies.get('Authorization');
+    const payloads = JSON.parse(atob(token.split(".")[1]));
+    const userAuth = payloads.sub;
+
+    // Function to load chat rooms
+    function loadChatRooms() {
+        $.ajax({
+            url: `/api/chat/rooms/${userAuth}`,
+            method: 'GET',
+            success: function (response) {
+                if (response.length === 0) {
+                    alert("No chat rooms found");
+                } else {
+                    // Clear the chat room list
+                    $('#chatRoom').empty();
+
+                    // Loop through the chat rooms and create links
+                    response.forEach(function (room) {
+                        const roomId = room.id; // Assuming each chat room has an ID
+                        const roomName = room.name; // Assuming each chat room has a name
+                        const chatRoomLink = $('<a>', {
+                            text: roomName,
+                            href: `/api/users/chat?roomId=${roomId}`,
+                            class: 'userChatRoom',
+                        });
+
+                        chatRoomLink.appendTo($('#chatRoom'));
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Failed to load chat rooms");
+                console.log(xhr);
+            }
+        });
+    }
+
+    // Call the function to load chat rooms on page load
+    $(document).ready(function () {
+        loadChatRooms();
+    });
+</script>
+</body>
+</html>
