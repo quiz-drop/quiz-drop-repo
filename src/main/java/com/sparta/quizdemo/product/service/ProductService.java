@@ -3,7 +3,6 @@ package com.sparta.quizdemo.product.service;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import com.sparta.quizdemo.product.dto.ProductResponseDto;
-import com.sparta.quizdemo.product.entity.Product;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

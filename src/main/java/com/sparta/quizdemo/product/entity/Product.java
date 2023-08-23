@@ -5,6 +5,7 @@ import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -30,6 +31,7 @@ public class Product extends TimeStamped {
     @Column(name = "cooking_time", nullable = false)
     private Long cookingTime;
 
+    @Setter
     @Column(name = "product_ordercount")
     private Long orderCount;
 

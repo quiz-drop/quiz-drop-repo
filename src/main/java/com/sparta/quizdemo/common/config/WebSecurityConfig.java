@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.common.config;
 
+import com.sparta.quizdemo.backoffice.service.BackofficeService;
 import com.sparta.quizdemo.common.security.JwtAuthenticationFilter;
 import com.sparta.quizdemo.common.security.JwtAuthorizationFilter;
 import com.sparta.quizdemo.common.security.UserDetailsServiceImpl;
@@ -15,20 +16,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity // Spring Security 지원을 가능하게 함
 @EnableGlobalMethodSecurity(securedEnabled = true)
-public class WebSecurityConfig {
+public class WebSecurityConfig implements WebMvcConfigurer {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final BackofficeService backofficeService;
 
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration) {
+    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration, BackofficeService backofficeService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.authenticationConfiguration = authenticationConfiguration;
+        this.backofficeService = backofficeService;
     }
 
     @Bean
@@ -64,6 +68,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers("/app/chat/**").permitAll()
                         .requestMatchers("/chatRoom", "/chatting").permitAll()
+                        .requestMatchers("/login-test","/test","/api/auth/**","/api/user/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
@@ -79,5 +85,11 @@ public class WebSecurityConfig {
         );
 
         return http.build();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(backofficeService)
+                .addPathPatterns("/api/**");
     }
 }

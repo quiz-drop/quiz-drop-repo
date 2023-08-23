@@ -7,8 +7,6 @@ import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.User;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 public interface CartService {
     /**
      * 카트 생성 API
@@ -24,10 +22,19 @@ public interface CartService {
 
     /**
      * 카트에 상품 추가 API
-     * @param cartItemRequestDto 추가하려는 상품 이름과 개수
+     * @param productNo 추가하려는 상품 번호
+     * @param cartItemRequestDto 추가하려는 상품 개수
      * @param user 카트 주인 정보
      */
-    ResponseEntity<ApiResponseDto> getItem(CartItemRequestDto cartItemRequestDto, User user);
+    ResponseEntity<ApiResponseDto> takeItem(Long productNo, CartItemRequestDto cartItemRequestDto, User user);
+
+    /**
+     * 카트 상품 개수 수정 API
+     * @param cartItemNo 수정하려는 상품 번호
+     * @param cartItemRequestDto 수정될 상품 개수
+     * @param user 카트 주인 정보
+     */
+    ResponseEntity<CartResponseDto> updateCartItem(Long cartItemNo, CartItemRequestDto cartItemRequestDto, User user);
 
     /**
      * 카트에서 상품 제거 API
@@ -35,10 +42,4 @@ public interface CartService {
      * @param user 카트 주인 정보
      */
     ResponseEntity<ApiResponseDto> deleteItem(Long cartItemNo, User user);
-
-    /**
-     * 카트 내부 상품 모두 제거 API
-     * @param user
-     */
-    ResponseEntity<ApiResponseDto> clearCartItems(User user);
 }

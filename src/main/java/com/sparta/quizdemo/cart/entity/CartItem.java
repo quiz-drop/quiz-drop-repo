@@ -1,13 +1,14 @@
 package com.sparta.quizdemo.cart.entity;
 
-import com.sparta.quizdemo.cart.dto.CartItemRequestDto;
+import com.sparta.quizdemo.option.entity.Option;
 import com.sparta.quizdemo.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,12 +29,15 @@ public class CartItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
-    public CartItem(CartItemRequestDto cartItemRequestDto, Cart cart, Product product) {
-        this.quantity = cartItemRequestDto.getQuantity();
+    @OneToMany(mappedBy = "cartItem", cascade = CascadeType.REMOVE)
+    private List<Option> optionList = new ArrayList<>();
+
+    public CartItem(Integer quantity, Cart cart, Product product, List<Option> options) {
+        this.quantity = quantity;
         this.cart = cart;
         this.product = product;
+        this.optionList = options;
     }
 }

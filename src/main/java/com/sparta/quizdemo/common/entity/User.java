@@ -1,6 +1,7 @@
 package com.sparta.quizdemo.common.entity;
 
 import com.sparta.quizdemo.cart.entity.Cart;
+import com.sparta.quizdemo.order.entity.Order;
 import com.sparta.quizdemo.user.SignupRequestDto;
 import com.sparta.quizdemo.user.UserRequestDto;
 import com.sparta.quizdemo.user.UserRoleEnum;
@@ -31,6 +32,13 @@ public class User extends TimeStamped {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+
+    @Column(nullable = true)
+    private String socialId;
+
+    @Column(nullable = true)
+    private String social;
+
 //
 //    @Column(nullable = false, unique = true)
 //    private String email;
@@ -45,10 +53,10 @@ public class User extends TimeStamped {
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Cart cart;
 
-//    public void addPostList(Post post){
-//        this.postList.add(post);
-//        post.setUser(this);
-//    }
+    @OneToMany(mappedBy = "user")
+    private List<Order> order;
+
+
 
 
 
@@ -61,8 +69,25 @@ public class User extends TimeStamped {
         this.role = role;
     }
 
+    //소셜 회원가입 생성자
+    public User(String username, String password, String nickname, UserRoleEnum role, String socialId, String social) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = role;
+        this.socialId = socialId;
+        this.social = social;
+    }
+
     public void update(UserRequestDto requestDto, String newPassword) {
         this.nickname = requestDto.getNickname();
         this.password = newPassword;
     }
+
+    public User socialUpdate(String socialId, String social) {
+        this.socialId = socialId;
+        this.social = social;
+        return this;
+    }
+
 }
