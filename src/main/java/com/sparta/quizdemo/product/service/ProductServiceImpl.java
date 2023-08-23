@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.product.service;
 
+import com.sparta.quizdemo.backoffice.dto.KeywordRequestDto;
 import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
@@ -42,6 +43,19 @@ public class ProductServiceImpl implements ProductService{
             productResponseDtoList.add(new ProductResponseDto(product));
         }
 
+        return ResponseEntity.status(HttpStatus.OK).body(productResponseDtoList);
+    }
+
+    @Override
+    public ResponseEntity<List<ProductResponseDto>> findProduct(String keyword) {
+        List<Product> productList = productRepository.findAll();
+        List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
+
+        for (Product product : productList) {
+            if (product.getProductName().contains(keyword)) {
+                productResponseDtoList.add(new ProductResponseDto(product));
+            }
+        }
         return ResponseEntity.status(HttpStatus.OK).body(productResponseDtoList);
     }
 

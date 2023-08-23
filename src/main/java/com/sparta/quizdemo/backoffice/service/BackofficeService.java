@@ -38,6 +38,18 @@ public class BackofficeService implements HandlerInterceptor {
         return ResponseEntity.status(HttpStatus.OK).body(visitorList);
     }
 
+    public ResponseEntity<List<Visitor>> findVisitor(String keyword) {
+        List<Visitor> visitorList = backofficeRepository.findAll();
+        List<Visitor> findingList = new ArrayList<>();
+
+        for (Visitor visitor : visitorList) {
+            if (visitor.getVisitorIP().contains(keyword)) {
+                findingList.add(visitor);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(findingList);
+    }
+
     public Integer countVisitor() {
         List<Visitor> visitorList = backofficeRepository.findAll();
         Integer visitCount = visitorList.size();
@@ -61,6 +73,22 @@ public class BackofficeService implements HandlerInterceptor {
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDtoList);
     }
 
+    public ResponseEntity<List<UserResponseDto>> findOneUser(String keyword) {
+        List<User> userList = userRepository.findAll();
+        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
+
+        for (User user : userList) {
+            if (user.getUsername().contains(keyword)) {
+                userResponseDtoList.add(new UserResponseDto(user));
+            }
+
+            if (user.getNickname().contains(keyword)) {
+                userResponseDtoList.add(new UserResponseDto(user));
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDtoList);
+    }
+
     public ResponseEntity<ApiResponseDto> deleteOneUser(Long userNo) {
         User user = userRepository.findById(userNo).orElseThrow(() -> new NullPointerException("해당 번호의 유저가 존재하지 않습니다."));
         userRepository.delete(user);
@@ -75,9 +103,9 @@ public class BackofficeService implements HandlerInterceptor {
         String today = LocalDate.now().toString();
         String key = visitorIP + "_" + today;
 
-        ValueOperations valueOperations = redisTemplate.opsForValue();
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
-        if (!valueOperations.getOperations().hasKey(key)) {
+        if (Boolean.FALSE.equals(valueOperations.getOperations().hasKey(key))) {
             valueOperations.set(key, userAgent);
         }
 

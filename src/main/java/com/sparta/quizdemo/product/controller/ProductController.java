@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.product.controller;
 
+import com.sparta.quizdemo.backoffice.dto.KeywordRequestDto;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import com.sparta.quizdemo.product.dto.ProductResponseDto;
@@ -30,6 +31,12 @@ public class ProductController {
     @GetMapping("/products")
     public ResponseEntity<List<ProductResponseDto>> getProducts() {
         return productService.getProducts();
+    }
+
+    // 키워드로 상품 검색
+    @GetMapping("/product")
+    public ResponseEntity<List<ProductResponseDto>> findProduct(@RequestBody KeywordRequestDto keywordRequestDto) {
+        return productService.findProduct(keywordRequestDto.getKeyword());
     }
 
 
