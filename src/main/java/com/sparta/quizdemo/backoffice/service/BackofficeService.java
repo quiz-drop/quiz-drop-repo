@@ -4,8 +4,6 @@ import com.sparta.quizdemo.backoffice.entity.Visitor;
 import com.sparta.quizdemo.backoffice.repository.BackofficeRepository;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.User;
-import com.sparta.quizdemo.order.entity.Order;
-import com.sparta.quizdemo.order.repository.OrderRepository;
 import com.sparta.quizdemo.user.UserRepository;
 import com.sparta.quizdemo.user.UserResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +27,6 @@ import java.util.Set;
 public class BackofficeService implements HandlerInterceptor {
 
     private final UserRepository userRepository;
-    private final OrderRepository orderRepository;
     private final BackofficeRepository backofficeRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -52,14 +49,16 @@ public class BackofficeService implements HandlerInterceptor {
 
     public Integer countVisitor() {
         List<Visitor> visitorList = backofficeRepository.findAll();
-        Integer visitCount = visitorList.size();
-        return visitCount;
+        return visitorList.size();
     }
 
-    public Integer countOrder() {
-        List<Order> orderList = orderRepository.findAll();
-        Integer orderCount = orderList.size();
-        return orderCount;
+    public Long countOrder() {
+        List<User> userList = userRepository.findAll();
+        Long totalOrderCount = 0L;
+        for (User user : userList) {
+            totalOrderCount += user.getOrderCount();
+        }
+        return totalOrderCount;
     }
 
     public ResponseEntity<List<UserResponseDto>> getUserList() {

@@ -9,6 +9,8 @@ import com.sparta.quizdemo.cart.repository.CartRepository;
 import com.sparta.quizdemo.cart.service.CartServiceImpl;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.option.entity.Option;
+import com.sparta.quizdemo.option.repository.OptionRepository;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
 import com.sparta.quizdemo.order.entity.Order;
@@ -43,6 +45,7 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final OptionRepository optionRepository;
     private final CartServiceImpl cartService;
 
     public ResponseEntity<ApiResponseDto> createOrder(OrderRequestDto orderRequestDto, User user) {
@@ -116,7 +119,17 @@ public class OrderService {
 
             if (cartItemList != null) {
                 for (CartItem cartItem : cartItemList) {
-                    OrderItem orderItem = new OrderItem(cartItem, order);
+                    List<Long> optionChoiceNo = new ArrayList<>();
+                    for (Option option : cartItem.getOptionList()) {
+                        optionChoiceNo.add(option.getId());
+                    }
+
+                    List<Option> options = new ArrayList<>();
+                    for (Long optionNo : optionChoiceNo) {
+                        options.add(optionRepository.findById(optionNo).orElseThrow(() -> new NullPointerException("존재하지 않는 옵션 번호입니다.")));
+                    }
+
+                    OrderItem orderItem = new OrderItem(cartItem, order, options);
                     orderItemRepository.save(orderItem);
                     cartItemRepository.delete(cartItem);
                 }
@@ -177,6 +190,8 @@ public class OrderService {
                         tempOrderCount = tempOrderCount + orderItem.getQuantity();
                         orderItem.getProduct().setOrderCount(tempOrderCount);
                     }
+                    Long tempOrderCount = order.getUser().getOrderCount();
+                    order.getUser().setOrderCount(tempOrderCount + 1);
                     orderRepository.delete(order);
                 }
             }

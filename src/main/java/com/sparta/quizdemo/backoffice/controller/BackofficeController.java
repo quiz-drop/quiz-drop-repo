@@ -39,7 +39,7 @@ public class BackofficeController {
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/countorder")
-    public Integer countOrder() { return backofficeService.countOrder(); }
+    public Long countOrder() { return backofficeService.countOrder(); }
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/userlist")

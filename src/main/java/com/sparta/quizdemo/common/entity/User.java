@@ -32,6 +32,9 @@ public class User extends TimeStamped {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Column
+    private Long orderCount;
+
 //
 //    @Column(nullable = false, unique = true)
 //    private String email;

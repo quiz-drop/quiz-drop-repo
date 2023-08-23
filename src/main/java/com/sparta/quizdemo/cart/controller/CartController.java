@@ -9,6 +9,7 @@ import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,18 +31,21 @@ public class CartController {
     }
 
     // 카트에 상품 담기
+    @Transactional
     @PostMapping("/cart/{productNo}")
     public ResponseEntity<ApiResponseDto> takeItem(@PathVariable Long productNo, @RequestBody CartItemRequestDto cartItemRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return cartService.takeItem(productNo, cartItemRequestDto, userDetails.getUser());
     }
 
     // 카트 상품 개수 수정
+    @Transactional
     @PutMapping("/cartitem/{cartItemNo}")
     public ResponseEntity<CartResponseDto> updateCartItem(@PathVariable Long cartItemNo, @RequestBody CartItemRequestDto cartItemRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return cartService.updateCartItem(cartItemNo, cartItemRequestDto, userDetails.getUser());
     }
 
     // 카트에서 상품 빼기
+    @Transactional
     @DeleteMapping("/cart/{cartItemNo}")
     public ResponseEntity<ApiResponseDto> deleteItem(@PathVariable Long cartItemNo, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return cartService.deleteItem(cartItemNo, userDetails.getUser());
