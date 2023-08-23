@@ -1,6 +1,6 @@
-package com.sparta.quizdemo.product.dto;
+package com.sparta.quizdemo.option.dto;
 
-import com.sparta.quizdemo.product.entity.Option;
+import com.sparta.quizdemo.option.entity.Option;
 import lombok.Getter;
 
 @Getter

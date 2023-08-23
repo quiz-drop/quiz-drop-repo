@@ -1,8 +1,6 @@
 package com.sparta.quizdemo.cart.repository;
 
 import com.sparta.quizdemo.cart.entity.CartItem;
-import com.sparta.quizdemo.common.entity.User;
-import com.sparta.quizdemo.product.entity.Option;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

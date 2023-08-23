@@ -1,8 +1,8 @@
-package com.sparta.quizdemo.product.entity;
+package com.sparta.quizdemo.option.entity;
 
 import com.sparta.quizdemo.cart.entity.CartItem;
+import com.sparta.quizdemo.option.dto.OptionRequestDto;
 import com.sparta.quizdemo.order.entity.OrderItem;
-import com.sparta.quizdemo.product.dto.OptionRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

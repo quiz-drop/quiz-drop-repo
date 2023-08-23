@@ -1,14 +1,11 @@
 package com.sparta.quizdemo.cart.entity;
 
-import com.sparta.quizdemo.cart.dto.CartItemRequestDto;
-import com.sparta.quizdemo.product.entity.Option;
+import com.sparta.quizdemo.option.entity.Option;
 import com.sparta.quizdemo.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
