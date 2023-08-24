@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.product.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
@@ -11,6 +12,7 @@ public class ProductRequestDto {
     @NotBlank(message = "필수 입력 값입니다.")
     private Long productPrice;
 
+    @JsonIgnore
     private String productImage;
 
     @NotBlank(message = "필수 입력 값입니다.")
@@ -19,6 +21,7 @@ public class ProductRequestDto {
     @NotBlank(message = "필수 입력 값입니다.")
     private Long cookingTime;
 
+    @JsonIgnore
     private Long orderCount = 0L;
 
     @NotBlank(message = "필수 입력 값입니다.")

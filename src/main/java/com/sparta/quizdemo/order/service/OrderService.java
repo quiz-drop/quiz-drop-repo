@@ -19,6 +19,7 @@ import com.sparta.quizdemo.order.repository.OrderItemRepository;
 import com.sparta.quizdemo.order.repository.OrderRepository;
 import com.sparta.quizdemo.user.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -82,6 +84,7 @@ public class OrderService {
         lat2 = Double.parseDouble(xyMap.get("y")); // 위도
         lon2 = Double.parseDouble(xyMap.get("x")); // 경도
         city = xyMap.get("z").substring(1);
+        log.info(xyMap.get("z"));
 
         switch (city) {
             case "서울": distance = distance(37.330689, 126.593066, lat2, lon2);
@@ -114,7 +117,7 @@ public class OrderService {
 
         if (orderRequestDto.getPayment().equals(totalPrice)) {
             // 현재 유저의 order 생성
-            Order order = new Order(user, totalPrice, completeTime, orderRequestDto.getRequest());
+            Order order = new Order(user, totalPrice, completeTime, orderRequestDto.getRequest(), orderRequestDto.getOrderComplete());
             orderRepository.save(order);
 
             if (cartItemList != null) {
@@ -141,15 +144,33 @@ public class OrderService {
         }
     }
 
-    public ResponseEntity<List<OrderResponseDto>> getOrderList() {
+    public ResponseEntity<List<OrderResponseDto>> getDoneOrderList() {
         List<Order> orderList = orderRepository.findAll();
         if (orderList.isEmpty()) {
             throw new NullPointerException("주문이 없습니다.");
         } else {
             List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
             for (Order order : orderList) {
-                OrderResponseDto orderResponseDto = new OrderResponseDto(order);
-                orderResponseDtoList.add(orderResponseDto);
+                if (order.getOrderComplete()) {
+                    OrderResponseDto orderResponseDto = new OrderResponseDto(order);
+                    orderResponseDtoList.add(orderResponseDto);
+                }
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(orderResponseDtoList);
+        }
+    }
+
+    public ResponseEntity<List<OrderResponseDto>> getReadyOrderList() {
+        List<Order> orderList = orderRepository.findAll();
+        if (orderList.isEmpty()) {
+            throw new NullPointerException("주문이 없습니다.");
+        } else {
+            List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
+            for (Order order : orderList) {
+                if (!order.getOrderComplete()) {
+                    OrderResponseDto orderResponseDto = new OrderResponseDto(order);
+                    orderResponseDtoList.add(orderResponseDto);
+                }
             }
             return ResponseEntity.status(HttpStatus.OK).body(orderResponseDtoList);
         }
@@ -192,7 +213,7 @@ public class OrderService {
                     }
                     Long tempOrderCount = order.getUser().getOrderCount();
                     order.getUser().setOrderCount(tempOrderCount + 1);
-                    orderRepository.delete(order);
+                    order.setOrderComplete(true);
                 }
             }
         }
