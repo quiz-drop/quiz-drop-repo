@@ -10,48 +10,61 @@
 <div id="chatRoom" class="chatRoom">
     <!-- Chat room list will be dynamically generated here -->
 </div>
+
+<!-- 버튼을 추가하고 클릭 이벤트 핸들러를 연결 -->
+<button id="createChatRoomButton">Create and Enter Chat Room</button>
+
 <script>
     let token = Cookies.get('Authorization');
     const payloads = JSON.parse(atob(token.split(".")[1]));
-    const userAuth = payloads.sub;
+    const username = payloads.sub;
 
-    // Function to load chat rooms
-    function loadChatRooms() {
+    $('#createChatRoomButton').click(function () {
         $.ajax({
-            url: `/api/chat/rooms/${userAuth}`,
-            method: 'GET',
+            url: '/api/chat/createAndEnterChatRoom',
+            method: 'POST',
+            dataType: 'json',
             success: function (response) {
-                if (response.length === 0) {
-                    alert("No chat rooms found");
-                } else {
-                    // Clear the chat room list
-                    $('#chatRoom').empty();
+                var roomId = response.roomId;
+                alert("success!!, roomid = " + roomId)
 
-                    // Loop through the chat rooms and create links
-                    response.forEach(function (room) {
-                        const roomId = room.id; // Assuming each chat room has an ID
-                        const roomName = room.name; // Assuming each chat room has a name
-                        const chatRoomLink = $('<a>', {
-                            text: roomName,
-                            href: `/api/users/chat?roomId=${roomId}`,
-                            class: 'userChatRoom',
-                        });
-
-                        chatRoomLink.appendTo($('#chatRoom'));
-                    });
-                }
+                // Redirect to chatting.html with username and roomId as parameters
+                window.location.href = '/chatting?username=' + username + '&roomId=' + roomId;
             },
             error: function (xhr, status, error) {
-                alert("Failed to load chat rooms");
+                alert("Failed to create and enter chat room");
                 console.log(xhr);
             }
         });
-    }
+    });
+
 
     // Call the function to load chat rooms on page load
     $(document).ready(function () {
         loadChatRooms();
     });
+
+    // 클릭 이벤트 핸들러를 추가하여 버튼 클릭 시 엔드포인트로 POST 요청을 보냄
+    // $('#createChatRoomButton').click(function () {
+    //     $.ajax({
+    //         url: '/api/chat/createAndEnterChatRoom',
+    //         method: 'POST',
+    //         dataType: 'json', // JSON 형식으로 응답 데이터를 파싱
+    //         success: function (response) {
+    //             // roomId 변수 추가
+    //             var roomId = response.roomId;
+    //             console.log("success!!, roomid = " + roomId)
+    //
+    //             // chatting.html로 이동하면서 정보를 URL에 추가
+    //             window.location.href = '/chatting?username=' + username + '&roomId=' + roomId;
+    //         },
+    //         error: function (xhr, status, error) {
+    //             alert("Failed to create and enter chat room");
+    //             console.log(xhr);
+    //         }
+    //     });
+    // });
+
 </script>
 </body>
 </html>

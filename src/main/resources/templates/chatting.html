@@ -72,77 +72,73 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
     $(document).ready(function () {
-        // 초기 설정 코드가 필요한 경우 여기에 추가합니다.
-    });
+        // Parse URL parameters to get username and roomId
+        var urlSearch = new URLSearchParams(location.search);
+        var username = urlSearch.get('username');
+        var roomId = urlSearch.get('roomId');
 
-    var roomNumber;
+        console.log(username)
+        console.log(roomId)
 
-    // 채팅 방 정보를 서버에서 로드합니다.
-    urlSearch = new URLSearchParams(location.search);
-    userName = urlSearch.get('number');
+        var stompClient; // 웹소켓 클라이언트 객체
 
-    $.ajax({
-        url: `/api/chat/posts/${userName}`,
-        method: 'GET',
-        success: function (response) {
-            roomNumber = response['roomName'];
+        // WebSocket 연결을 설정합니다.
+        connectWebSocket(username, roomId);
 
-            // 방 정보를 로드한 후 WebSocket 연결을 수행합니다.
-            connectWebSocket();
-        },
-        error: function (xhr, status, error) {
-            alert("채팅 방 정보를 로드하는 데 실패했습니다.");
-            console.log(xhr);
-        }
-    });
-
-    // WebSocket 연결을 설정합니다.
-    function connectWebSocket() {
-        var userId = userAuth;
-
-        var socket = new SockJS("/stomp"); // 필요시 URL을 조정하세요.
-        var stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, function () {
-            sub = stompClient.subscribe(`/app/chat/room/${roomNumber}`, function (e) {
-                showMessage(JSON.parse(e.body));
-            });
+        // Enter 키 눌림 이벤트를 처리합니다.
+        $('#msg').keypress(function (e) {
+            if (e.keyCode === 13) send(); // Enter 키가 눌리면 send 함수 호출
         });
-    }
 
-    // Enter 키 눌림 이벤트를 처리합니다.
-    $('#msg').keypress(function (e) {
-        if (e.keyCode === 13) send();
-    });
+        // 받은 메시지를 표시합니다.
+        function showMessage(data) {
 
-    // 받은 메시지를 표시합니다.
-    function showMessage(data) {
-        if (data.sender === userId) {
-            $('#chatting').append("<p class='me'>" + data.sender + " : " + data.contents + "</p>");
-        } else {
-            $('#chatting').append("<p class='other'>" + data.sender + " : " + data.contents + "</p>");
+            console.log('showMessage called')
+            if (data.sender === username) {
+                $('#chatting').append("<p class='me'>" + data.sender + " : " + data.contents + "</p>");
+            } else {
+                $('#chatting').append("<p class='other'>" + data.sender + " : " + data.contents + "</p>");
+            }
         }
-    }
 
-    // 메시지를 전송합니다.
-    function send() {
-        var message = $('#msg').val();
-        if (message.trim() === "") return;
+        // 메시지를 전송합니다.
+        function send() {
+            var message = $('#msg').val();
+            if (message.trim() === "") return;
+            var data = {
+                'sender': username,
+                'contents': message,
+                'roomNumber': roomId
+            };
+            console.log('send function called');
 
-        var data = {
-            'sender': userId,
-            'contents': message,
-            'roomNumber': roomNumber
-        };
+            stompClient.send("/app/chat/message", {}, JSON.stringify(data));
 
-        stompClient.send("/app/chat/message", {}, JSON.stringify(data));
+            // 서버에 메시지 저장을 위한 코드가 필요한 경우 여기에 추가합니다.
+            // 필요하면 메시지를 저장하기 위한 AJAX 요청을 보냅니다.
 
-        // 서버에 메시지 저장을 위한 코드가 필요한 경우 여기에 추가합니다.
-        // 필요하면 메시지를 저장하기 위한 AJAX 요청을 보냅니다.
+            // 입력 필드를 지웁니다.
+            $('#msg').val('');
 
-        // 입력 필드를 지웁니다.
-        $('#msg').val('');
-    }
+            showMessage(data);
+
+        }
+
+
+        // WebSocket 연결을 설정하는 함수
+        function connectWebSocket(username, roomId) {
+            var userId = username;
+
+            var socket = new SockJS("/stomp"); // 필요시 URL을 조정하세요.
+            stompClient = Stomp.over(socket); // 웹소켓 클라이언트 초기화
+
+            stompClient.connect({}, function () {
+                sub = stompClient.subscribe(`/app/chat/room/${roomId}`, function (e) {
+                    showMessage(JSON.parse(e.body));
+                });
+            });
+        }
+    });
 </script>
 </body>
 </html>
