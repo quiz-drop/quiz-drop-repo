@@ -1,6 +1,6 @@
 package com.sparta.quizdemo.chat.service;
 
-import com.sparta.quizdemo.common.entity.ChatRoom;
+import com.sparta.quizdemo.chat.entity.ChatRoom;
 import com.sparta.quizdemo.common.entity.User;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -70,22 +70,34 @@ public class ChatRoomService {
     }
 
     /* chatRoom List */
-    public List<String> findAllRooms() {
-        return redisTemplate.execute((RedisCallback<List<String>>) connection -> {
-            List<String> chatRooms = new ArrayList<>();
+    public List<ChatRoom> findAllRooms() {
+        return redisTemplate.execute((RedisCallback<List<ChatRoom>>) connection -> {
+            List<ChatRoom> chatRooms = new ArrayList<>();
             Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(CHAT_ROOMS, ScanOptions.NONE);
             while (cursor.hasNext()) {
                 Map.Entry<Object, Object> entry = cursor.next();
-                chatRooms.add("user : " + entry.getKey().toString() + ", roomId : " + entry.getValue().toString());
+                String username = entry.getKey().toString();
+                String roomId = entry.getValue().toString();
+
+                ChatRoom chatRoom = new ChatRoom();
+                chatRoom.setUsername(username);
+                chatRoom.setRoomId(roomId);
+
+                chatRooms.add(chatRoom);
             }
             return chatRooms;
         });
+
     }
 
     /* chatRoom 단권 조회 */
-    public String findRoomByUser(String username) {
+    public ChatRoom findRoomByUser(String username) {
         String roomId = (String) redisTemplate.opsForHash().get(CHAT_ROOMS, username);
-        return roomId != null ? "user : " + username + "\nroomId : " + roomId : null;
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setRoomId(roomId);
+        chatRoom.setUsername(username);
+
+        return chatRoom;
     }
 
     /* 채팅방 나가기 */
