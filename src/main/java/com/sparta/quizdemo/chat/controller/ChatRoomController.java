@@ -1,7 +1,7 @@
 package com.sparta.quizdemo.chat.controller;
 
+import com.sparta.quizdemo.chat.entity.ChatRoom;
 import com.sparta.quizdemo.chat.service.ChatRoomService;
-import com.sparta.quizdemo.common.entity.ChatRoom;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +28,13 @@ public class ChatRoomController {
     /* 채팅방 조회 */
     @GetMapping("/rooms")
     @Secured("ROLE_ADMIN")
-    public List<String> getAllChatRooms() {
+    public List<ChatRoom> getAllChatRooms() {
         return chatRoomService.findAllRooms();
     }
 
     /* 채팅방 단권 조회 */
     @GetMapping("/rooms/{username}")
-    public String getChatRoomByUser(@PathVariable String username) {
+    public ChatRoom getChatRoomByUser(@PathVariable String username) {
         return chatRoomService.findRoomByUser(username);
     }
 
