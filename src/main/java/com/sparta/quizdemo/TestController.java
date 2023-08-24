@@ -15,4 +15,14 @@ public class TestController {
     String loginTest(){
         return "login-test";
     }
+
+    @GetMapping("/chatRoom")
+    public String getNextPage() {
+        return "chatRoom";
+    }
+
+    @GetMapping("/chatting")
+    public String getChatting() {
+        return "chatting";
+    }
 }
