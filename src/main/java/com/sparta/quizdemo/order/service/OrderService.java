@@ -149,12 +149,19 @@ public class OrderService {
         if (orderList.isEmpty()) {
             throw new NullPointerException("주문이 없습니다.");
         } else {
+            List<Order> orderDoneList = new ArrayList<>();
             List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
             for (Order order : orderList) {
                 if (order.getOrderComplete()) {
-                    OrderResponseDto orderResponseDto = new OrderResponseDto(order);
-                    orderResponseDtoList.add(orderResponseDto);
+                    orderDoneList.add(order);
                 }
+                if (orderDoneList.size()>100) {
+                    orderRepository.delete(orderDoneList.remove(0));
+                }
+            }
+            for (Order order1 : orderDoneList) {
+                OrderResponseDto orderResponseDto = new OrderResponseDto(order1);
+                orderResponseDtoList.add(orderResponseDto);
             }
             return ResponseEntity.status(HttpStatus.OK).body(orderResponseDtoList);
         }
@@ -181,9 +188,18 @@ public class OrderService {
         if (orderList.isEmpty()) {
             throw new NullPointerException("주문이 없습니다.");
         } else {
+            List<Order> orderDoneList = new ArrayList<>();
             List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
             for (Order order : orderList) {
-                OrderResponseDto orderResponseDto = new OrderResponseDto(order);
+                if (order.getOrderComplete()) {
+                    orderDoneList.add(order);
+                }
+                if (orderDoneList.size()>10) {
+                    orderRepository.delete(orderDoneList.remove(0));
+                }
+            }
+            for (Order order1 : orderDoneList) {
+                OrderResponseDto orderResponseDto = new OrderResponseDto(order1);
                 orderResponseDtoList.add(orderResponseDto);
             }
             return ResponseEntity.status(HttpStatus.OK).body(orderResponseDtoList);
