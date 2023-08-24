@@ -15,6 +15,7 @@ public class UserResponseDto {
     private String zip_code;
     private String address1;
     private String address2;
+    private Long orderCount;
     private List<OrderResponseDto> orderList;
 
     public UserResponseDto(User user) {
@@ -24,6 +25,7 @@ public class UserResponseDto {
         this.zip_code = user.getAddress().getZip_code();
         this.address1 = user.getAddress().getAddress1();
         this.address2 = user.getAddress().getAddress2();
+        this.orderCount = user.getOrderCount();
         this.orderList = user.getOrder().stream().map(OrderResponseDto::new).collect(Collectors.toList());
     }
 }
