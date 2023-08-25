@@ -9,8 +9,6 @@ import com.sparta.quizdemo.cart.repository.CartRepository;
 import com.sparta.quizdemo.cart.service.CartServiceImpl;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.User;
-import com.sparta.quizdemo.option.entity.Option;
-import com.sparta.quizdemo.option.repository.OptionRepository;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
 import com.sparta.quizdemo.order.entity.Order;
@@ -47,7 +45,6 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final OptionRepository optionRepository;
     private final CartServiceImpl cartService;
 
     public ResponseEntity<ApiResponseDto> createOrder(OrderRequestDto orderRequestDto, User user) {
@@ -120,19 +117,14 @@ public class OrderService {
             Order order = new Order(user, totalPrice, completeTime, orderRequestDto.getRequest(), orderRequestDto.getOrderComplete());
             orderRepository.save(order);
 
+            List<Order> userOrderList = orderRepository.findAllByUserIdOrderByCreatedAtAsc(user.getId());
+            if (userOrderList.size() > 10) {
+                orderRepository.delete(userOrderList.remove(0));
+            }
+
             if (cartItemList != null) {
                 for (CartItem cartItem : cartItemList) {
-                    List<Long> optionChoiceNo = new ArrayList<>();
-                    for (Option option : cartItem.getOptionList()) {
-                        optionChoiceNo.add(option.getId());
-                    }
-
-                    List<Option> options = new ArrayList<>();
-                    for (Long optionNo : optionChoiceNo) {
-                        options.add(optionRepository.findById(optionNo).orElseThrow(() -> new NullPointerException("존재하지 않는 옵션 번호입니다.")));
-                    }
-
-                    OrderItem orderItem = new OrderItem(cartItem, order, options);
+                    OrderItem orderItem = new OrderItem(cartItem, order, cartItem.getOptionList());
                     orderItemRepository.save(orderItem);
                     cartItemRepository.delete(cartItem);
                 }
@@ -145,23 +137,16 @@ public class OrderService {
     }
 
     public ResponseEntity<List<OrderResponseDto>> getDoneOrderList() {
-        List<Order> orderList = orderRepository.findAll();
+        List<Order> orderList = orderRepository.findAllByOrderByCreatedAtDesc();
         if (orderList.isEmpty()) {
             throw new NullPointerException("주문이 없습니다.");
         } else {
-            List<Order> orderDoneList = new ArrayList<>();
             List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
             for (Order order : orderList) {
                 if (order.getOrderComplete()) {
-                    orderDoneList.add(order);
+                    OrderResponseDto orderResponseDto = new OrderResponseDto(order);
+                    orderResponseDtoList.add(orderResponseDto);
                 }
-                if (orderDoneList.size()>100) {
-                    orderRepository.delete(orderDoneList.remove(0));
-                }
-            }
-            for (Order order1 : orderDoneList) {
-                OrderResponseDto orderResponseDto = new OrderResponseDto(order1);
-                orderResponseDtoList.add(orderResponseDto);
             }
             return ResponseEntity.status(HttpStatus.OK).body(orderResponseDtoList);
         }
@@ -184,22 +169,13 @@ public class OrderService {
     }
 
     public ResponseEntity<List<OrderResponseDto>> getMyOrders(User user) {
-        List<Order> orderList = orderRepository.findAllByUserId(user.getId());
+        List<Order> orderList = orderRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
         if (orderList.isEmpty()) {
             throw new NullPointerException("주문이 없습니다.");
         } else {
-            List<Order> orderDoneList = new ArrayList<>();
             List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
             for (Order order : orderList) {
-                if (order.getOrderComplete()) {
-                    orderDoneList.add(order);
-                }
-                if (orderDoneList.size()>10) {
-                    orderRepository.delete(orderDoneList.remove(0));
-                }
-            }
-            for (Order order1 : orderDoneList) {
-                OrderResponseDto orderResponseDto = new OrderResponseDto(order1);
+                OrderResponseDto orderResponseDto = new OrderResponseDto(order);
                 orderResponseDtoList.add(orderResponseDto);
             }
             return ResponseEntity.status(HttpStatus.OK).body(orderResponseDtoList);
@@ -209,10 +185,14 @@ public class OrderService {
     public ResponseEntity<ApiResponseDto> cancelOrder(Long orderNo, User user) {
         Order order = orderRepository.findById(orderNo).orElseThrow(() -> new NullPointerException("존재하지 않는 주문 번호입니다."));
         if (user.getId().equals(order.getUser().getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
-            orderRepository.delete(order);
-            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("주문이 취소 되었습니다.", HttpStatus.OK.value()));
+            if (order.getOrderComplete()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto("이미 완료된 주문입니다.", HttpStatus.BAD_REQUEST.value()));
+            } else {
+                orderRepository.delete(order);
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("주문이 취소 되었습니다.", HttpStatus.OK.value()));
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponseDto("해당 주문에 대한 권한이 없습니다.", HttpStatus.BAD_GATEWAY.value()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto("해당 주문에 대한 권한이 없습니다.", HttpStatus.BAD_REQUEST.value()));
         }
     }
 
@@ -230,6 +210,17 @@ public class OrderService {
                     Long tempOrderCount = order.getUser().getOrderCount();
                     order.getUser().setOrderCount(tempOrderCount + 1);
                     order.setOrderComplete(true);
+
+                    List<Order> totalOrderList = orderRepository.findAllByOrderByCreatedAtAsc();
+                    List<Order> completedOrderList = new ArrayList<>();
+                    for (Order order2 : totalOrderList) {
+                        if (order2.getOrderComplete()) {
+                            completedOrderList.add(order2);
+                            if (completedOrderList.size() > 100) {
+                                orderRepository.delete(completedOrderList.remove(0));
+                            }
+                        }
+                    }
                 }
             }
         }
