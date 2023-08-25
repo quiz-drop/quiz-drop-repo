@@ -11,6 +11,16 @@ public class TestController {
         return "login-test";
     }
 
+    @GetMapping("/chatRoom")
+    public String getNextPage() {
+        return "chatRoom";
+    }
+
+    @GetMapping("/chatting")
+    public String getChatting() {
+        return "chatting";
+    }
+
 
     @GetMapping("/mail-test")
     String mailTest(){

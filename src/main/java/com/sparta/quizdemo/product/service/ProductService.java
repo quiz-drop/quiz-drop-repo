@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.product.service;
 
+import com.sparta.quizdemo.backoffice.dto.KeywordRequestDto;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import com.sparta.quizdemo.product.dto.ProductResponseDto;
@@ -18,6 +19,12 @@ public interface ProductService {
      * 상품 목록 조회 API
      */
     ResponseEntity<List<ProductResponseDto>> getProducts();
+
+    /**
+     * 키워드로 상품 검색 API
+     * @param keyword 검색한 키워드
+     */
+    ResponseEntity<List<ProductResponseDto>> findProduct(String keyword);
 
     /**
      * 상품 단건 조회 API

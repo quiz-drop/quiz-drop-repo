@@ -8,6 +8,11 @@ import com.sparta.quizdemo.order.entity.Order;
 import com.sparta.quizdemo.order.repository.OrderRepository;
 import com.sparta.quizdemo.user.repository.UserRepository;
 import com.sparta.quizdemo.user.dto.UserResponseDto;
+import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.UserRepository;
+import com.sparta.quizdemo.user.UserRequestDto;
+import com.sparta.quizdemo.user.UserResponseDto;
+import com.sparta.quizdemo.user.UserRoleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +21,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -29,8 +35,8 @@ import java.util.Set;
 public class BackofficeService implements HandlerInterceptor {
 
     private final UserRepository userRepository;
-    private final OrderRepository orderRepository;
     private final BackofficeRepository backofficeRepository;
+    private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
 
     public ResponseEntity<List<Visitor>> getVisitors() {
@@ -38,16 +44,30 @@ public class BackofficeService implements HandlerInterceptor {
         return ResponseEntity.status(HttpStatus.OK).body(visitorList);
     }
 
-    public Integer countVisitor() {
+    public ResponseEntity<List<Visitor>> findVisitor(String keyword) {
         List<Visitor> visitorList = backofficeRepository.findAll();
-        Integer visitCount = visitorList.size();
-        return visitCount;
+        List<Visitor> findingList = new ArrayList<>();
+
+        for (Visitor visitor : visitorList) {
+            if (visitor.getVisitorIP().contains(keyword)) {
+                findingList.add(visitor);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(findingList);
     }
 
-    public Integer countOrder() {
-        List<Order> orderList = orderRepository.findAll();
-        Integer orderCount = orderList.size();
-        return orderCount;
+    public Integer countVisitor() {
+        List<Visitor> visitorList = backofficeRepository.findAll();
+        return visitorList.size();
+    }
+
+    public Long countOrder() {
+        List<User> userList = userRepository.findAll();
+        Long totalOrderCount = 0L;
+        for (User user : userList) {
+            totalOrderCount += user.getOrderCount();
+        }
+        return totalOrderCount;
     }
 
     public ResponseEntity<List<UserResponseDto>> getUserList() {
@@ -61,30 +81,65 @@ public class BackofficeService implements HandlerInterceptor {
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDtoList);
     }
 
-    public ResponseEntity<ApiResponseDto> deleteOneUser(Long userNo) {
-        User user = userRepository.findById(userNo).orElseThrow(() -> new NullPointerException("해당 번호의 유저가 존재하지 않습니다."));
-        userRepository.delete(user);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("해당 번호의 유저를 탈퇴시켰습니다.", HttpStatus.OK.value()));
+    public ResponseEntity<List<UserResponseDto>> findOneUser(String keyword) {
+        List<User> userList = userRepository.findAll();
+        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
+
+        for (User user : userList) {
+            if (user.getUsername().contains(keyword)) {
+                userResponseDtoList.add(new UserResponseDto(user));
+            }
+
+            if (user.getNickname().contains(keyword)) {
+                userResponseDtoList.add(new UserResponseDto(user));
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDtoList);
+    }
+
+    public ResponseEntity<UserResponseDto> updateOneUSer(String userName, UserRequestDto userRequestDto) {
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new NullPointerException("해당 ID의 유저가 존재하지 않습니다."));
+
+        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new IllegalArgumentException("관리자 권한을 가진 유저입니다.");
+        } else {
+            String newPassword = passwordEncoder.encode(userRequestDto.getNewPassword());
+            user.update(userRequestDto, newPassword);
+            userRepository.save(user);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new UserResponseDto(user));
+        }
+    }
+
+    public ResponseEntity<ApiResponseDto> deleteOneUser(String userName) {
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new NullPointerException("해당 ID의 유저가 존재하지 않습니다."));
+
+        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new IllegalArgumentException("관리자 권한을 가진 유저입니다.");
+        } else {
+            userRepository.delete(user);
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("해당 ID의 유저를 탈퇴시켰습니다.", HttpStatus.OK.value()));
+        }
     }
 
     // 방문자 정보를 가져오기 위한 인터셉터 설정
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String visitorIP = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
         String today = LocalDate.now().toString();
         String key = visitorIP + "_" + today;
 
-        ValueOperations valueOperations = redisTemplate.opsForValue();
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
-        if (!valueOperations.getOperations().hasKey(key)) {
+        if (Boolean.FALSE.equals(valueOperations.getOperations().hasKey(key))) {
             valueOperations.set(key, userAgent);
         }
 
         return true;
     }
 
-    // nginx 나 프록시를 사용할 경우 ip 주소를 127.0.0.1 로 가져오는 것을 방지
+    // nginx 나 프록시를 사용하는 방문자의 경우 ip 주소를 127.0.0.1 로 가져오는 것을 방지
     public String getIp(HttpServletRequest request){
         String ip = request.getHeader("X-Forwarded-For");
 

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        .container{
+            width: 500px;
+            margin: 0 auto;
+            padding: 25px
+        }
+        .container h1{
+            text-align: left;
+            padding: 5px 5px 5px 5px;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .chatting{
+            border : 1px solid gray;
+            width: 700px;
+            height: 700px;
+            overflow: auto;
+        }
+        .chatting p{
+            text-align: left;
+        }
+        input{
+            width: 450px;
+            height: 50px;
+        }
+
+        th{
+            width : 100px;
+        }
+        #yourMsg{
+            width: 700px;
+        }
+        .me{
+            color: blue;
+        }
+
+        .other{
+            color: red;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+</head>
+<body>
+<div class="container" id="container">
+    <h1 id="title_room">채팅방제목</h1>
+    <div id="chatting" class="chatting">
+        <!-- 채팅 메시지가 여기에 표시됩니다. -->
+    </div>
+    <div id="yourMsg">
+        <table class="inputTable">
+            <tr>
+                <th>메시지</th>
+                <th><input id="msg" placeholder="보내실 메시지를 입력하세요."></th>
+                <th><button onclick="send()" id="sendBtn">보내기</button></th>
+            </tr>
+        </table>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Parse URL parameters to get username and roomId
+        var urlSearch = new URLSearchParams(location.search);
+        var username = urlSearch.get('username');
+        var roomId = urlSearch.get('roomId');
+
+        console.log(username)
+        console.log(roomId)
+
+        var stompClient; // 웹소켓 클라이언트 객체
+
+        // WebSocket 연결을 설정합니다.
+        connectWebSocket(username, roomId);
+
+        // Enter 키 눌림 이벤트를 처리합니다.
+        $('#msg').keypress(function (e) {
+            if (e.keyCode === 13) send(); // Enter 키가 눌리면 send 함수 호출
+        });
+
+        // 받은 메시지를 표시합니다.
+        function showMessage(data) {
+
+            console.log('showMessage called')
+            if (data.sender === username) {
+                $('#chatting').append("<p class='me'>" + data.sender + " : " + data.contents + "</p>");
+            } else {
+                $('#chatting').append("<p class='other'>" + data.sender + " : " + data.contents + "</p>");
+            }
+        }
+
+        // 메시지를 전송합니다.
+        function send() {
+            var message = $('#msg').val();
+            if (message.trim() === "") return;
+            var data = {
+                'sender': username,
+                'contents': message,
+                'roomNumber': roomId
+            };
+            console.log('send function called');
+
+            stompClient.send("/app/chat/message", {}, JSON.stringify(data));
+
+            // 서버에 메시지 저장을 위한 코드가 필요한 경우 여기에 추가합니다.
+            // 필요하면 메시지를 저장하기 위한 AJAX 요청을 보냅니다.
+
+            // 입력 필드를 지웁니다.
+            $('#msg').val('');
+
+            showMessage(data);
+
+        }
+
+
+        // WebSocket 연결을 설정하는 함수
+        function connectWebSocket(username, roomId) {
+            var userId = username;
+
+            var socket = new SockJS("/stomp"); // 필요시 URL을 조정하세요.
+            stompClient = Stomp.over(socket); // 웹소켓 클라이언트 초기화
+
+            stompClient.connect({}, function () {
+                sub = stompClient.subscribe(`/app/chat/room/${roomId}`, function (e) {
+                    showMessage(JSON.parse(e.body));
+                });
+            });
+        }
+    });
+</script>
+</body>
+</html>

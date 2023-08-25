@@ -33,10 +33,10 @@ public class OrderItem {
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.REMOVE)
     private List<Option> optionList = new ArrayList<>();
 
-    public OrderItem(CartItem cartItem, Order order) {
+    public OrderItem(CartItem cartItem, Order order, List<Option> options) {
         this.quantity = cartItem.getQuantity();
         this.order = order;
         this.product = cartItem.getProduct();
-        this.optionList = cartItem.getOptionList();
+        this.optionList = options;
     }
 }

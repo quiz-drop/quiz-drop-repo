@@ -5,6 +5,7 @@ import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.user.dto.SignupRequestDto;
 import com.sparta.quizdemo.user.dto.UserRequestDto;
 import com.sparta.quizdemo.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class UserController {
     }
 
     //회원가입
+    @Operation(summary = "회원가입")
     @PostMapping("/user/signup")
     public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
@@ -43,6 +45,7 @@ public class UserController {
     }
 
     //정보 수정
+    @Operation(summary = "유저 정보 수정")
     @PutMapping("/user/info")
     public ResponseEntity<ApiResponseDto> updateUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -52,6 +55,7 @@ public class UserController {
     }
 
     // 회원 탈퇴
+    @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/user/info")
     public void deleteUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails,

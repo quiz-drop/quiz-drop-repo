@@ -13,6 +13,7 @@ import com.sparta.quizdemo.option.repository.OptionRepository;
 import com.sparta.quizdemo.product.entity.Product;
 import com.sparta.quizdemo.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService{
@@ -80,7 +82,12 @@ public class CartServiceImpl implements CartService{
 
         if (cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId()).isPresent()) {
             CartItem cartItem = cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId()).orElseThrow();
-            if (cartItem.getOptionList().equals(options)) {
+            List<Long> optionChoiceNo = new ArrayList<>();
+            for (Option option : cartItem.getOptionList()) {
+                optionChoiceNo.add(option.getId());
+            }
+
+            if (cartItemRequestDto.getOptionList().equals(optionChoiceNo)) {
                 Integer tempQuantity = cartItem.getQuantity();
                 cartItem.setQuantity(tempQuantity + cartItemRequestDto.getQuantity());
                 cartItemRepository.save(cartItem);

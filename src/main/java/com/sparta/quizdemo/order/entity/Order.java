@@ -5,6 +5,7 @@ import com.sparta.quizdemo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,6 +29,10 @@ public class Order extends TimeStamped {
     @Column(name = "request")
     private String request;
 
+    @Setter
+    @Column(name = "orderComplete")
+    private Boolean orderComplete;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private User user;
@@ -35,10 +40,11 @@ public class Order extends TimeStamped {
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     private List<OrderItem> orderItemList = new ArrayList<>();
 
-    public Order(User user, Long totalPrice, LocalDateTime completeTime, String request) {
+    public Order(User user, Long totalPrice, LocalDateTime completeTime, String request, Boolean orderComplete) {
         this.user = user;
         this.totalPrice = totalPrice;
         this.completeTime = completeTime;
         this.request = request;
+        this.orderComplete = orderComplete;
     }
 }

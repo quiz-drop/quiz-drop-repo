@@ -8,6 +8,7 @@ import com.sparta.quizdemo.common.util.JwtUtil;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -66,12 +67,15 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
+                        .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers("/app/chat/**").permitAll()
+                        .requestMatchers("/chatRoom", "/chatting").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/product").permitAll()
                         .requestMatchers("/login-test","/mail-test","/api/mail","/api/auth/**","/api/user/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
-
-
 
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);

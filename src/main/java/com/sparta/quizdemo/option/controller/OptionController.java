@@ -4,6 +4,7 @@ import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.option.dto.OptionRequestDto;
 import com.sparta.quizdemo.option.dto.OptionResponseDto;
 import com.sparta.quizdemo.option.service.OptionService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -18,7 +19,7 @@ import java.util.List;
 public class OptionController {
     private final OptionService optionService;
 
-    // 옵션 생성
+    @Operation(summary = "옵션 생성", description = "관리자 제한. 새로운 상품을 생성합니다.")
     @Transactional
     @Secured("ROLE_ADMIN")
     @PostMapping("/product/option")
@@ -26,13 +27,13 @@ public class OptionController {
         return optionService.createOption(optionRequestDto);
     }
 
-    // 카테고리별 옵션 목록 조회
+    @Operation(summary = "카테고리별 옵션 목록 조회")
     @GetMapping("/product/options/{categoryName}")
     public ResponseEntity<List<OptionResponseDto>> getOptions(@PathVariable String categoryName) {
         return optionService.getOptions(categoryName);
     }
 
-    // 옵션 수정
+    @Operation(summary = "옵션 수정", description = "관리자 제한")
     @Transactional
     @Secured("ROLE_ADMIN")
     @PutMapping("/product/option/{optionNo}")
@@ -40,7 +41,7 @@ public class OptionController {
         return optionService.updateOption(optionNo, optionRequestDto);
     }
 
-    // 옵션 삭제
+    @Operation(summary = "옵션 삭제", description = "관리자 제한")
     @Transactional
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/product/option/{optionNo}")

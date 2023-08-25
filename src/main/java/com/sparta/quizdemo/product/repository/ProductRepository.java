@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.product.repository;
 
+import com.sparta.quizdemo.product.dto.ProductResponseDto;
 import com.sparta.quizdemo.product.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findByProductName(String productName);
 
     List<Product> findAllByOrderByCreatedAtAsc();
+
+    List<Product> findAllByCategoryOrderByOrderCountDesc(String category);
 }
