@@ -32,6 +32,8 @@ public class User extends TimeStamped {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Column
+    private Long orderCount;
 
     @Column(nullable = true)
     private String socialId;
@@ -67,6 +69,7 @@ public class User extends TimeStamped {
         this.nickname = requestDto.getNickname();
         //this.email = requestDto.getEmail();
         this.role = role;
+        this.orderCount = requestDto.getOrderCount();
     }
 
     //소셜 회원가입 생성자
