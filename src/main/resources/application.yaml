@@ -1,0 +1,11 @@
+cloud:
+  aws:
+    s3:
+      bucket: quizdropbucket
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      accessKey: AKIA6B3X3GWBJLGULIPC
+      secretKey: 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
