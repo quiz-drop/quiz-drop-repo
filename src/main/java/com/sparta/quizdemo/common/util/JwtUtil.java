@@ -1,7 +1,7 @@
 package com.sparta.quizdemo.common.util;
 
 
-import com.sparta.quizdemo.user.UserRoleEnum;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

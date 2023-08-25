@@ -1,7 +1,7 @@
 
-package com.sparta.quizdemo.user;
+package com.sparta.quizdemo.user.repository;
 
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,6 @@
-package com.sparta.quizdemo.user;
+package com.sparta.quizdemo.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;

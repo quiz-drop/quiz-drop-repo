@@ -1,12 +1,12 @@
-package com.sparta.quizdemo.auth;
+package com.sparta.quizdemo.auth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.quizdemo.common.dto.ApiResponseDto;
+import com.sparta.quizdemo.auth.service.GoogleService;
+import com.sparta.quizdemo.auth.service.KakaoService;
+import com.sparta.quizdemo.auth.service.NaverService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

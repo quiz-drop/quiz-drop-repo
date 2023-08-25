@@ -1,6 +1,6 @@
 package com.sparta.quizdemo.cart.entity;
 
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

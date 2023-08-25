@@ -4,7 +4,7 @@ import com.sparta.quizdemo.cart.dto.CartItemRequestDto;
 import com.sparta.quizdemo.cart.dto.CartResponseDto;
 import com.sparta.quizdemo.cart.entity.Cart;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.entity.User;
 import org.springframework.http.ResponseEntity;
 
 public interface CartService {

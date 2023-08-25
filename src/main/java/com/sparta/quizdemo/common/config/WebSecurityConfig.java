@@ -72,7 +72,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers("/chatRoom", "/chatting").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/product").permitAll()
-                        .requestMatchers("/login-test","/test","/api/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/login-test","/mail-test","/api/mail","/api/auth/**","/api/user/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 

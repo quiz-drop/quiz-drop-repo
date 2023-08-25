@@ -22,6 +22,8 @@ dependencies {
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
 	implementation 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'

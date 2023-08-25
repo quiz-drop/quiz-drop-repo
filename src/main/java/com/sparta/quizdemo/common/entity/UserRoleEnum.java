@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.user;
+package com.sparta.quizdemo.common.entity;
 
 public enum UserRoleEnum {
     USER(Authority.USER),  // 사용자 권한

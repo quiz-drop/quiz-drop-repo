@@ -1,7 +1,7 @@
 package com.sparta.quizdemo.common.security;
 
-import com.sparta.quizdemo.common.entity.User;
-import com.sparta.quizdemo.user.UserRoleEnum;
+import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

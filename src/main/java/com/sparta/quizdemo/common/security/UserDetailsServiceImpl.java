@@ -1,7 +1,7 @@
 package com.sparta.quizdemo.common.security;
 
-import com.sparta.quizdemo.common.entity.User;
-import com.sparta.quizdemo.user.UserRepository;
+import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
