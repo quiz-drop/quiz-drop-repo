@@ -119,7 +119,7 @@ public class BackofficeService implements HandlerInterceptor {
 
     // 방문자 정보를 가져오기 위한 인터셉터 설정
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String visitorIP = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
         String today = LocalDate.now().toString();
@@ -134,7 +134,7 @@ public class BackofficeService implements HandlerInterceptor {
         return true;
     }
 
-    // nginx 나 프록시를 사용할 경우 ip 주소를 127.0.0.1 로 가져오는 것을 방지
+    // nginx 나 프록시를 사용하는 방문자의 경우 ip 주소를 127.0.0.1 로 가져오는 것을 방지
     public String getIp(HttpServletRequest request){
         String ip = request.getHeader("X-Forwarded-For");
 
