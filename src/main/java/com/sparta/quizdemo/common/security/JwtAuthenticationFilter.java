@@ -2,8 +2,8 @@ package com.sparta.quizdemo.common.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.common.util.JwtUtil;
-import com.sparta.quizdemo.user.LoginRequestDto;
-import com.sparta.quizdemo.user.UserRoleEnum;
+import com.sparta.quizdemo.user.dto.LoginRequestDto;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

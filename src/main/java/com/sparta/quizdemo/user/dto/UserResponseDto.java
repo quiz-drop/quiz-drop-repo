@@ -1,9 +1,9 @@
-package com.sparta.quizdemo.user;
+package com.sparta.quizdemo.user.dto;
 
 import com.sparta.quizdemo.cart.entity.Cart;
-import com.sparta.quizdemo.common.entity.User;
-import com.sparta.quizdemo.order.dto.OrderItemResponseDto;
+import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import lombok.Getter;
 
 import java.util.List;
@@ -19,6 +19,7 @@ public class UserResponseDto {
     private String address2;
     private Cart cart;
     private List<OrderResponseDto> orderList;
+    //댓글 내역 조회
 
     public UserResponseDto(User user) {
         this.username = user.getUsername();

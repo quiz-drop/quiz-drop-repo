@@ -1,7 +1,7 @@
 package com.sparta.quizdemo.cart.dto;
 
 import com.sparta.quizdemo.cart.entity.Cart;
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.entity.User;
 import lombok.Getter;
 
 import java.util.List;

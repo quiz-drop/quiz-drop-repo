@@ -7,7 +7,7 @@ import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.cart.repository.CartRepository;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.option.entity.Option;
 import com.sparta.quizdemo.option.repository.OptionRepository;
 import com.sparta.quizdemo.product.entity.Product;

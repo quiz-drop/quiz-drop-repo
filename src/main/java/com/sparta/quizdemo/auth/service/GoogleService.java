@@ -1,12 +1,13 @@
-package com.sparta.quizdemo.auth;
+package com.sparta.quizdemo.auth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.auth.dto.SocialUserInfoDto;
+import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.util.JwtUtil;
-import com.sparta.quizdemo.user.UserRepository;
-import com.sparta.quizdemo.user.UserRoleEnum;
+import com.sparta.quizdemo.user.repository.UserRepository;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;

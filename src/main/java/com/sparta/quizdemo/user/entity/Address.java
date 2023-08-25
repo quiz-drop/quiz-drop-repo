@@ -1,7 +1,7 @@
-package com.sparta.quizdemo.common.entity;
+package com.sparta.quizdemo.user.entity;
 
-import com.sparta.quizdemo.user.SignupRequestDto;
-import com.sparta.quizdemo.user.UserRequestDto;
+import com.sparta.quizdemo.user.dto.SignupRequestDto;
+import com.sparta.quizdemo.user.dto.UserRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

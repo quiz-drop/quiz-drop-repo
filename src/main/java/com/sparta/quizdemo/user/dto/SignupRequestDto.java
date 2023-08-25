@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.user;
+package com.sparta.quizdemo.user.dto;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;

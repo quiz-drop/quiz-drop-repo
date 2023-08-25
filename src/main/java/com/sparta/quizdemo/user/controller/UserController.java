@@ -1,7 +1,10 @@
-package com.sparta.quizdemo.user;
+package com.sparta.quizdemo.user.controller;
 
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
+import com.sparta.quizdemo.user.dto.SignupRequestDto;
+import com.sparta.quizdemo.user.dto.UserRequestDto;
+import com.sparta.quizdemo.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

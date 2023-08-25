@@ -1,8 +1,13 @@
-package com.sparta.quizdemo.user;
+package com.sparta.quizdemo.user.service;
 
-import com.sparta.quizdemo.common.entity.Address;
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.entity.Address;
+import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.util.JwtUtil;
+import com.sparta.quizdemo.user.repository.AddressRepository;
+import com.sparta.quizdemo.user.repository.UserRepository;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
+import com.sparta.quizdemo.user.dto.SignupRequestDto;
+import com.sparta.quizdemo.user.dto.UserRequestDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

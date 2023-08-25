@@ -3,7 +3,7 @@ package com.sparta.quizdemo.backoffice.controller;
 import com.sparta.quizdemo.backoffice.entity.Visitor;
 import com.sparta.quizdemo.backoffice.service.BackofficeService;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
-import com.sparta.quizdemo.user.UserResponseDto;
+import com.sparta.quizdemo.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
