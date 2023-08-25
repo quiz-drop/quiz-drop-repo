@@ -68,6 +68,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers("/app/chat/**").permitAll()
+                        .requestMatchers("/push").permitAll()
                         .requestMatchers("/chatRoom", "/chatting").permitAll()
                         .requestMatchers("/login-test","/test","/api/auth/**","/api/user/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
