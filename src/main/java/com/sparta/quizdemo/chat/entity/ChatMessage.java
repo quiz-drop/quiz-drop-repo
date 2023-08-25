@@ -1,6 +1,6 @@
 package com.sparta.quizdemo.chat.entity;
 
-import com.sparta.quizdemo.user.UserRoleEnum;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

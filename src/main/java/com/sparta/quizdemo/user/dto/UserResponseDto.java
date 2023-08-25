@@ -1,10 +1,8 @@
 package com.sparta.quizdemo.user.dto;
 
-import com.sparta.quizdemo.cart.entity.Cart;
-import com.sparta.quizdemo.user.entity.User;
-import com.sparta.quizdemo.common.entity.User;
-import com.sparta.quizdemo.order.dto.OrderResponseDto;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
+import com.sparta.quizdemo.order.dto.OrderResponseDto;
+import com.sparta.quizdemo.user.entity.User;
 import lombok.Getter;
 
 import java.util.List;
