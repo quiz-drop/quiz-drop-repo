@@ -32,8 +32,12 @@ public class User extends TimeStamped {
     @Column(nullable = false, unique = true)
     private String nickname;
 
-    @Column
-    private Long orderCount;
+
+    @Column(nullable = true)
+    private String socialId;
+
+    @Column(nullable = true)
+    private String social;
 
 //
 //    @Column(nullable = false, unique = true)
@@ -52,10 +56,7 @@ public class User extends TimeStamped {
     @OneToMany(mappedBy = "user")
     private List<Order> order;
 
-//    public void addPostList(Post post){
-//        this.postList.add(post);
-//        post.setUser(this);
-//    }
+
 
 
 
@@ -66,11 +67,27 @@ public class User extends TimeStamped {
         this.nickname = requestDto.getNickname();
         //this.email = requestDto.getEmail();
         this.role = role;
-        this.orderCount = requestDto.getOrderCount();
+    }
+
+    //소셜 회원가입 생성자
+    public User(String username, String password, String nickname, UserRoleEnum role, String socialId, String social) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = role;
+        this.socialId = socialId;
+        this.social = social;
     }
 
     public void update(UserRequestDto requestDto, String newPassword) {
         this.nickname = requestDto.getNickname();
         this.password = newPassword;
     }
+
+    public User socialUpdate(String socialId, String social) {
+        this.socialId = socialId;
+        this.social = social;
+        return this;
+    }
+
 }
