@@ -1,6 +1,7 @@
 package com.sparta.quizdemo.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,10 +42,10 @@ public class SignupRequestDto {
      * */
     private String address2;
 
-    //to Do
-//    @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\\.[a-zA-Z]{2,3}$", message = "유효하지 않은 이메일 주소입니다.")
-//    @NotBlank
-//    private String email;
+
+    @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\\.[a-zA-Z]{2,3}$", message = "유효하지 않은 이메일 주소입니다.")
+    @NotBlank
+    private String email;
     private boolean admin = false;
     private String adminToken = "";
 
