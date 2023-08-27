@@ -168,10 +168,12 @@ String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(
                 // password: random UUID
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
-
-                String username = kakaoUserInfo.getUsername();;
-                kakaoUser = new User(username,  encodedPassword,kakaoUserInfo.getNickname(),  UserRoleEnum.USER, kakaoId, social);
+                String email = kakaoUserInfo.getEmail();
+                String username = email;
+                String nickname = email;
+                kakaoUser = new User(username,  encodedPassword, nickname, UserRoleEnum.USER, email,kakaoId, social);
             }
+            kakaoUser.setOrderCount(0L);
             userRepository.save(kakaoUser);
         }
         return kakaoUser;

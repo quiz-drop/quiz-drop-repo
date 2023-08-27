@@ -140,11 +140,13 @@ public class GoogleService {
                 String encodedPassword = passwordEncoder.encode(password);
 
                 // email: 구글 email
-                String username = googleUserInfoDto.getUsername();
-                String nickname = googleUserInfoDto.getNickname();
-                googleUser = new User(username, encodedPassword, nickname, UserRoleEnum.USER, googleId, social);
+                String email = googleUserInfoDto.getEmail();
+                String username = email;
+                String nickname = email;
+                googleUser = new User(username, encodedPassword, nickname, UserRoleEnum.USER, email, googleId, social);
             }
 
+            googleUser.setOrderCount(0L);
             userRepository.save(googleUser);
         }
 

@@ -169,13 +169,16 @@ String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(
                 String encodedPassword = passwordEncoder.encode(password);
 
                 //username으로 하기로 했음
-                String username = naverUserInfo.getUsername();
-
-                naverUser = new User(username,  encodedPassword,naverUserInfo.getNickname(),  UserRoleEnum.USER, naverId, social);
+                String email = naverUserInfo.getEmail();
+                String username = email;
+                String nickname = email;
+                naverUser = new User(username,  encodedPassword, nickname, UserRoleEnum.USER, email, naverId, social);
             }
 
+            naverUser.setOrderCount(0L);
             userRepository.save(naverUser);
         }
         return naverUser;
     }
+
 }
