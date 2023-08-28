@@ -44,12 +44,12 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
-//        // email 중복확인 to Do
-//        String email = requestDto.getEmail();
-//        Optional<User> checkEmail = userRepository.findByEmail(email);
-//        if (checkEmail.isPresent()) {
-//            throw new IllegalArgumentException("중복된 Email 입니다.");
-//        }
+        // email 중복확인 to Do
+        String email = requestDto.getEmail();
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        if (checkEmail.isPresent()) {
+            throw new IllegalArgumentException("중복된 Email 입니다.");
+        }
 
         String nickname = requestDto.getNickname();
         Optional<User> checkNickname = userRepository.findByNickname(nickname);
