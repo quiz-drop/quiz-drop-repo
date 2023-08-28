@@ -8,6 +8,7 @@ import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.cart.repository.CartRepository;
 import com.sparta.quizdemo.cart.service.CartServiceImpl;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
+import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.option.entity.Option;
 import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
@@ -192,6 +193,15 @@ public class OrderService {
         }
     }
 
+    public ResponseEntity<OrderResponseDto> getOneOrder(Long orderNo, User user) {
+        Order order = orderRepository.findById(orderNo).orElseThrow(() -> new NullPointerException("존재하지 않는 주문 번호입니다."));
+        if (user.getId().equals(order.getUser().getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
+            return ResponseEntity.status(HttpStatus.OK).body(new OrderResponseDto(order));
+        } else {
+            throw new IllegalArgumentException("해당 번호의 주문에 대한 권한이 없습니다.");
+        }
+    }
+
     public ResponseEntity<ApiResponseDto> cancelOrder(Long orderNo, User user) {
         Order order = orderRepository.findById(orderNo).orElseThrow(() -> new NullPointerException("존재하지 않는 주문 번호입니다."));
         if (user.getId().equals(order.getUser().getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
@@ -211,14 +221,14 @@ public class OrderService {
         if (!orderList.isEmpty()) {
             for (Order order : orderList) {
                 LocalDateTime localDateTime = LocalDateTime.now();
-                if (order.getCompleteTime().isBefore(localDateTime)) {
+                if (order.getCompleteTime().isBefore(localDateTime) && order.getOrderComplete().equals(false)) {
                     for (OrderItem orderItem : order.getOrderItemList()) {
-                        Long tempOrderCount = orderItem.getProduct().getOrderCount();
-                        tempOrderCount = tempOrderCount + orderItem.getQuantity();
-                        orderItem.getProduct().setOrderCount(tempOrderCount);
+                        Long tempProductOrderCount = orderItem.getProduct().getOrderCount();
+                        tempProductOrderCount = tempProductOrderCount + orderItem.getQuantity();
+                        orderItem.getProduct().setOrderCount(tempProductOrderCount);
                     }
-                    Long tempOrderCount = order.getUser().getOrderCount();
-                    order.getUser().setOrderCount(tempOrderCount + 1);
+                    Long tempUserOrderCount = order.getUser().getOrderCount();
+                    order.getUser().setOrderCount(tempUserOrderCount + 1);
                     order.setOrderComplete(true);
 
                     List<Order> totalOrderList = orderRepository.findAllByOrderByCreatedAtAsc();

@@ -40,9 +40,9 @@
 <div class="container mb-5">
     <div>
         <input id="keyword" type="text" placeholder="검색어를 입력해주세요">
-        <button onclick="searchList()">검색하기</button>
+        <button onclick="searchProduct()">검색하기</button>
     </div>
-    <div class = "col row" id = "search-list">
+    <div class = "col row" id = "search-productlist">
         <!-- 검색 결과 목록 동적 생성 -->
     </div>
     <hr class="border border-3">
@@ -153,7 +153,7 @@
             })
     }
 
-    function searchList() {
+    function searchProduct() {
         let data2 = {
             keyword: document.getElementById("keyword").value
         }
@@ -165,7 +165,7 @@
         })
             .then(response => response.json())
             .then(data => {
-                $('#search-list').empty()
+                $('#search-productlist').empty()
                 for (let i = 0; i < data.length; i++) {
                     let productName = data[i].productName;
                     let productPrice = data[i].productPrice;
@@ -192,7 +192,7 @@
                                             </div>
                                         </div>
                                      </a>`
-                    $('#search-list').append(temp_html)
+                    $('#search-productlist').append(temp_html)
                 }
             })
     }

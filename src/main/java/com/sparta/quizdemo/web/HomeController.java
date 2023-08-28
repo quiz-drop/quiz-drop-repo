@@ -59,9 +59,19 @@ public class HomeController {
         return "editProduct";
     }
 
+    @GetMapping("/order/{orderId}")
+    public String orderDetail(@PathVariable Long orderId, Model model) {
+        model.addAttribute("orderId", orderId);
+        return "detailOrder";
+    }
+
     @Secured("ROLE_ADMIN")
     @GetMapping("/admin")
-    public String backOffice() {
+    public String backOffice(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("userRole", userDetails.getUser().getRole());
+        }
         return "backOffice";
     }
 }

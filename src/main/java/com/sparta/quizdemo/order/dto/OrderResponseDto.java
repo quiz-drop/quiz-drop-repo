@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 @Getter
 public class OrderResponseDto {
-    private String username;
     private Long orderid;
+    private String username;
     private Long totalPrice;
     private String request;
     private LocalDateTime completeTime;
@@ -18,8 +18,8 @@ public class OrderResponseDto {
     private Boolean orderComplete;
 
     public OrderResponseDto(Order order) {
-        this.username = order.getUser().getUsername();
         this.orderid = order.getId();
+        this.username = order.getUser().getUsername();
         this.totalPrice = order.getTotalPrice();
         this.request = order.getRequest();
         this.completeTime = order.getCompleteTime();
