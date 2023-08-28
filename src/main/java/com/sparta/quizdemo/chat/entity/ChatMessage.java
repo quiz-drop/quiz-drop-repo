@@ -2,6 +2,7 @@ package com.sparta.quizdemo.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sparta.quizdemo.common.entity.TimeStamped;
+import com.sparta.quizdemo.common.entity.User;
 import com.sparta.quizdemo.user.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -39,6 +40,10 @@ public class ChatMessage{
     @ManyToOne
     @JoinColumn(name = "chatRoom_id")
     private ChatRoom chatRoom;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public enum MessageType {
         ENTER, TALK

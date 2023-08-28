@@ -52,7 +52,7 @@ public class ChatRoomService {
 
             log.info("user : " + username);
             log.info("ChatRoomId : " + roomId);
-            return new ChatRoom(username, roomId);
+            return new ChatRoom(user, roomId);
         } else {
             // 채팅방이 존재하지 않는 경우에만 생성
             ChatRoom chatRoom = ChatRoom.create(user);

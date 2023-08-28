@@ -29,9 +29,12 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
-    public ChatRoom(String username, String roomId) {
+    @OneToOne
+    private User user;
+
+    public ChatRoom(User user, String roomId) {
         this.roomId = roomId;
-        this.username = username;
+        this.username = user.getUsername();
     }
 
     public static ChatRoom create(User user) {
