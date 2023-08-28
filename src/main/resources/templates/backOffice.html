@@ -60,6 +60,27 @@
     </div>
     <hr class="border border-3">
 </div>
+<div class="container mb-5">
+    <h3>방문자 IP주소 검색</h3>
+    <div>
+        <input id="IPkeyword" type="text" placeholder="IP주소의 일부 또는 전체를 입력해주세요.">
+        <button onclick="searchVisitor()">검색하기</button>
+    </div>
+    <div class = "col row" id = "search-visitorlist">
+        <!-- 검색 결과 목록 동적 생성 -->
+    </div>
+    <hr class="border border-3">
+</div>
+<div class="container mb-5">
+    <h3>총 방문자 수</h3>
+    <div id="visitCount"></div>
+    <hr class="border border-3">
+    <h3>방문목록</h3>
+    <div class = "col row" id = "visitorlist">
+        <!-- 준비 중인 주문 목록 동적 생성 -->
+    </div>
+    <hr class="border border-3">
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     function searchUser() {
@@ -98,10 +119,46 @@
             })
     }
 
+    function searchVisitor() {
+        let data3 = {
+            keyword: document.getElementById("IPkeyword").value
+        }
+
+        fetch('/api/admin/visitor', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data3)
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#search-visitorlist').empty()
+                for (let i = 0; i < data.length; i++) {
+                    let visitorIP = data[i].visitorIP;
+                    let userAgent = data[i].userAgent;
+                    let date = data[i].date;
+
+                    let temp_html = `<a class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${visitorIP}</h5>
+                                                    <p class="card-text text-truncate">방문경로 : ${userAgent}</p>
+                                                    <p class="card-text text-truncate">방문날짜 : ${date}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#search-visitorlist').append(temp_html)
+                }
+            })
+    }
+
     $(document).ready(function () {
         getOrderCount();
         getReadyOrder();
         getDoneOrder();
+        getVisitCount();
+        getVisitorList();
     });
     function getOrderCount() {
         fetch('/api/admin/countorder', {
@@ -173,6 +230,47 @@
                                         </div>
                                      </a>`
                     $('#done-orderlist').append(temp_html)
+                }
+            })
+    }
+
+    function getVisitCount() {
+        fetch('/api/admin/countvisit', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#visitCount').empty()
+                $('#visitCount').append('<h5>' + data + '</h5>')
+            })
+    }
+
+    function getVisitorList() {
+        fetch('/api/admin/visitors', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#visitorlist').empty()
+                for (let i = 0; i < data.length; i++) {
+                    let visitorIP = data[i].visitorIP;
+                    let userAgent = data[i].userAgent;
+                    let date = data[i].date;
+
+                    let temp_html = `<a class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${visitorIP}</h5>
+                                                    <p class="card-text text-truncate">방문경로 : ${userAgent}</p>
+                                                    <p class="card-text text-truncate">방문날짜 : ${date}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#visitorlist').append(temp_html)
                 }
             })
     }

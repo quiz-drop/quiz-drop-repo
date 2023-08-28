@@ -60,9 +60,11 @@ public class HomeController {
     }
 
     @GetMapping("/order/{orderId}")
-    public String orderDetail(@PathVariable Long orderId, Model model) {
+    public String orderDetail(Model model, @PathVariable Long orderId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         model.addAttribute("orderId", orderId);
-        return "detailOrder";
+        model.addAttribute("username", userDetails.getUsername());
+        model.addAttribute("userRole", userDetails.getUser().getRole());
+        return "orderDetail";
     }
 
     @Secured("ROLE_ADMIN")
