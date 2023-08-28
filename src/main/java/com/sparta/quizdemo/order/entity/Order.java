@@ -28,6 +28,9 @@ public class Order extends TimeStamped {
     @Column(name = "request")
     private String request;
 
+    @Column
+    private String username;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private User user;
@@ -37,6 +40,7 @@ public class Order extends TimeStamped {
 
     public Order(User user, Long totalPrice, LocalDateTime completeTime, String request) {
         this.user = user;
+        this.username = user.getUsername();
         this.totalPrice = totalPrice;
         this.completeTime = completeTime;
         this.request = request;
