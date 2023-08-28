@@ -67,6 +67,7 @@ public class NotificationService {
             emitterRepository.deleteById(emitterId);
         }
     }
+
     // Last - event - id 가 존재한다는 것은 받지 못한 데이터가 있다는 것이다.
     private boolean hasLostData(String lastEventId) {
         return !lastEventId.isEmpty();

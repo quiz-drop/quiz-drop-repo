@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Repository
 @NoArgsConstructor
 public class EmitterRepositoryImpl implements EmitterRepository{
-    private final Map<String, SseEmitter> emitterMap = new ConcurrentHashMap<>();
+    private final Map<String, SseEmitter> emitterMap = new ConcurrentHashMap<>(); /* SSE 연결 정보 저장 */
     private final Map<String, Object> eventCache = new ConcurrentHashMap<>(); /* 이벤트 데이터 캐싱 */
 
     @Override
@@ -26,6 +26,7 @@ public class EmitterRepositoryImpl implements EmitterRepository{
         eventCache.put(eventCacheId, event);
     }
 
+    /* 특정 사용자의 연결을 추적 */
     @Override
     public Map<String, SseEmitter> findAllEmitterStartWithByUserId(String userId) {
         return emitterMap.entrySet().stream()
@@ -34,6 +35,7 @@ public class EmitterRepositoryImpl implements EmitterRepository{
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
+    /* 특정 사용자 이벤트 캐시 */
     @Override
     public Map<String, Object> findAllEventCacheStartWithByUserId(String userId) {
         return eventCache.entrySet().stream()

@@ -24,10 +24,9 @@ public class NotificationController {
     로그인한 유저는 SSE 연결
     lAST_EVENT_ID = 이전에 받지 못한 이벤트가 존재하는 경우 [ SSE 시간 만료 혹은 종료 ]
     전달받은 마지막 ID 값을 넘겨 그 이후의 데이터[ 받지 못한 데이터 ]부터 받을 수 있게 한다 */
-
     @GetMapping(value ="/subscribe" , produces = "text/event-stream")
     public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                @RequestHeader(value="Last-Event-ID",required = false,defaultValue = "")
+                                @RequestHeader(value="Last-Event-ID",required = false, defaultValue = "")
                                 String lastEventId){
 
         return notificationService.subscribe(userDetails.getUser().getId(),lastEventId);
@@ -43,7 +42,6 @@ public class NotificationController {
     @PostMapping("/notification/read/{notificationId}")
     public void readNotification(@PathVariable Long notificationId){
         notificationService.readNotification(notificationId);
-
     }
 
     /* 알림 조회 - 구독자가 현재 읽지않은 알림 갯수 */

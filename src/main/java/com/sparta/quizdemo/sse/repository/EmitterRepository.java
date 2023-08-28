@@ -36,7 +36,7 @@ public interface EmitterRepository {
     Map<String,Object> findAllEventCacheStartWithByUserId(String userId);
 
     /**
-     * 해당 회원과 관련된 모든 이벤트를 찾는다. - 브라우저 당 여러개 연결이 가능하기에 여러 Emitter가 존재
+     * 해당 회원과 관련된 emitter 삭제
      * @param id
      */
     void deleteById(String id);
