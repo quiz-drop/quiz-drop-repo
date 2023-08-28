@@ -7,6 +7,8 @@ import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.cart.repository.CartRepository;
 import com.sparta.quizdemo.cart.service.CartServiceImpl;
+import com.sparta.quizdemo.chat.entity.ChatMessage;
+import com.sparta.quizdemo.chat.entity.ChatRoom;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.User;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
@@ -15,8 +17,13 @@ import com.sparta.quizdemo.order.entity.Order;
 import com.sparta.quizdemo.order.entity.OrderItem;
 import com.sparta.quizdemo.order.repository.OrderItemRepository;
 import com.sparta.quizdemo.order.repository.OrderRepository;
+import com.sparta.quizdemo.sse.entity.NotificationType;
+import com.sparta.quizdemo.sse.service.NotificationService;
+import com.sparta.quizdemo.user.UserRepository;
 import com.sparta.quizdemo.user.UserRoleEnum;
+import com.sparta.quizdemo.user.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,19 +38,18 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final CartServiceImpl cartService;
+    private final NotificationService notificationService;
 
     public ResponseEntity<ApiResponseDto> createOrder(OrderRequestDto orderRequestDto, User user) {
         if (cartRepository.findByUserId(user.getId()).isEmpty()) {
@@ -172,6 +178,19 @@ public class OrderService {
             for (Order order : orderList) {
                 LocalDateTime localDateTime = LocalDateTime.now();
                 if (order.getCompleteTime().isBefore(localDateTime)) {
+
+                    String url = "";
+                    String orderUsername = order.getUser().getUsername();
+                    Optional<User> orderUser = orderRepository.findByUsername(orderUsername);
+                    if (orderUser.isPresent()) {
+                        User receiver = orderUser.get();
+                        String content = receiver + "님! 주문이 완료되었습니다!";
+                        notificationService.send(receiver, NotificationType.ORDER, content, url);
+                    } else {
+                        log.error("User not found");
+                        throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+                    }
+
                     for (OrderItem orderItem : order.getOrderItemList()) {
                         Long tempOrderCount = orderItem.getProduct().getOrderCount();
                         tempOrderCount = tempOrderCount + orderItem.getQuantity();
