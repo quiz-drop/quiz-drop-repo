@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.auth.dto.SocialUserInfoDto;
+import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.util.JwtUtil;
 import com.sparta.quizdemo.user.repository.UserRepository;
@@ -31,6 +32,7 @@ public class NaverService {
     private final UserRepository userRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
+    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
 
     public String naverLogin(String code) throws JsonProcessingException {
         // 여기까지는 들어옴
@@ -45,23 +47,14 @@ public class NaverService {
 
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(naverUser.getUsername(), naverUser.getRole());
-/*          todo reids
-String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(tokens[1], naverUser.getUsername());
 
-        // 기존의 토큰이 있다면 삭제
+        // 5.기존의 토큰이 있다면 삭제
         redisRefreshTokenRepository.findByUsername(naverUser.getUsername())
                 .ifPresent(redisRefreshTokenRepository::deleteRefreshToken);
 
-        // 새로운 토큰 저장
-        redisRefreshTokenRepository.saveRefreshToken(createRefresh, naverUser.getUsername());
+        // 6.리프레시 토큰 저장
+        String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(tokens[1], naverUser.getUsername());
 
-        // 5. 네이버 refreshToken 저장
-        String naverRefreshToken = tokens[1];
-        redisRefreshTokenRepository.saveRefreshToken(naverUser.getUsername(), naverRefreshToken);
-
-        String[] creatTokens = new String[]{createToken, naverRefreshToken};*/
-
-        log.info("createToken");
         return createToken;
     }
 

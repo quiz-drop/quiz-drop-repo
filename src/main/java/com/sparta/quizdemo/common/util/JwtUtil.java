@@ -31,7 +31,7 @@ public class JwtUtil {
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    private final long TOKEN_TIME = 15 * 1000L; // 15초
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -47,14 +47,7 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // header 토큰을 가져오기 Keys.hmacShaKeyFor(bytes);
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken= request.getHeader(AUTHORIZATION_HEADER);
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)){
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
+
 
     // 토큰 생성
     public String createToken(String username, UserRoleEnum role) {
@@ -112,10 +105,15 @@ public class JwtUtil {
     }
 
     // 토큰에서 사용자 정보 가져오기
-    public Claims getUserInfoFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-    }
+    public Claims getUserInfoFromToken(String token) throws ExpiredJwtException {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
 
+            //이렇게 해도 되는건지. 질문하기
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
     // HttpServletRequest 에서 Cookie Value : JWT 가져오기
     public String getTokenFromRequest(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
@@ -132,4 +130,5 @@ public class JwtUtil {
         }
         return null;
     }
+
 }
