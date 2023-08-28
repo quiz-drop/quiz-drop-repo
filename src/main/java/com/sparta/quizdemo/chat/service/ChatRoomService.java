@@ -87,7 +87,6 @@ public class ChatRoomService {
             }
             return chatRooms;
         });
-
     }
 
     /* chatRoom 단권 조회 */
