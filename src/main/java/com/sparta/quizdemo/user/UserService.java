@@ -109,5 +109,7 @@ public class UserService {
         userRepository.delete(deleteUser);
     }
 
-
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
