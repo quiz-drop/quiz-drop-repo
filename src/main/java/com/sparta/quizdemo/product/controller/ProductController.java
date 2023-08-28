@@ -34,6 +34,7 @@ public class ProductController {
         return productService.getProducts();
     }
 
+    @Transactional
     @Operation(summary = "키워드로 상품 검색", description = "로그인 없이도 이용할 수 있습니다.")
     @PutMapping("/product")
     public ResponseEntity<List<ProductResponseDto>> findProduct(@RequestBody KeywordRequestDto keywordRequestDto) {

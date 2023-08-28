@@ -8,6 +8,7 @@ import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.cart.repository.CartRepository;
 import com.sparta.quizdemo.cart.service.CartServiceImpl;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
+import com.sparta.quizdemo.option.entity.Option;
 import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
@@ -57,11 +58,20 @@ public class OrderService {
 
         long totalPrice = 0L;
         long totalCookingTime = 0L;
+        long optionPrice = 0L;
 
         if (cartItemList != null) {
             for (CartItem cartItem : cartItemList) {
-                totalPrice += (cartItem.getProduct().getProductPrice() * cartItem.getQuantity());
-                totalCookingTime += (cartItem.getProduct().getCookingTime() * cartItem.getQuantity());
+                if (cartItem.getOptionList().isEmpty()) {
+                    totalPrice += (cartItem.getProduct().getProductPrice() * cartItem.getQuantity());
+                    totalCookingTime += (cartItem.getProduct().getCookingTime()) * cartItem.getQuantity();
+                } else {
+                    for (Option option : cartItem.getOptionList()) {
+                        optionPrice += option.getOptionPrice();
+                    }
+                    totalPrice += ((cartItem.getProduct().getProductPrice() + optionPrice) * cartItem.getQuantity());
+                    totalCookingTime += (cartItem.getProduct().getCookingTime()) * cartItem.getQuantity();
+                }
             }
         }
 

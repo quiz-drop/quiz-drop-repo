@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public class CartItemResponseDto {
+    private Long id;
     private String productName;
     private Long productPrice;
     private String productImage;
@@ -17,6 +18,7 @@ public class CartItemResponseDto {
     private List<OptionResponseDto> optionList;
 
     public CartItemResponseDto(CartItem cartItem) {
+        this.id = cartItem.getId();
         this.productName = cartItem.getProduct().getProductName();
         this.productPrice = cartItem.getProduct().getProductPrice();
         this.productImage = cartItem.getProduct().getProductImage();

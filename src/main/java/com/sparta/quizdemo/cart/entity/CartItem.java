@@ -31,7 +31,7 @@ public class CartItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @OneToMany(mappedBy = "cartItem", cascade = CascadeType.REMOVE)
+    @ManyToMany
     private List<Option> optionList = new ArrayList<>();
 
     public CartItem(Integer quantity, Cart cart, Product product, List<Option> options) {
