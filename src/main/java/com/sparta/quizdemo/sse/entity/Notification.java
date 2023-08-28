@@ -36,7 +36,6 @@ public class Notification extends TimeStamped {
     private NotificationType notificationType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private User receiver;
 
