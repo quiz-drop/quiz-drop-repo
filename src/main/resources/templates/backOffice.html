@@ -27,7 +27,8 @@
             <span class="fw-bold" id="username" th:text="${username}"></span> 님 접속을 환영합니다.
         </div>
         <div class="d-flex justify-content-end">
-            <a href="/new-product"><button type="submit" class="btn btn-dark" id="newproduct-btn">메뉴 생성</button></a>
+            <a href="/new-product"><button type="submit" class="btn btn-dark ms-2" id="newproduct-btn">메뉴 생성</button></a>
+            <a href="/new-option"><button type="submit" class="btn btn-dark ms-2" id="newoption-btn">옵션 생성</button></a>
             <a href="/api/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
             <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
         </div>
@@ -184,13 +185,21 @@
                     let orderid = data[i].orderid;
                     let username = data[i].username;
                     let totalPrice = data[i].totalPrice;
+                    let deliveryMethod;
+
+                    if (data[i].delivery) {
+                        deliveryMethod = "배달";
+                    } else {
+                        deliveryMethod = "포장";
+                    }
+
                     let completeTime = data[i].completeTime;
 
                     let temp_html = `<a href = order/${orderid} class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
                                                 <div class="card-body">
-                                                    <h5 class="card-title fw-bold">${orderid}</h5>
+                                                    <h5 class="card-title fw-bold">${orderid} ${deliveryMethod}</h5>
                                                     <p class="card-text text-truncate">${username}</p>
                                                     <p class="card-text text-truncate">${totalPrice}</p>
                                                     <p class="card-text text-truncate">${completeTime}</p>
@@ -215,13 +224,22 @@
                     let orderid = data[i].orderid;
                     let username = data[i].username;
                     let totalPrice = data[i].totalPrice;
+
+                    let deliveryMethod;
+
+                    if (data[i].delivery) {
+                        deliveryMethod = "배달";
+                    } else {
+                        deliveryMethod = "포장";
+                    }
+
                     let completeTime = data[i].completeTime;
 
                     let temp_html = `<a class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
                                                 <div class="card-body">
-                                                    <h5 class="card-title fw-bold">${orderid}</h5>
+                                                    <h5 class="card-title fw-bold">${orderid} ${deliveryMethod}</h5>
                                                     <p class="card-text text-truncate">${username}</p>
                                                     <p class="card-text text-truncate">${totalPrice}</p>
                                                     <p class="card-text text-truncate">${completeTime}</p>

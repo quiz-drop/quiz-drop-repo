@@ -125,7 +125,7 @@ public class OrderService {
 
         if (orderRequestDto.getPayment().equals(totalPrice)) {
             // 현재 유저의 order 생성
-            Order order = new Order(user, totalPrice, completeTime, orderRequestDto.getRequest(), orderRequestDto.getOrderComplete());
+            Order order = new Order(user, totalPrice, completeTime, orderRequestDto.getDelivery(), orderRequestDto.getRequest(), orderRequestDto.getOrderComplete());
             orderRepository.save(order);
 
             List<Order> userOrderList = orderRepository.findAllByUserIdOrderByCreatedAtAsc(user.getId());
