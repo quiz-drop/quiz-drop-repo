@@ -7,10 +7,8 @@ import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.cart.repository.CartRepository;
 import com.sparta.quizdemo.cart.service.CartServiceImpl;
-import com.sparta.quizdemo.chat.entity.ChatMessage;
-import com.sparta.quizdemo.chat.entity.ChatRoom;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
-import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
 import com.sparta.quizdemo.order.entity.Order;
@@ -19,10 +17,7 @@ import com.sparta.quizdemo.order.repository.OrderItemRepository;
 import com.sparta.quizdemo.order.repository.OrderRepository;
 import com.sparta.quizdemo.sse.entity.NotificationType;
 import com.sparta.quizdemo.sse.service.NotificationService;
-import com.sparta.quizdemo.user.UserRepository;
-import com.sparta.quizdemo.user.UserRoleEnum;
-import com.sparta.quizdemo.user.UserService;
-import com.sparta.quizdemo.common.entity.UserRoleEnum;
+import com.sparta.quizdemo.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.json.JsonParseException;
@@ -137,7 +132,7 @@ public class OrderService {
 
             String url = "";
             String orderUsername = order.getUser().getUsername();
-            Optional<User> orderUser = orderRepository.findByUsername(orderUsername);
+            Optional<User> orderUser = orderRepository.findByUsername(order.getUser().getUsername());
             if (orderUser.isPresent()) {
                 User receiver = orderUser.get();
                 String content = receiver + "님! 주문이 완료되었습니다!";
@@ -241,7 +236,7 @@ public class OrderService {
 
                     String url = "";
                     String orderUsername = order.getUser().getUsername();
-                    Optional<User> orderUser = orderRepository.findByUsername(orderUsername);
+                    Optional<User> orderUser = orderRepository.findByUsername(order.getUser().getUsername());
                     if (orderUser.isPresent()) {
                         User receiver = orderUser.get();
                         String content = receiver + "님! 배달이 완료되었습니다!";

@@ -1,7 +1,7 @@
 package com.sparta.quizdemo.sse.entity;
 
 import com.sparta.quizdemo.common.entity.TimeStamped;
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

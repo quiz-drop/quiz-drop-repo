@@ -1,8 +1,8 @@
 package com.sparta.quizdemo.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sparta.quizdemo.common.entity.User;
-import com.sparta.quizdemo.user.UserRoleEnum;
+import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

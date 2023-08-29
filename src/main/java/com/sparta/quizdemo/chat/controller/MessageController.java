@@ -5,7 +5,7 @@ import com.sparta.quizdemo.chat.service.ChatRoomService;
 import com.sparta.quizdemo.chat.service.RedisPublisher;
 import com.sparta.quizdemo.chat.service.RedisSubscriber;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
-import com.sparta.quizdemo.user.UserRoleEnum;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;

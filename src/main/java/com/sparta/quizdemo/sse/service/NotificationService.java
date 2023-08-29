@@ -1,6 +1,6 @@
 package com.sparta.quizdemo.sse.service;
 
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.sse.dto.NotificationCountDto;
 import com.sparta.quizdemo.sse.dto.NotificationResponseDto;

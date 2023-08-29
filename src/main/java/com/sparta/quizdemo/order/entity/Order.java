@@ -37,6 +37,8 @@ public class Order extends TimeStamped {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
+    private String username;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     private List<OrderItem> orderItemList = new ArrayList<>();
 
