@@ -36,7 +36,7 @@ public class ChatMessage{
     @JsonFormat(pattern = "yy-MM-dd HH:mm")
     private String createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chatRoom_id")
     private ChatRoom chatRoom;
 
