@@ -37,6 +37,12 @@ public class ProductController {
         return productService.getProducts();
     }
 
+    @Operation(summary = "카테고리별 상품 목록 조회", description = "로그인 없이도 이용할 수 있습니다.")
+    @GetMapping("/products/{category}")
+    public ResponseEntity<List<ProductResponseDto>> getProductsByCategory(@PathVariable String category) {
+        return productService.getProductsByCategory(category);
+    }
+
     @Transactional
     @Operation(summary = "키워드로 상품 검색", description = "로그인 없이도 이용할 수 있습니다.")
     @PutMapping("/product")

@@ -18,17 +18,16 @@
 <body>
 <div class="category-bar d-flex flex-column justify-content-center" style="height: 100%; width: 60px; background-color: #FF4004;position: fixed;z-index: 999">
 <ul style="list-style: none;padding-left: 0">
-    <li class="mb-5 text-center"><a href="#"><img alt="" src="/images/burger.png" width="40px" height="40px" style="background-color: white"></a></li>
-    <li class="mb-5 text-center"><a href="#"><img alt="" src="/images/fries.png" width="40px" height="40px"  style="background-color: white"></a></li>
-    <li class="mb-5 text-center"><a href="#"><img alt="" src="/images/drink.png" width="40px" height="40px"  style="background-color: white"></a></li>
-    <li class="mb-5 text-center"><a href="#"><img alt="" src="/images/dessert.png" width="40px" height="40px"  style="background-color: white"></a></li>
-    <li class="mb-5 text-center"><a href="#"><img alt="" src="/images/likes.png" width="40px" height="40px"  style="background-color: white"></a></li>
+    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('burger')"><img alt="" src="/images/burger.png" width="40px" height="40px" style="background-color: white"></a></li>
+    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('side')"><img alt="" src="/images/fries.png" width="40px" height="40px"  style="background-color: white"></a></li>
+    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('drink')"><img alt="" src="/images/drink.png" width="40px" height="40px"  style="background-color: white"></a></li>
+    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('dessert')"><img alt="" src="/images/dessert.png" width="40px" height="40px"  style="background-color: white"></a></li>
+    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('likes')"><img alt="" src="/images/likes.png" width="40px" height="40px"  style="background-color: white"></a></li>
 </ul>
 </div>
 <!-- 네비게이션 바 start -->
-<nav class="navbar bg-light mb-5">
+<nav class="navbar mb-5" style="background-color: #ff921d">
     <div class="container-fluid d-flex mx-3">
-
         <a class="navbar-brand" href="/">
             <div class="ms-5 fs-4 fw-bold">BurgerDrop</div>
         </a>
@@ -198,6 +197,45 @@
                                         </div>
                                      </a>`
                     $('#search-productlist').append(temp_html)
+                }
+            })
+    }
+
+    function getCategoryProduct(category) {
+        fetch('/api/products/'+category, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#product-list').empty()
+                for (let i = 0; i < data.length; i++) {
+                    let productName = data[i].productName;
+                    let productPrice = data[i].productPrice;
+                    let createdAt = data[i].createdAt;
+
+                    let productImage;
+                    if(data[i].productImage === '' || data[i].productImage == null) {
+                        productImage = "/images/img.png"
+                    } else {
+                        productImage = data[i].productImage;
+                    }
+
+                    let productId = data[i].id
+
+                    let temp_html = `<a href = product/${productId} class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${productName}</h5>
+                                                    <p class="card-text text-truncate">${productPrice}</p>
+                                                    <p class="card-text text-muted">${createdAt}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#product-list').append(temp_html)
                 }
             })
     }

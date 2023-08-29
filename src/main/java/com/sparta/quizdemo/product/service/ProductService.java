@@ -24,6 +24,12 @@ public interface ProductService {
     ResponseEntity<List<ProductResponseDto>> getProducts();
 
     /**
+     * 카테고리별 상품 목록 조회 API
+     * @param category 카테고리 이름
+     */
+    ResponseEntity<List<ProductResponseDto>> getProductsByCategory(String category);
+
+    /**
      * 키워드로 상품 검색 API
      * @param keyword 검색한 키워드
      */
