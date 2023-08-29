@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <link href="/css/style.css" rel="stylesheet">
+  <title>BurgerDrop | OptionList</title>
+</head>
+<body>
+<!-- 네비게이션 바 start -->
+<nav class="navbar bg-light mb-5">
+  <div class="container-fluid d-flex mx-3">
+    <a class="navbar-brand" href="/">
+      <div class="fs-4 fw-bold">BurgerDrop</div>
+    </a>
+    <div class="" id="welcome">
+      <span id="userRole" th:text="${userRole}"></span>
+      <span class="fw-bold" id="username" th:text="${username}"></span> 님 접속을 환영합니다.
+    </div>
+    <div class="d-flex justify-content-end">
+      <a href="/new-option"><button type="submit" class="btn btn-dark ms-2" id="newoption-btn">옵션 생성</button></a>
+      <a href="/api/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
+      <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
+      <a href="/admin"><button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button></a>
+    </div>
+  </div>
+</nav>
+<div class="container my-3">
+  <h3>모든 옵션 리스트</h3>
+  <hr class="border border-3">
+</div>
+<div class="container" id = "option-list">
+  <!-- optionList 동적 데이터 삽입 -->
+</div>
+<script>
+  $(document).ready(function() {
+    loadOptions();
+  });
+
+  function loadOptions() {
+    fetch('/api/product/options', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+            .then(response => response.json())
+            .then(data => {
+              $('#option-list').empty()
+              for (let i = 0; i < data.length; i++) {
+                let id = data[i].id;
+                let category = data[i].category;
+                let optionName = data[i].optionName;
+                let optionPrice = data[i].optionPrice;
+
+                let temp_html = `<div class="row">
+              <div class="d-flex p-3">
+                <div class="d-none">${id}</div>
+                <div class="comment-board col-7 border border-0 justify-content-start text-wrap" id="edit-box-${id}">
+                  <div class="comment-board form-control border border-0" id="optionName-text-${id}">${optionName}</div>
+                  <textarea class="comment-board border border-0 border-bottom none" row="1" id="optionName-input-${id}">${optionName}</textarea>
+                </div>
+                <div class="col-2 text-center" id="category-text-${id}">${category}</div>
+                <textarea class="comment-board border border-0 border-bottom none" row="1" id="category-input-${id}">${category}</textarea>
+                <div class="col-1 text-center mb-2" id="optionPrice-text-${id}">+${optionPrice}</div>
+                <textarea class="comment-board border border-0 border-bottom none" row="1" id="optionPrice-input-${id}">${optionPrice}</textarea>
+                <div class="btn-group col-1 justify-content-end pe-4">
+                  <div class="d-flex">
+                    <button type="submit" class="btn btn-dark btn-sm" id="option-update-btn-${id}" onclick="updateOption(${id})">수정</button>
+                    <button type="submit" class="btn btn-outline-dark btn-sm ms-2" id="option-delete-btn-${id}" onclick="deleteOption(${id})">삭제</button>
+                    <button type="submit" class="btn btn-dark btn-sm none" id="option-edit-btn-${id}" onclick="editOption(${id})">확인</button>
+                    <button type="submit" class="btn btn-outline-dark btn-sm none ms-2" id="option-edit-cancel-btn-${id}" onclick="cancelEditBtn(${id})">취소</button>
+                  </div>
+                </div>
+              </div>
+              <hr class="border border-1">
+            </div>`;
+                $('#option-list').append(temp_html)
+              }
+            })
+            .catch(error => console.error('Error:', error));
+  }
+
+  // 옵션 수정
+  function updateOption(id) {
+    // 옵션 내용 읽기 모드로 변경
+    $(`#optionName-text-${id}`).css("display", "none"); // 변경1: 수정 중에는 텍스트가 보이지 않도록 수정
+    $(`#category-text-${id}`).css("display", "none");
+    $(`#optionPrice-text-${id}`).css("display", "none");
+    $(`#optionName-input-${id}`).css("display", "block");
+    $(`#category-input-${id}`).css("display", "block");
+    $(`#optionPrice-input-${id}`).css("display", "block");
+
+    // 버튼 상태 변경
+    $(`#option-update-btn-${id}`).css("display", "none"); // 변경2: 수정 중에는 수정 버튼이 보이지 않도록 수정
+    $(`#option-delete-btn-${id}`).css("display", "none"); // 변경3: 수정 중에는 삭제 버튼이 보이지 않도록 수정
+    $(`#option-edit-btn-${id}`).css("display", "block");
+    $(`#option-edit-cancel-btn-${id}`).css("display", "block");
+  }
+
+  function cancelEditBtn(id) {
+    // 옵션 입력창 보이도록 변경
+    $(`#optionName-text-${id}`).css("display", "block"); // 변경4: 수정 취소 시 텍스트가 보이도록 수정
+    $(`#category-text-${id}`).css("display", "block");
+    $(`#optionPrice-text-${id}`).css("display", "block");
+    $(`#optionName-input-${id}`).css("display", "none");
+    $(`#category-input-${id}`).css("display", "none");
+    $(`#optionPrice-input-${id}`).css("display", "none");
+    // 버튼 상태 변경
+    $(`#option-update-btn-${id}`).css("display", "block"); // 변경5: 수정 취소 시 수정 버튼이 보이도록 수정
+    $(`#option-delete-btn-${id}`).css("display", "block"); // 변경6: 수정 취소 시 삭제 버튼이 보이도록 수정
+    $(`#option-edit-btn-${id}`).css("display", "none");
+    $(`#option-edit-cancel-btn-${id}`).css("display", "none");
+  }
+
+  function editOption(id) {
+    let data = {
+      category: $(`#category-input-${id}`).val(),
+      optionName: $(`#optionName-input-${id}`).val(),
+      optionPrice: $(`#optionPrice-input-${id}`).val()
+    };
+
+    $.ajax({
+      type: "PUT",
+      url: '/api/product/option/' + id,
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"
+    })
+            .done(function (res) {
+              alert("성공적으로 옵션을 수정했습니다.")
+              window.location.reload();
+            })
+            .fail(function (request, status, error) {
+              console.log(status);
+              console.log(error);
+              alert("에러가 발생했습니다.");
+            });
+  }
+
+  // 댓글 삭제
+  function deleteOption(id) {
+    $.ajax({
+      type: "DELETE",
+      url:'/api/product/option/'+id,
+      dataType:"json"
+    }).done(function(res){
+      alert("성공적으로 옵션을 삭제했습니다.")
+      window.location.reload();
+    }).fail(function (request, status, error){
+      console.log(status)
+      console.log(error)
+      alert("에러가 발생했습니다.");
+    });
+  }
+</script>
+</body>
+</html>

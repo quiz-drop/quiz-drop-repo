@@ -30,7 +30,7 @@ public class OrderItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @OneToMany(mappedBy = "orderItem", cascade = CascadeType.REMOVE)
+    @ManyToMany
     private List<Option> optionList = new ArrayList<>();
 
     public OrderItem(CartItem cartItem, Order order, List<Option> options) {

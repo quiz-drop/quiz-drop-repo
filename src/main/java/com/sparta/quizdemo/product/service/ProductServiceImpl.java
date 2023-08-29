@@ -7,6 +7,8 @@ import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.common.aws.AwsS3Service;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
+import com.sparta.quizdemo.order.entity.OrderItem;
+import com.sparta.quizdemo.order.repository.OrderItemRepository;
 import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import com.sparta.quizdemo.product.dto.ProductResponseDto;
 import com.sparta.quizdemo.product.entity.Product;
@@ -25,6 +27,7 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final CartItemRepository cartItemRepository;
+    private final OrderItemRepository orderItemRepository;
     private final AwsS3Service awsS3Service;
 
     @Override
@@ -88,10 +91,15 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<ApiResponseDto> deleteProduct(Long productNo) {
         Product product = productRepository.findById(productNo).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
         List<CartItem> cartItemList = cartItemRepository.findAllByProductId(productNo);
-
         for (CartItem cartItem : cartItemList) {
             cartItemRepository.delete(cartItem);
         }
+
+        List<OrderItem> orderItemList = orderItemRepository.findAllByProductId(productNo);
+        for (OrderItem orderItem : orderItemList) {
+            orderItemRepository.delete(orderItem);
+        }
+
 
         awsS3Service.deleteImage(product.getProductImage());
         productRepository.delete(product);

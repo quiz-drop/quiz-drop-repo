@@ -8,6 +8,9 @@ import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.cart.repository.CartRepository;
 import com.sparta.quizdemo.cart.service.CartServiceImpl;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
+import com.sparta.quizdemo.common.security.UserDetailsImpl;
+import com.sparta.quizdemo.option.entity.Option;
+import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
@@ -57,11 +60,20 @@ public class OrderService {
 
         long totalPrice = 0L;
         long totalCookingTime = 0L;
+        long optionPrice = 0L;
 
         if (cartItemList != null) {
             for (CartItem cartItem : cartItemList) {
-                totalPrice += (cartItem.getProduct().getProductPrice() * cartItem.getQuantity());
-                totalCookingTime += (cartItem.getProduct().getCookingTime() * cartItem.getQuantity());
+                if (cartItem.getOptionList().isEmpty()) {
+                    totalPrice += (cartItem.getProduct().getProductPrice() * cartItem.getQuantity());
+                    totalCookingTime += (cartItem.getProduct().getCookingTime()) * cartItem.getQuantity();
+                } else {
+                    for (Option option : cartItem.getOptionList()) {
+                        optionPrice += option.getOptionPrice();
+                    }
+                    totalPrice += ((cartItem.getProduct().getProductPrice() + optionPrice) * cartItem.getQuantity());
+                    totalCookingTime += (cartItem.getProduct().getCookingTime()) * cartItem.getQuantity();
+                }
             }
         }
 
@@ -70,51 +82,51 @@ public class OrderService {
         // 현재 시간에 총 조리시간 더하기
         LocalDateTime completeTime = localDateTime.plusMinutes(totalCookingTime);
 
-        String userAddress = getKakaoApiFromAddress(user.getAddress().getAddress1() + " " + user.getAddress().getAddress2());
-        HashMap<String, String> xyMap = getXYMapfromJson(userAddress);
-
-        double lat2 = 0;
-        double lon2 = 0;
-        String city = "";
-        Long distance = 0L;
-
-        lat2 = Double.parseDouble(xyMap.get("y")); // 위도
-        lon2 = Double.parseDouble(xyMap.get("x")); // 경도
-        city = xyMap.get("z").substring(1);
-        log.info(xyMap.get("z"));
-
-        switch (city) {
-            case "서울": distance = distance(37.330689, 126.593066, lat2, lon2);
-                break;
-            case "경기": distance = distance(37.569148, 127.243353, lat2, lon2);
-                break;
-            case "강원": distance = distance(37.746002, 128.383841, lat2, lon2);
-                break;
-            case "충북": distance = distance(36.891643, 127.815570, lat2, lon2);
-                break;
-            case "충남": distance = distance(36.583290, 126.866889, lat2, lon2);
-                break;
-            case "전북": distance = distance(35.853520, 127.121177, lat2, lon2);
-                break;
-            case "전남": distance = distance(35.080598, 126.885858, lat2, lon2);
-                break;
-            case "경북": distance = distance(36.460540, 128.915577, lat2, lon2);
-                break;
-            case "경남": distance = distance(35.394316, 128.085717, lat2, lon2);
-                break;
-            case "제주": distance = distance(35.394316, 128.085717, lat2, lon2);
-                break;
-            default: distance = distance(37.27538, 127.05488, lat2, lon2);
-        }
-
         if (orderRequestDto.getDelivery()) {
+            String userAddress = getKakaoApiFromAddress(user.getAddress().getAddress1() + " " + user.getAddress().getAddress2());
+            HashMap<String, String> xyMap = getXYMapfromJson(userAddress);
+
+            double lat2 = 0;
+            double lon2 = 0;
+            String city = "";
+            Long distance = 0L;
+
+            lat2 = Double.parseDouble(xyMap.get("y")); // 위도
+            lon2 = Double.parseDouble(xyMap.get("x")); // 경도
+            city = xyMap.get("z").substring(1);
+            log.info(xyMap.get("z"));
+
+            switch (city) {
+                case "서울": distance = distance(37.330689, 126.593066, lat2, lon2);
+                    break;
+                case "경기": distance = distance(37.569148, 127.243353, lat2, lon2);
+                    break;
+                case "강원": distance = distance(37.746002, 128.383841, lat2, lon2);
+                    break;
+                case "충북": distance = distance(36.891643, 127.815570, lat2, lon2);
+                    break;
+                case "충남": distance = distance(36.583290, 126.866889, lat2, lon2);
+                    break;
+                case "전북": distance = distance(35.853520, 127.121177, lat2, lon2);
+                    break;
+                case "전남": distance = distance(35.080598, 126.885858, lat2, lon2);
+                    break;
+                case "경북": distance = distance(36.460540, 128.915577, lat2, lon2);
+                    break;
+                case "경남": distance = distance(35.394316, 128.085717, lat2, lon2);
+                    break;
+                case "제주": distance = distance(35.394316, 128.085717, lat2, lon2);
+                    break;
+                default: distance = distance(37.27538, 127.05488, lat2, lon2);
+            }
+
             totalPrice += 2000L;
             completeTime = completeTime.plusMinutes(distance);
         }
 
         if (orderRequestDto.getPayment().equals(totalPrice)) {
             // 현재 유저의 order 생성
-            Order order = new Order(user, totalPrice, completeTime, orderRequestDto.getRequest(), orderRequestDto.getOrderComplete());
+            Order order = new Order(user, totalPrice, completeTime, orderRequestDto.getDelivery(), orderRequestDto.getRequest(), orderRequestDto.getOrderComplete());
             orderRepository.save(order);
 
             List<Order> userOrderList = orderRepository.findAllByUserIdOrderByCreatedAtAsc(user.getId());
@@ -194,6 +206,15 @@ public class OrderService {
         }
     }
 
+    public ResponseEntity<OrderResponseDto> getOneOrder(Long orderNo, User user) {
+        Order order = orderRepository.findById(orderNo).orElseThrow(() -> new NullPointerException("존재하지 않는 주문 번호입니다."));
+        if (user.getId().equals(order.getUser().getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
+            return ResponseEntity.status(HttpStatus.OK).body(new OrderResponseDto(order));
+        } else {
+            throw new IllegalArgumentException("해당 번호의 주문에 대한 권한이 없습니다.");
+        }
+    }
+
     public ResponseEntity<ApiResponseDto> cancelOrder(Long orderNo, User user) {
         Order order = orderRepository.findById(orderNo).orElseThrow(() -> new NullPointerException("존재하지 않는 주문 번호입니다."));
         if (user.getId().equals(order.getUser().getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
@@ -213,14 +234,14 @@ public class OrderService {
         if (!orderList.isEmpty()) {
             for (Order order : orderList) {
                 LocalDateTime localDateTime = LocalDateTime.now();
-                if (order.getCompleteTime().isBefore(localDateTime)) {
+                if (order.getCompleteTime().isBefore(localDateTime) && order.getOrderComplete().equals(false)) {
                     for (OrderItem orderItem : order.getOrderItemList()) {
-                        Long tempOrderCount = orderItem.getProduct().getOrderCount();
-                        tempOrderCount = tempOrderCount + orderItem.getQuantity();
-                        orderItem.getProduct().setOrderCount(tempOrderCount);
+                        Long tempProductOrderCount = orderItem.getProduct().getOrderCount();
+                        tempProductOrderCount = tempProductOrderCount + orderItem.getQuantity();
+                        orderItem.getProduct().setOrderCount(tempProductOrderCount);
                     }
-                    Long tempOrderCount = order.getUser().getOrderCount();
-                    order.getUser().setOrderCount(tempOrderCount + 1);
+                    Long tempUserOrderCount = order.getUser().getOrderCount();
+                    order.getUser().setOrderCount(tempUserOrderCount + 1);
                     order.setOrderComplete(true);
 
                     List<Order> totalOrderList = orderRepository.findAllByOrderByCreatedAtAsc();

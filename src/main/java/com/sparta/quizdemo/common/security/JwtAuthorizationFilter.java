@@ -70,6 +70,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                         //토큰 보내기
                         jwtUtil.addJwtToCookie(newAccessToken, res);
+
+                        //스웨거는 헤더에 토큰이있어야한다.
+                        res.addHeader("Authorization",newAccessToken);
                         log.info("토큰 전송 완료 : "+ newAccessToken);
 
                         String substringToken = jwtUtil.substringToken(newAccessToken);
@@ -87,8 +90,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     jwtExceptionHandler(res, "엑세스토큰이 유효하지 않거나 유저정보가 없습니다.", HttpStatus.BAD_REQUEST);
                     return;
                 }
-            }
+            }else {
+                Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
+                try {
+                    setAuthentication(info.getSubject());
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    return;
+                }
+            }
         }
 
         filterChain.doFilter(req, res);
