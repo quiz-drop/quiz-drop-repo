@@ -25,6 +25,8 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.region.static}")
+    private String region;
     private final AmazonS3 amazonS3;
 
     public String uploadImage(MultipartFile multipartFile) {
@@ -43,7 +45,7 @@ public class AwsS3Service {
 
 
 
-
+        fileName = "https://" + bucket +".s3."+ region + ".amazonaws.com/" + fileName;
         return fileName;
     }
 
@@ -52,6 +54,7 @@ public class AwsS3Service {
     }
 
     private String createFileName(String fileName) {
+        https://quizdropbucket.s3.ap-northeast-2.amazonaws.com/2c26f144-6f89-4cb9-8102-ba5462fcb9a8.png
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }
 
