@@ -56,7 +56,6 @@
         <div class="col-md-12 d-flex justify-content-end">
             <div class="align-items-center d-flex">
                 <input type="submit" class="btn btn-dark d-block" value="게시글 생성">
-                <!--<button class="btn btn-dark" value="newProduct" id="btn-newProduct">Submit</button>-->
                 <button class="btn btn-outline-dark ms-2" onclick="location.href='/'">Cancel</button>
             </div>
         </div>
@@ -64,43 +63,7 @@
     </form>
 </div>
 <script>
-   /* let idx = {
-        init: function (){
-            $("#btn-newProduct").on("click", () => {
-                this.newProduct();
-            });
-        },
 
-        newProduct: function () {
-            let data = {
-                productName : $('#productName').val(),
-                productPrice : $('#productPrice').val(),
-                productImage : $('#productImage').val(),
-                productIntro : $('#productIntro').val(),
-                cookingTime : $('#cookingTime').val(),
-                category : $('#category').val()
-            };
-
-            fetch(`/api/product`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert("상품 생성 성공");
-                    location.href = "/"
-                })
-                .catch(error => {
-                    console.error("상품 생성 실패:", error);
-                }); //ajax 통신을 이용해서 파라미터를 json으로 변경하여 insert 요청
-        }
-    }
-    idx.init();*/
-
-   /**/
    const form = document.getElementById("postForm");
 
    form.addEventListener("submit", function (event) {
