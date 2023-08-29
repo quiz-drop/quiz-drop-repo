@@ -27,8 +27,6 @@
             <span class="fw-bold" id="username" th:text="${username}"></span> 님 방문을 환영합니다.
         </div>
         <div class="d-flex justify-content-end">
-            <a href="/new-product"><button type="submit" class="btn btn-dark ms-2" id="newproduct-btn">상품 생성</button></a>
-            <a href="/new-option"><button type="submit" class="btn btn-dark ms-2" id="newoption-btn">옵션 생성</button></a>
             <a href="/api/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
             <a href="/login-test"><button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button></a>
             <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
@@ -60,8 +58,6 @@
         var signup_btn = document.getElementById("signup-btn");
         var logout_btn = document.getElementById("logout-btn");
         var mypage_btn = document.getElementById("myPage-btn");
-        var newproduct_btn = document.getElementById("newproduct-btn");
-        var newoption_btn = document.getElementById("newoption-btn");
         var welcome = document.getElementById("welcome");
         var cart_btn = document.getElementById("cart-btn");
         var admin_btn = document.getElementById("admin-btn");
@@ -75,12 +71,8 @@
             cart_btn.style.display = "block";
 
             if (userRole.innerText === "ADMIN") {
-                newproduct_btn.style.display = "block";
-                newoption_btn.style.display = "block";
                 admin_btn.style.display = "block";
             } else {
-                newproduct_btn.style.display = "none";
-                newoption_btn.style.display = "none";
                 admin_btn.style.display = "none";
             }
 
@@ -90,8 +82,6 @@
             logout_btn.style.display = "none";
             mypage_btn.style.display = "none";
             welcome.style.display = "none";
-            newproduct_btn.style.display = "none";
-            newoption_btn.style.display = "none";
             cart_btn.style.display = "none";
             admin_btn.style.display = "none";
 

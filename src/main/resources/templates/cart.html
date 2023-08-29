@@ -37,13 +37,16 @@
     <label>배달</label>
 </div>
 <!-- 장바구니에 담은 상품 목록 start -->
-<div class="container" id="cartItem-list">
-    <!-- cartItem 동적 데이터 삽입 -->
+<div class="container mb-5">
+    <h5>장바구니에 담은 상품 목록</h5>
+    <div class="col row" id="cartItem-list">
+        <!-- cartItem 동적 데이터 삽입 -->
+    </div>
 </div>
 <div class="container my-3">
     <hr class="border border-3">
+    <h5>총 가격</h5>
     <div id="totalPrice">
-        <div>총 가격</div>
 <!--        totalPrice 표시-->
     </div>
     <div class="d-flex justify-content-end">
@@ -81,7 +84,8 @@
                         productImage = data.cartItemList[i].productImage;
                     }
 
-                    let productId = data.cartItemList[i].id;
+                    let productId = data.cartItemList[i].productId;
+                    let cartItemId = data.cartItemList[i].id;
                     let productQuantity = data.cartItemList[i].quantity;
                     var strArray = [];
 
@@ -99,6 +103,7 @@
                                                     <p class="card-text text-truncate">가격 : ${productPrice}</p>
                                                      <p class="card-text text-mute">수량 : ${productQuantity}</p>
                                                      <p class="card-text text-mute">선택한 옵션 : ${strArray}</p>
+                                                     <button onclick="cancelCartItem(${cartItemId})">X</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -157,6 +162,21 @@
                     }
                 });
             }
+        });
+    }
+
+    function cancelCartItem(cartItemId) {
+        $.ajax({
+            type: "DELETE",
+            url:'/api/cart/'+cartItemId,
+            dataType:"json"
+        }).done(function(res){
+            alert("장바구니에서 상품을 취소했습니다.")
+            window.location.reload();
+        }).fail(function (request, status, error){
+            console.log(status)
+            console.log(error)
+            alert("에러가 발생했습니다.");
         });
     }
 </script>

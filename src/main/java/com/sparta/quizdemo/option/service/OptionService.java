@@ -28,6 +28,19 @@ public class OptionService {
         }
     }
 
+    // 모든 옵션 목록 조회
+    public ResponseEntity<List<OptionResponseDto>> getOptionList() {
+        List<Option> optionList = optionRepository.findAllByOrderByCategory();
+        List<OptionResponseDto> optionResponseDtoList = new ArrayList<>();
+
+        for (Option option : optionList) {
+            optionResponseDtoList.add(new OptionResponseDto(option));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(optionResponseDtoList);
+    }
+
+    // 카테고리 별 옵션 목록 조회
     public ResponseEntity<List<OptionResponseDto>> getOptions(String categoryName) {
         List<Option> optionList = optionRepository.findAllByCategory(categoryName);
         List<OptionResponseDto> optionResponseDtoList = new ArrayList<>();

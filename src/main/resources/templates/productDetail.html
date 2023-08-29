@@ -27,8 +27,11 @@
             <span class="fw-bold" id="username" th:text="${username}"></span> 님 방문을 환영합니다.
         </div>
         <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-dark" style="margin-right: 3px" id="update-btn" onclick="updateProduct()">수정</button>
-            <button type="submit" class="btn btn-dark" style="margin-left: 3px" id="delete-btn" onclick="deleteProduct()">삭제</button>
+            <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
+            <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
+            <button type="submit" class="btn btn-dark ms-2" style="margin-right: 3px" id="update-btn" onclick="updateProduct()">수정</button>
+            <button type="submit" class="btn btn-dark ms-2" style="margin-left: 3px" id="delete-btn" onclick="deleteProduct()">삭제</button>
+            <a href="/admin"><button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button></a>
         </div>
     </div>
 </nav>
@@ -65,14 +68,17 @@
     window.onload = function() {
         var update_btn = document.getElementById("update-btn");
         var delete_btn = document.getElementById("delete-btn");
+        var admin_btn = document.getElementById("admin-btn");
         var userRole = document.getElementById("userRole")
 
         if (userRole.innerText === "ADMIN") {
             update_btn.style.display = "block";
             delete_btn.style.display = "block";
+            admin_btn.style.display = "block";
         } else {
             update_btn.style.display = "none";
             delete_btn.style.display = "none";
+            admin_btn.style.display = "none";
         }
     }
 </script>

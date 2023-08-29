@@ -59,6 +59,12 @@ public class HomeController {
     }
 
     @Secured("ROLE_ADMIN")
+    @GetMapping("/optionList-page")
+    public String optionListPage() {
+        return "optionList";
+    }
+
+    @Secured("ROLE_ADMIN")
     @GetMapping("/edit-product/{productId}")
     public String updateProduct(@PathVariable Long productId, Model model) {
         model.addAttribute("productId", productId);

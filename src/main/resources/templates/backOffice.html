@@ -27,9 +27,9 @@
             <span class="fw-bold" id="username" th:text="${username}"></span> 님 접속을 환영합니다.
         </div>
         <div class="d-flex justify-content-end">
-            <a href="/new-product"><button type="submit" class="btn btn-dark ms-2" id="newproduct-btn">메뉴 생성</button></a>
-            <a href="/new-option"><button type="submit" class="btn btn-dark ms-2" id="newoption-btn">옵션 생성</button></a>
-            <a href="/api/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
+            <a href="/new-product"><button type="submit" class="btn btn-dark ms-2" id="newproduct-btn">상품 생성</button></a>
+            <a href="/optionList-page"><button type="submit" class="btn btn-dark ms-2" id="newoption-btn">옵션 목록</button></a>
+            <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
             <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
         </div>
     </div>
@@ -235,7 +235,7 @@
 
                     let completeTime = data[i].completeTime;
 
-                    let temp_html = `<a class= "col-3">
+                    let temp_html = `<a href="order/${orderid}" class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
                                                 <div class="card-body">
