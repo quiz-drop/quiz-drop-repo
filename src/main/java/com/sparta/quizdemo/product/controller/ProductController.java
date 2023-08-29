@@ -1,6 +1,8 @@
 package com.sparta.quizdemo.product.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.quizdemo.backoffice.dto.KeywordRequestDto;
+import com.sparta.quizdemo.common.aws.AwsS3Service;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import com.sparta.quizdemo.product.dto.ProductResponseDto;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,8 +27,8 @@ public class ProductController {
     @Transactional
     @Secured("ROLE_ADMIN")
     @PostMapping("/product")
-    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody ProductRequestDto productRequestDto) {
-        return productService.createProduct(productRequestDto);
+    public ResponseEntity<ProductResponseDto> createProduct(@RequestPart MultipartFile multipartFile,@RequestParam("productRequestDto") String productRequestDto) throws JsonProcessingException {
+        return productService.createProduct(multipartFile, productRequestDto);
     }
 
     @Operation(summary = "전체 상품 목록 조회", description = "로그인 없이도 이용할 수 있습니다.")

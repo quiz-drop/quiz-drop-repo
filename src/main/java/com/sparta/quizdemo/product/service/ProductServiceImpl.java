@@ -1,8 +1,11 @@
 package com.sparta.quizdemo.product.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.backoffice.dto.KeywordRequestDto;
 import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.cart.repository.CartItemRepository;
+import com.sparta.quizdemo.common.aws.AwsS3Service;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.order.entity.OrderItem;
 import com.sparta.quizdemo.order.repository.OrderItemRepository;
@@ -14,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +28,20 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final CartItemRepository cartItemRepository;
     private final OrderItemRepository orderItemRepository;
+    private final AwsS3Service awsS3Service;
 
     @Override
-    public ResponseEntity<ProductResponseDto> createProduct(ProductRequestDto productRequestDto) {
+    public ResponseEntity<ProductResponseDto> createProduct(MultipartFile multipartFile,String productRequestDto_temp) throws JsonProcessingException {
+
+        ProductRequestDto productRequestDto = conversionDto(productRequestDto_temp);
+
         // 상품 이름 중복 확인
         if (productRepository.findByProductName(productRequestDto.getProductName()).isPresent()) {
             throw new IllegalArgumentException("중복된 상품이름이 존재합니다.");
         } else {
+            String fileName = awsS3Service.uploadImage(multipartFile);
+            productRequestDto.setFileName(fileName);
+
             Product product = new Product(productRequestDto);
             productRepository.save(product);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ProductResponseDto(product));
@@ -89,7 +100,15 @@ public class ProductServiceImpl implements ProductService{
             orderItemRepository.delete(orderItem);
         }
 
+
+        awsS3Service.deleteImage(product.getProductImage());
         productRepository.delete(product);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("상품이 삭제 되었습니다", HttpStatus.OK.value()));
+    }
+
+    //json타입으로 변환
+    public ProductRequestDto conversionDto(String productRequestDto) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(productRequestDto, ProductRequestDto.class);
     }
 }

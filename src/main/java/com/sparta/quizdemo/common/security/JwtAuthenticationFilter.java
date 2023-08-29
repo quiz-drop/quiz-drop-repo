@@ -1,6 +1,7 @@
 package com.sparta.quizdemo.common.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.common.util.JwtUtil;
 import com.sparta.quizdemo.user.dto.LoginRequestDto;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
@@ -19,10 +20,12 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
+    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository) {
         this.jwtUtil = jwtUtil;
         setFilterProcessesUrl("/api/user/login");
+        this.redisRefreshTokenRepository = redisRefreshTokenRepository;
     }
 
     @Override
@@ -52,6 +55,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String token = jwtUtil.createToken(username, role);
         jwtUtil.addJwtToCookie(token, response);
+        redisRefreshTokenRepository.findByUsername(username)
+                .ifPresent(redisRefreshTokenRepository::deleteRefreshToken);
+        redisRefreshTokenRepository.generateRefreshToken(username);
     }
 
     @Override

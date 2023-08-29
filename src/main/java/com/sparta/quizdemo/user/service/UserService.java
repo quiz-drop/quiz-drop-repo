@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.user.service;
 
+import com.sparta.quizdemo.user.dto.UserResponseDto;
 import com.sparta.quizdemo.user.entity.Address;
 import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.util.JwtUtil;
@@ -43,12 +44,12 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
-//        // email 중복확인 to Do
-//        String email = requestDto.getEmail();
-//        Optional<User> checkEmail = userRepository.findByEmail(email);
-//        if (checkEmail.isPresent()) {
-//            throw new IllegalArgumentException("중복된 Email 입니다.");
-//        }
+        // email 중복확인 to Do
+        String email = requestDto.getEmail();
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        if (checkEmail.isPresent()) {
+            throw new IllegalArgumentException("중복된 Email 입니다.");
+        }
 
         String nickname = requestDto.getNickname();
         Optional<User> checkNickname = userRepository.findByNickname(nickname);
@@ -115,4 +116,22 @@ public class UserService {
     }
 
 
+    public UserResponseDto getUser(User user) {
+        User findUser = userRepository.findUserById(user.getId()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+
+        return new UserResponseDto(findUser);
+
+    }
+
+    public boolean getAddress(User user) {
+        User findUser = userRepository.findUserById(user.getId()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+
+        return addressRepository.findByUser_id(findUser.getId()).isPresent(
+        );
+
+    }
 }
