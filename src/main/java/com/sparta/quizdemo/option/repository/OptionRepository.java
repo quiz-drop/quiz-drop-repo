@@ -10,4 +10,6 @@ public interface OptionRepository extends JpaRepository<Option, Long> {
     Optional<Option> findByOptionName(String optionName);
 
     List<Option> findAllByCategory(String categoryName);
+
+    List<Option> findAllByOrderByCategory();
 }

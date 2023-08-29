@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <link href="/css/style.css" rel="stylesheet">
+    <title>BurgerDrop | BackOffice</title>
+</head>
+<body>
+<!-- 네비게이션 바 start -->
+<nav class="navbar bg-light mb-5">
+    <div class="container-fluid d-flex mx-3">
+        <a class="navbar-brand" href="/">
+            <div class="fs-4 fw-bold">BurgerDrop</div>
+        </a>
+        <div class="" id="welcome">
+            <span id="userRole" th:text="${userRole}"></span>
+            <span class="fw-bold" id="username" th:text="${username}"></span> 님 접속을 환영합니다.
+        </div>
+        <div class="d-flex justify-content-end">
+            <a href="/new-product"><button type="submit" class="btn btn-dark ms-2" id="newproduct-btn">상품 생성</button></a>
+            <a href="/optionList-page"><button type="submit" class="btn btn-dark ms-2" id="newoption-btn">옵션 목록</button></a>
+            <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
+            <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
+        </div>
+    </div>
+</nav>
+<div class="container mb-5">
+    <h3>유저 검색</h3>
+    <div>
+        <input id="keyword" type="text" placeholder="검색어를 입력해주세요">
+        <button onclick="searchUser()">검색하기</button>
+    </div>
+    <div class = "col row" id = "search-userlist">
+        <!-- 검색 결과 목록 동적 생성 -->
+    </div>
+    <hr class="border border-3">
+</div>
+<div class="container mb-5">
+    <h3>총 주문횟수</h3>
+    <div id="orderCount"></div>
+    <hr class="border border-3">
+    <h3>주문목록</h3>
+    <h5>준비 중인 주문 목록</h5>
+    <div class = "col row" id = "ready-orderlist">
+        <!-- 준비 중인 주문 목록 동적 생성 -->
+    </div>
+    <hr class="border border-3">
+    <h5>완료된 주문 목록</h5>
+    <div class = "col row" id = "done-orderlist">
+        <!-- 완료된 주문 목록 동적 생성 -->
+    </div>
+    <hr class="border border-3">
+</div>
+<div class="container mb-5">
+    <h3>방문자 IP주소 검색</h3>
+    <div>
+        <input id="IPkeyword" type="text" placeholder="IP주소의 일부 또는 전체를 입력해주세요.">
+        <button onclick="searchVisitor()">검색하기</button>
+    </div>
+    <div class = "col row" id = "search-visitorlist">
+        <!-- 검색 결과 목록 동적 생성 -->
+    </div>
+    <hr class="border border-3">
+</div>
+<div class="container mb-5">
+    <h3>총 방문자 수</h3>
+    <div id="visitCount"></div>
+    <hr class="border border-3">
+    <h3>방문목록</h3>
+    <div class = "col row" id = "visitorlist">
+        <!-- 준비 중인 주문 목록 동적 생성 -->
+    </div>
+    <hr class="border border-3">
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function searchUser() {
+        let data2 = {
+            keyword: document.getElementById("keyword").value
+        }
+
+        fetch('/api/admin/user', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data2)
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#search-userlist').empty()
+                for (let i = 0; i < data.length; i++) {
+                    let username = data[i].username;
+                    let nickname = data[i].nickname;
+                    let role = data[i].role;
+                    let orderCount = data[i].orderCount;
+
+                    let temp_html = `<a class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${username}</h5>
+                                                    <p class="card-text text-truncate">닉네임 : ${nickname}</p>
+                                                    <p class="card-text text-truncate">주문횟수 : ${orderCount}</p>
+                                                    <p class="card-text text-muted">권한 : ${role}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#search-userlist').append(temp_html)
+                }
+            })
+    }
+
+    function searchVisitor() {
+        let data3 = {
+            keyword: document.getElementById("IPkeyword").value
+        }
+
+        fetch('/api/admin/visitor', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data3)
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#search-visitorlist').empty()
+                for (let i = 0; i < data.length; i++) {
+                    let visitorIP = data[i].visitorIP;
+                    let userAgent = data[i].userAgent;
+                    let date = data[i].date;
+
+                    let temp_html = `<a class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${visitorIP}</h5>
+                                                    <p class="card-text text-truncate">방문경로 : ${userAgent}</p>
+                                                    <p class="card-text text-truncate">방문날짜 : ${date}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#search-visitorlist').append(temp_html)
+                }
+            })
+    }
+
+    $(document).ready(function () {
+        getOrderCount();
+        getReadyOrder();
+        getDoneOrder();
+        getVisitCount();
+        getVisitorList();
+    });
+    function getOrderCount() {
+        fetch('/api/admin/countorder', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#orderCount').empty()
+                $('#orderCount').append('<h5>' + data + '</h5>')
+            })
+    }
+
+    function getReadyOrder() {
+        fetch('/api/orders/ready', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#ready-orderlist').empty()
+                for (let i = 0; i < data.length; i++) {
+                    let orderid = data[i].orderid;
+                    let username = data[i].username;
+                    let totalPrice = data[i].totalPrice;
+                    let deliveryMethod;
+
+                    if (data[i].delivery) {
+                        deliveryMethod = "배달";
+                    } else {
+                        deliveryMethod = "포장";
+                    }
+
+                    let completeTime = data[i].completeTime;
+
+                    let temp_html = `<a href = order/${orderid} class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${orderid} ${deliveryMethod}</h5>
+                                                    <p class="card-text text-truncate">${username}</p>
+                                                    <p class="card-text text-truncate">${totalPrice}</p>
+                                                    <p class="card-text text-truncate">${completeTime}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#ready-orderlist').append(temp_html)
+                }
+            })
+    }
+
+    function getDoneOrder() {
+        fetch('/api/orders/done', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#done-orderlist').empty()
+                for (let i = 0; i < data.length; i++) {
+                    let orderid = data[i].orderid;
+                    let username = data[i].username;
+                    let totalPrice = data[i].totalPrice;
+
+                    let deliveryMethod;
+
+                    if (data[i].delivery) {
+                        deliveryMethod = "배달";
+                    } else {
+                        deliveryMethod = "포장";
+                    }
+
+                    let completeTime = data[i].completeTime;
+
+                    let temp_html = `<a href="order/${orderid}" class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${orderid} ${deliveryMethod}</h5>
+                                                    <p class="card-text text-truncate">${username}</p>
+                                                    <p class="card-text text-truncate">${totalPrice}</p>
+                                                    <p class="card-text text-truncate">${completeTime}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#done-orderlist').append(temp_html)
+                }
+            })
+    }
+
+    function getVisitCount() {
+        fetch('/api/admin/countvisit', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#visitCount').empty()
+                $('#visitCount').append('<h5>' + data + '</h5>')
+            })
+    }
+
+    function getVisitorList() {
+        fetch('/api/admin/visitors', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#visitorlist').empty()
+                for (let i = 0; i < data.length; i++) {
+                    let visitorIP = data[i].visitorIP;
+                    let userAgent = data[i].userAgent;
+                    let date = data[i].date;
+
+                    let temp_html = `<a class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${visitorIP}</h5>
+                                                    <p class="card-text text-truncate">방문경로 : ${userAgent}</p>
+                                                    <p class="card-text text-truncate">방문날짜 : ${date}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#visitorlist').append(temp_html)
+                }
+            })
+    }
+</script>
+</body>
+</html>

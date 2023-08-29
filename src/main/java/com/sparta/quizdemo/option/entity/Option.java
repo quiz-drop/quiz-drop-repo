@@ -1,8 +1,6 @@
 package com.sparta.quizdemo.option.entity;
 
-import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.option.dto.OptionRequestDto;
-import com.sparta.quizdemo.order.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,14 +22,6 @@ public class Option {
 
     @Column(name = "option_price", nullable = false)
     private Long optionPrice;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cartItem_id")
-    private CartItem cartItem;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderItem_id")
-    private OrderItem orderItem;
 
     public Option(OptionRequestDto optionRequestDto) {
         this.category = optionRequestDto.getCategory();
