@@ -6,11 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class TestController {
 
-    @GetMapping("/test")
-    String test(){
-        return "test";
-    }
-
     @GetMapping("/login-test")
     String loginTest(){
         return "login-test";
@@ -24,5 +19,11 @@ public class TestController {
     @GetMapping("/chatting")
     public String getChatting() {
         return "chatting";
+    }
+
+
+    @GetMapping("/mail-test")
+    String mailTest(){
+        return "mail-test";
     }
 }

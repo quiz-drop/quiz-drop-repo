@@ -1,7 +1,6 @@
-package com.sparta.quizdemo.user;
+package com.sparta.quizdemo.user.dto;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,4 +47,7 @@ public class SignupRequestDto {
 //    private String email;
     private boolean admin = false;
     private String adminToken = "";
+
+    @JsonIgnore
+    private Long orderCount = 0L;
 }

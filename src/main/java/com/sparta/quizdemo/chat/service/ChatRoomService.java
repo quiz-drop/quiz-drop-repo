@@ -1,7 +1,7 @@
 package com.sparta.quizdemo.chat.service;
 
 import com.sparta.quizdemo.chat.entity.ChatRoom;
-import com.sparta.quizdemo.common.entity.User;
+import com.sparta.quizdemo.user.entity.User;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

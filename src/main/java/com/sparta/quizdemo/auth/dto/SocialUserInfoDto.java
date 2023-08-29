@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.auth;
+package com.sparta.quizdemo.auth.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

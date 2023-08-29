@@ -12,14 +12,18 @@ public class OrderResponseDto {
     private String username;
     private Long orderid;
     private Long totalPrice;
+    private String request;
     private LocalDateTime completeTime;
     private List<OrderItemResponseDto> orderItemList;
+    private Boolean orderComplete;
 
     public OrderResponseDto(Order order) {
         this.username = order.getUser().getUsername();
         this.orderid = order.getId();
         this.totalPrice = order.getTotalPrice();
+        this.request = order.getRequest();
         this.completeTime = order.getCompleteTime();
         this.orderItemList = order.getOrderItemList().stream().map(OrderItemResponseDto::new).collect(Collectors.toList());
+        this.orderComplete = order.getOrderComplete();
     }
 }
