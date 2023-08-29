@@ -31,7 +31,7 @@ public class JwtUtil {
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private final long TOKEN_TIME = 15 * 1000L; // 15초
+    private final long TOKEN_TIME = 60 * 30 * 1000L; // 15초
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -47,7 +47,14 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-
+    // header 토큰을 가져오기 Keys.hmacShaKeyFor(bytes);
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken= request.getHeader(AUTHORIZATION_HEADER);
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)){
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 
     // 토큰 생성
     public String createToken(String username, UserRoleEnum role) {

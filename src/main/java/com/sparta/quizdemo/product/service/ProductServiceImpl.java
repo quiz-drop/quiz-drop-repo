@@ -61,6 +61,18 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public ResponseEntity<List<ProductResponseDto>> getProductsByCategory(String category) {
+        List<Product> productList = productRepository.findAllByCategory(category);
+        List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
+
+        for (Product product : productList) {
+            productResponseDtoList.add(new ProductResponseDto(product));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(productResponseDtoList);
+    }
+
+    @Override
     public ResponseEntity<List<ProductResponseDto>> findProduct(String keyword) {
         List<Product> productList = productRepository.findAll();
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
