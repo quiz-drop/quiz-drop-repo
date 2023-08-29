@@ -40,6 +40,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         //토큰 원본 가져오기
         String tokenValue = jwtUtil.getTokenFromRequest(req);
+        String token = jwtUtil.resolveToken(req);
+        if(token != null) {
+            if(!jwtUtil.validateToken(token)){
+                ApiResponseDto responseDto = new ApiResponseDto("토큰이 유효하지 않습니다.", HttpStatus.BAD_REQUEST.value());
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                res.setContentType("application/json; charset=UTF-8");
+                return;
+            }
+            Claims info = jwtUtil.getUserInfoFromToken(token);
+            setAuthentication(info.getSubject());
+        }
 
         if (StringUtils.hasText(tokenValue)) {
             // JWT 토큰 bearer 자르기
