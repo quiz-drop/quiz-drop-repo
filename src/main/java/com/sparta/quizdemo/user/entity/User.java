@@ -1,9 +1,11 @@
 package com.sparta.quizdemo.user.entity;
 
 import com.sparta.quizdemo.cart.entity.Cart;
+import com.sparta.quizdemo.chat.entity.ChatRoom;
 import com.sparta.quizdemo.common.entity.TimeStamped;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.order.entity.Order;
+import com.sparta.quizdemo.sse.entity.Notification;
 import com.sparta.quizdemo.user.dto.SignupRequestDto;
 import com.sparta.quizdemo.user.dto.UserRequestDto;
 import jakarta.persistence.*;
@@ -11,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -57,9 +60,11 @@ public class User extends TimeStamped {
     @OneToMany(mappedBy = "user")
     private List<Order> orderList;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private ChatRoom chatRoom;
 
-
-
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
+    private List<Notification> notifications = new ArrayList<>();
 
     //회원가입 생성자
     public User(SignupRequestDto requestDto,String password, UserRoleEnum role) {

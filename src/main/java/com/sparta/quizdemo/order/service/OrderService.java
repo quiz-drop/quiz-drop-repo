@@ -11,13 +11,16 @@ import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.option.entity.Option;
 import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
 import com.sparta.quizdemo.order.entity.Order;
 import com.sparta.quizdemo.order.entity.OrderItem;
 import com.sparta.quizdemo.order.repository.OrderItemRepository;
 import com.sparta.quizdemo.order.repository.OrderRepository;
-import com.sparta.quizdemo.common.entity.UserRoleEnum;
+import com.sparta.quizdemo.sse.entity.NotificationType;
+import com.sparta.quizdemo.sse.service.NotificationService;
+import com.sparta.quizdemo.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.json.JsonParseException;
@@ -34,10 +37,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -48,6 +48,7 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final CartServiceImpl cartService;
+    private final NotificationService notificationService;
 
     public ResponseEntity<ApiResponseDto> createOrder(OrderRequestDto orderRequestDto, User user) {
         if (cartRepository.findByUserId(user.getId()).isEmpty()) {
@@ -139,6 +140,18 @@ public class OrderService {
                     orderItemRepository.save(orderItem);
                     cartItemRepository.delete(cartItem);
                 }
+            }
+
+            String url = "";
+            String orderUsername = order.getUser().getUsername();
+            Optional<User> orderUser = orderRepository.findByUsername(order.getUser().getUsername());
+            if (orderUser.isPresent()) {
+                User receiver = orderUser.get();
+                String content = receiver + "님! 주문이 완료되었습니다!";
+                notificationService.send(receiver, NotificationType.ORDER, content, url);
+            } else {
+                log.error("User not found");
+                throw new IllegalArgumentException("존재하지 않는 유저입니다.");
             }
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto("결제가 완료 되었습니다.", HttpStatus.CREATED.value()));
@@ -240,6 +253,18 @@ public class OrderService {
                                 orderRepository.delete(completedOrderList.remove(0));
                             }
                         }
+                    }
+
+                    String url = "";
+                    String orderUsername = order.getUser().getUsername();
+                    Optional<User> orderUser = orderRepository.findByUsername(order.getUser().getUsername());
+                    if (orderUser.isPresent()) {
+                        User receiver = orderUser.get();
+                        String content = receiver + "님! 배달이 완료되었습니다!";
+                        notificationService.send(receiver, NotificationType.DELIVERY, content, url);
+                    } else {
+                        log.error("User not found");
+                        throw new IllegalArgumentException("존재하지 않는 유저입니다.");
                     }
                 }
             }

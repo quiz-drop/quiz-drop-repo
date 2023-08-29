@@ -40,8 +40,8 @@ public class ChatRoomController {
 
     /* 채팅방 나가기 */
     @DeleteMapping("/rooms/{username}")
-    public void deleteChatRoom(@PathVariable String username) {
-        chatRoomService.deleteChatRoom(username);
+    public void deleteChatRoom(@PathVariable String username, @RequestBody String chatRoomId) {
+        chatRoomService.deleteChatRoom(username, chatRoomId);
     }
 
 }

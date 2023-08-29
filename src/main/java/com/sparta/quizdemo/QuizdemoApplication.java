@@ -18,4 +18,5 @@ public class QuizdemoApplication {
     public static void main(String[] args) {
         SpringApplication.run(QuizdemoApplication.class, args);
     }
+
 }
