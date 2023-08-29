@@ -23,14 +23,18 @@
   );
   }
 
+  var isConfirm = false;
   function confirmNumber(){
-    var number1 = $("#number").val();
-    var number2 = $("#Confirm").val();
+      var number1 = $("#number").val();
+      var number2 = $("#Confirm").val();
 
-    if(number1 == number2){
+    if(number1 === number2){
       alert("인증되었습니다.");
+        isConfirm = true;
+        console.log(isConfirm);
     }else{
       alert("번호가 다릅니다.");
+        console.log(isConfirm);
     }
   }
 </script>

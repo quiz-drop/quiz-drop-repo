@@ -16,6 +16,7 @@ public class UserResponseDto {
     private String zip_code;
     private String address1;
     private String address2;
+    private String email;
     private Long orderCount;
     private List<OrderResponseDto> orderList;
     //댓글 내역 조회
@@ -27,7 +28,8 @@ public class UserResponseDto {
         this.zip_code = user.getAddress().getZip_code();
         this.address1 = user.getAddress().getAddress1();
         this.address2 = user.getAddress().getAddress2();
+        this.email = user.getEmail();
         this.orderCount = user.getOrderCount();
-        this.orderList = user.getOrder().stream().map(OrderResponseDto::new).collect(Collectors.toList());
+        this.orderList = user.getOrderList().stream().map(OrderResponseDto::new).collect(Collectors.toList());
     }
 }

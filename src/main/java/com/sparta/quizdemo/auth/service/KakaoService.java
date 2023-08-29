@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.auth.dto.SocialUserInfoDto;
+import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.util.JwtUtil;
 import com.sparta.quizdemo.user.repository.UserRepository;
@@ -32,34 +33,28 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final RestTemplate restTemplate; // 수동 등록한 Bean
     private final JwtUtil jwtUtil;
+    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
 
     public String kakaoLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
-        String accessToken = getToken(code);
+        String[] tokens = getToken(code);
 
         // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
-        SocialUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+        SocialUserInfoDto kakaoUserInfo = getKakaoUserInfo(tokens[0]);
 
         // 3. 필요시에 회원 가입
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(kakaoUser.getUsername(), kakaoUser.getRole());
-/*          todo reids
-String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(tokens[1], naverUser.getUsername());
 
-        // 기존의 토큰이 있다면 삭제
-        redisRefreshTokenRepository.findByUsername(naverUser.getUsername())
+
+        // 5.기존의 토큰이 있다면 삭제
+        redisRefreshTokenRepository.findByUsername(kakaoUser.getUsername())
                 .ifPresent(redisRefreshTokenRepository::deleteRefreshToken);
 
-        // 새로운 토큰 저장
-        redisRefreshTokenRepository.saveRefreshToken(createRefresh, naverUser.getUsername());
-
-        // 5. 네이버 refreshToken 저장
-        String naverRefreshToken = tokens[1];
-        redisRefreshTokenRepository.saveRefreshToken(naverUser.getUsername(), naverRefreshToken);
-
-        String[] creatTokens = new String[]{createToken, naverRefreshToken};*/
+        // 6.레디스에 리프레시 토큰 저장
+        redisRefreshTokenRepository.generateRefreshTokenInSocial(tokens[1], kakaoUser.getUsername());
 
         return createToken;
     }
@@ -67,7 +62,7 @@ String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(
 
     // 애플리케이션은 인증 코드로 카카오 서버에 토큰을 요청하고, 토큰을 전달 받습니다.
     // 1) 액세스 토큰 요청 메서드
-    public String getToken(String code) throws JsonProcessingException {
+    public String[] getToken(String code) throws JsonProcessingException {
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com")
@@ -86,6 +81,7 @@ String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(
         body.add("client_id","c390826fdfc5d14fa1931ae20fbe0e11"); // 자신의 REST API 키
         body.add("redirect_uri","http://localhost:8080/api/auth/kakao/login"); // 애플리케이션 등록시 설정한 redirect_uri
         body.add("code",code); // 인가 코드
+        body.add("state", "test");
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
                 .post(uri) // body 가 있으므로 post 메서드
@@ -100,7 +96,10 @@ String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(
 
         // HTTP 응답 (JSON) -> 액세스 토큰 값을 반환합니다.
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
-        return jsonNode.get("access_token").asText();
+        String[] res = new String[2];
+        res[0] = jsonNode.get("access_token").asText();
+        res[1] = jsonNode.get("refresh_token").asText();
+        return res;
     }
 
     // 2) 인가 토큰을 통해 사용자 정보 가져오기
@@ -168,10 +167,12 @@ String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(
                 // password: random UUID
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
-
-                String username = kakaoUserInfo.getUsername();;
-                kakaoUser = new User(username,  encodedPassword,kakaoUserInfo.getNickname(),  UserRoleEnum.USER, kakaoId, social);
+                String email = kakaoUserInfo.getEmail();
+                String username = email;
+                String nickname = email;
+                kakaoUser = new User(username,  encodedPassword, nickname, UserRoleEnum.USER, email,kakaoId, social);
             }
+            kakaoUser.setOrderCount(0L);
             userRepository.save(kakaoUser);
         }
         return kakaoUser;

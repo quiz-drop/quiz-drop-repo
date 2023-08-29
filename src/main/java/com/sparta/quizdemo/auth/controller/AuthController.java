@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.quizdemo.auth.service.GoogleService;
 import com.sparta.quizdemo.auth.service.KakaoService;
 import com.sparta.quizdemo.auth.service.NaverService;
+import com.sparta.quizdemo.common.util.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,49 +22,30 @@ public class AuthController {
     private final NaverService naverService;
     private final KakaoService kakaoService;
     private final GoogleService googleService;
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/naver/login")
     public RedirectView naverLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
         String token = naverService.naverLogin(code);
-
-        // Set the JWT token as a cookie in the response
-        Cookie jwtCookie = new Cookie("jwt", token.substring(7));
-        jwtCookie.setMaxAge(3600);
-        jwtCookie.setPath("/");
-
-        // Add the cookie to the response
-        response.addCookie(jwtCookie);
-        return new RedirectView("/test");
+        jwtUtil.addJwtToCookie(token, response);
+        return new RedirectView("/login-test");
     }
 
     @GetMapping("/kakao/login")
     public RedirectView kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
         String token = kakaoService.kakaoLogin(code);
-
-        // Set the JWT token as a cookie in the response
-        Cookie jwtCookie = new Cookie("jwt", token.substring(7));
-        jwtCookie.setMaxAge(3600);
-        jwtCookie.setPath("/");
-
-        // Add the cookie to the response
-        response.addCookie(jwtCookie);
-        return new RedirectView("/test");
+        jwtUtil.addJwtToCookie(token, response);
+        return new RedirectView("/login-test");
     }
 
     @GetMapping("/google/login")
     public RedirectView googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
         String token = googleService.googleLogin(code);
+        jwtUtil.addJwtToCookie(token, response);
 
-        // Set the JWT token as a cookie in the response
-        Cookie jwtCookie = new Cookie("jwt", token.substring(7));
-        jwtCookie.setMaxAge(3600);
-        jwtCookie.setPath("/");
-
-        // Add the cookie to the response
-        response.addCookie(jwtCookie);
-        return new RedirectView("/test");
+        return new RedirectView("/login-test");
     }
 }

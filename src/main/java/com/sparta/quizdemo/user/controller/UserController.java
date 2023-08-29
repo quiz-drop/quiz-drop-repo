@@ -4,6 +4,7 @@ import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.user.dto.SignupRequestDto;
 import com.sparta.quizdemo.user.dto.UserRequestDto;
+import com.sparta.quizdemo.user.dto.UserResponseDto;
 import com.sparta.quizdemo.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -61,6 +62,22 @@ public class UserController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserRequestDto requestDto) {
         userService.deleteUser(requestDto,userDetails.getUser());
+    }
+
+    // 회원 조회
+    @Operation(summary = "회원 조회")
+    @GetMapping("/user/info")
+    public UserResponseDto getUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.getUser(userDetails.getUser());
+    }
+
+    // 주소 조회
+    @Operation(summary = "주소 여부 판별")
+    @GetMapping("/user/info/address")
+    public boolean getAddress(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.getAddress(userDetails.getUser());
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
