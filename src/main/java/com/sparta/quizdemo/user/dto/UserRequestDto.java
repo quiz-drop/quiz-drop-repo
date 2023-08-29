@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.user.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +28,7 @@ public class UserRequestDto {
     @NotBlank(message = "새 비밀번호 입력이 안되었습니다.")
     private String newPassword;
 
-
-//    @Email(message = "올바른 이메일 형식이 아닙니다.")
-//    private String email;
+    @Email(message = "올바른 이메일 형식이 아닙니다.")
+    private String email;
 
 }

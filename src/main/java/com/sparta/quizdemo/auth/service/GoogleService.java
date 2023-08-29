@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.auth.dto.SocialUserInfoDto;
+import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.util.JwtUtil;
 import com.sparta.quizdemo.user.repository.UserRepository;
@@ -30,14 +31,15 @@ public class GoogleService {
     private final UserRepository userRepository;
     private final RestTemplate restTemplate; // 수동 등록한 Bean
     private final JwtUtil jwtUtil;
+    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
 
 
     public String googleLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
-        String accessToken = getToken(code);
+        String[] tokens = getToken(code);
 
         // 2. 토큰으로 구글 API 호출 : "액세스 토큰"으로 "구글 사용자 정보" 가져오기
-        SocialUserInfoDto googleUserInfoDto = getUserInfo(accessToken);
+        SocialUserInfoDto googleUserInfoDto = getUserInfo(tokens[0]);
 
         // 3. 필요시에 회원가입
         User googleUser = registerGoogleUserIfNeeded(googleUserInfoDto);
@@ -45,13 +47,20 @@ public class GoogleService {
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(googleUser.getUsername(), googleUser.getRole());
 
+        // 5.기존의 토큰이 있다면 삭제
+        redisRefreshTokenRepository.findByUsername(googleUser.getUsername())
+                .ifPresent(redisRefreshTokenRepository::deleteRefreshToken);
+
+        // 6.리프레시 토큰 저장
+        redisRefreshTokenRepository.generateRefreshToken(googleUser.getUsername());
+
         return createToken;
     }
 
 
     // 애플리케이션은 인증 코드로 구글 서버에 토큰을 요청하고, 토큰을 전달 받습니다.
     // 1) 액세스 토큰 요청 메서드
-    public String getToken(String code) throws JsonProcessingException {
+    public String[] getToken(String code) throws JsonProcessingException {
         log.info("getToken code: " + code);
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
@@ -78,7 +87,7 @@ public class GoogleService {
                 .headers(headers)
                 .body(body);
 
-        // HTTP 요청 보내기
+        // HTTP 응답
         ResponseEntity<String> response = restTemplate.exchange(
                 requestEntity,
                 String.class // 반환값 타입은 String
@@ -86,7 +95,9 @@ public class GoogleService {
 
         // HTTP 응답 (JSON) -> 액세스 토큰 값을 반환합니다.
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
-        return jsonNode.get("access_token").asText();
+        String[] res = new String[2];
+        res[0] = jsonNode.get("access_token").asText();
+        return res;
     }
 
 
@@ -140,11 +151,13 @@ public class GoogleService {
                 String encodedPassword = passwordEncoder.encode(password);
 
                 // email: 구글 email
-                String username = googleUserInfoDto.getUsername();
-                String nickname = googleUserInfoDto.getNickname();
-                googleUser = new User(username, encodedPassword, nickname, UserRoleEnum.USER, googleId, social);
+                String email = googleUserInfoDto.getEmail();
+                String username = email;
+                String nickname = email;
+                googleUser = new User(username, encodedPassword, nickname, UserRoleEnum.USER, email, googleId, social);
             }
 
+            googleUser.setOrderCount(0L);
             userRepository.save(googleUser);
         }
 
