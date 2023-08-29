@@ -11,7 +11,6 @@ import com.sparta.quizdemo.user.UserRepository;
 import com.sparta.quizdemo.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
