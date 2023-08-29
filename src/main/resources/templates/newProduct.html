@@ -30,62 +30,78 @@
     </div>
 </nav>
 <div class="container">
+    <form id="postForm" enctype="multipart/form-data">
     <div class="my-5 fs-2 fw-bold">상품 생성</div>
     <div class="row mt-4">
         <div class="col-md-6">
-            <input type="text" id="productName" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품이름">
-            <input type="text" id="productPrice" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품가격">
-            <input type="text" id ="productImage" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="이미지 URL을 입력하세요">
-            <textarea id = "productIntro" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품설명"></textarea>
-            <input type="text" id="cookingTime" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="조리시간">
-            <input type="text" id="category" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="카테고리">
+
+            <input type="text" id="productName" name="productName" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품이름">
+            <input type="text" id="productPrice" name="productPrice" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품가격">
+            <input type="file" id ="productImage" name="productImage" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="이미지 URL을 입력하세요">
+            <textarea id = "productIntro" name="productIntro" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품설명"></textarea>
+            <input type="text" id="cookingTime" name="cookingTime" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="조리시간">
+            <input type="text" id="category" name="category" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="카테고리">
         </div>
     </div>
     <div class="row my-5">
         <div class="col-md-12 d-flex justify-content-end">
             <div class="align-items-center d-flex">
-                <button class="btn btn-dark" value="newProduct" id="btn-newProduct">Submit</button>
+                <input type="submit" class="btn btn-dark d-block" value="게시글 생성">
                 <button class="btn btn-outline-dark ms-2" onclick="location.href='/'">Cancel</button>
             </div>
         </div>
     </div>
+    </form>
 </div>
 <script>
-    let idx = {
-        init: function (){
-            $("#btn-newProduct").on("click", () => {
-                this.newProduct();
-            });
-        },
+   const form = document.getElementById("postForm");
 
-        newProduct: function () {
-            let data = {
-                productName : $('#productName').val(),
-                productPrice : $('#productPrice').val(),
-                productImage : $('#productImage').val(),
-                productIntro : $('#productIntro').val(),
-                cookingTime : $('#cookingTime').val(),
-                category : $('#category').val()
-            };
+   form.addEventListener("submit", function (event) {
+       event.preventDefault();
+       const productName = document.getElementById("productName").value;
+       const productPrice = document.getElementById("productPrice").value;
+       const productIntro = document.getElementById("productIntro").value;
+       const cookingTime = document.getElementById("cookingTime").value;
+       const category = document.getElementById("category").value;
 
-            fetch(`/api/product`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert("상품 생성 성공");
-                    location.href = "/"
-                })
-                .catch(error => {
-                    console.error("상품 생성 실패:", error);
-                }); //ajax 통신을 이용해서 파라미터를 json으로 변경하여 insert 요청
-        }
-    }
-    idx.init();
+       const productRequestDto = {
+           productName: productName,
+           productPrice: productPrice,
+           productIntro: productIntro,
+           cookingTime: cookingTime,
+           category: category
+       };
+       const formData = new FormData();
+       formData.append("productRequestDto", JSON.stringify(productRequestDto));
+
+       const imageInputs = document.querySelectorAll('input[type="file"]');
+       imageInputs.forEach((input, index) => {
+           const files = input.files;
+           for (let i = 0; i < files.length; i++) {
+               formData.append(`multipartFile`, files[i]);
+               console.log(files[i])
+           }
+       });
+
+
+   fetch("/api/product", {
+       method: "POST",
+       body: formData
+   })
+       .then(response => response.json())
+       .then(data => {
+           if(data) {
+                //중복죈 상품명이 있을 시 상품 생성 성공 alert이 뜨지만 실제로 상품생성이 되지 않네요
+               alert("상품 생성 성공:");
+
+               location.href = "/"
+           }
+       })
+       .catch(error => {
+           console.error("상품 생성 실패:", error);
+       }); //ajax 통신을 이용해서 파라미터를 json으로 변경하여 insert 요청
+
+   });
 </script>
 </body>
 </html>
