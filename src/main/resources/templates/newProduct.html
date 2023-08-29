@@ -54,7 +54,6 @@
     </form>
 </div>
 <script>
-
    const form = document.getElementById("postForm");
 
    form.addEventListener("submit", function (event) {
@@ -72,7 +71,6 @@
            cookingTime: cookingTime,
            category: category
        };
-       console.log(productRequestDto)
        const formData = new FormData();
        formData.append("productRequestDto", JSON.stringify(productRequestDto));
 
@@ -81,7 +79,7 @@
            const files = input.files;
            for (let i = 0; i < files.length; i++) {
                formData.append(`multipartFile`, files[i]);
-               console.log(formData.get(i))
+               console.log(files[i])
            }
        });
 
@@ -92,8 +90,10 @@
    })
        .then(response => response.json())
        .then(data => {
-           if(data.id) {
-               alert("상품 생성 성공");
+           if(data) {
+                //중복죈 상품명이 있을 시 상품 생성 성공 alert이 뜨지만 실제로 상품생성이 되지 않네요
+               alert("상품 생성 성공:");
+
                location.href = "/"
            }
        })
