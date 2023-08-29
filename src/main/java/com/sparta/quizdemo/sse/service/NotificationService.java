@@ -129,7 +129,7 @@ public class NotificationService {
     public void readNotification(Long notificationId) {
         //알림을 받은 사람의 id 와 알림의 id 를 받아와서 해당 알림을 찾는다.
         Optional<Notification> notification = notificationRepository.findById(notificationId);
-        Notification checkNotification = notification.orElseThrow(()-> new IllegalArgumentException("id가 존재하지 않습니다."));
+        Notification checkNotification = notification.orElseThrow(() -> new IllegalArgumentException("id가 존재하지 않습니다."));
         checkNotification.read(); // 읽음처리
     }
 
@@ -139,6 +139,7 @@ public class NotificationService {
         notificationRepository.deleteAllByReceiverId(receiverId);
 
     }
+
     @Transactional
     public void deleteByNotifications(Long notificationId) {
         notificationRepository.deleteById(notificationId);

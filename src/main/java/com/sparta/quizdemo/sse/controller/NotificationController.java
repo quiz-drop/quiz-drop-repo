@@ -24,12 +24,12 @@ public class NotificationController {
     로그인한 유저는 SSE 연결
     lAST_EVENT_ID = 이전에 받지 못한 이벤트가 존재하는 경우 [ SSE 시간 만료 혹은 종료 ]
     전달받은 마지막 ID 값을 넘겨 그 이후의 데이터[ 받지 못한 데이터 ]부터 받을 수 있게 한다 */
-    @GetMapping(value ="/subscribe" , produces = "text/event-stream")
+    @GetMapping(value = "/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                @RequestHeader(value="Last-Event-ID",required = false, defaultValue = "")
-                                String lastEventId){
+                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "")
+                                String lastEventId) {
 
-        return notificationService.subscribe(userDetails.getUser().getId(),lastEventId);
+        return notificationService.subscribe(userDetails.getUser().getId(), lastEventId);
     }
 
     /* 알림조회 */
@@ -40,7 +40,7 @@ public class NotificationController {
 
     /* 전체목록 알림 조회에서 해당 목록 클릭 시 읽음처리 */
     @PostMapping("/notification/read/{notificationId}")
-    public void readNotification(@PathVariable Long notificationId){
+    public void readNotification(@PathVariable Long notificationId) {
         notificationService.readNotification(notificationId);
     }
 
@@ -52,7 +52,7 @@ public class NotificationController {
 
     /* 알림 전체 삭제 */
     @DeleteMapping("/notifications/delete")
-    public ResponseEntity<ApiResponseDto> deleteNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<ApiResponseDto> deleteNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         notificationService.deleteAllByNotifications(userDetails);
         return ResponseEntity.ok().body(new ApiResponseDto("알림 목록 전체삭제 성공", HttpStatus.OK.value()));
@@ -60,7 +60,7 @@ public class NotificationController {
 
     /* 단일 알림 삭제 */
     @DeleteMapping("/notifications/delete/{notificationId}")
-    public ResponseEntity<ApiResponseDto> deleteNotification(@PathVariable Long notificationId){
+    public ResponseEntity<ApiResponseDto> deleteNotification(@PathVariable Long notificationId) {
 
         notificationService.deleteByNotifications(notificationId);
         return ResponseEntity.ok().body(new ApiResponseDto("알림 목록 삭제 성공", HttpStatus.OK.value()));

@@ -57,4 +57,5 @@ public class EmitterRepositoryImpl implements EmitterRepository{
     public void deleteAllEventCacheStartWithId(String userId) {
         eventCache.entrySet().removeIf(entry -> entry.getKey().startsWith(userId));
     }
+
 }

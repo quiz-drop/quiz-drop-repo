@@ -190,6 +190,12 @@ public class OrderService {
             for (Order order : orderList) {
                 LocalDateTime localDateTime = LocalDateTime.now();
                 if (order.getCompleteTime().isBefore(localDateTime)) {
+                    for (OrderItem orderItem : order.getOrderItemList()) {
+                        Long tempOrderCount = orderItem.getProduct().getOrderCount();
+                        tempOrderCount = tempOrderCount + orderItem.getQuantity();
+                        orderItem.getProduct().setOrderCount(tempOrderCount);
+                    }
+                    orderRepository.delete(order);
 
                     String url = "";
                     String orderUsername = order.getUser().getUsername();
@@ -202,13 +208,6 @@ public class OrderService {
                         log.error("User not found");
                         throw new IllegalArgumentException("존재하지 않는 유저입니다.");
                     }
-
-                    for (OrderItem orderItem : order.getOrderItemList()) {
-                        Long tempOrderCount = orderItem.getProduct().getOrderCount();
-                        tempOrderCount = tempOrderCount + orderItem.getQuantity();
-                        orderItem.getProduct().setOrderCount(tempOrderCount);
-                    }
-                    orderRepository.delete(order);
                 }
             }
         }

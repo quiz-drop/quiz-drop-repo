@@ -52,4 +52,5 @@ public interface EmitterRepository {
      * @param userId
      */
     void deleteAllEventCacheStartWithId(String userId);
+
 }
