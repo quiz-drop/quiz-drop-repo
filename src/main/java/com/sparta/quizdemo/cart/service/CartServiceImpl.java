@@ -43,8 +43,6 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public ResponseEntity<CartResponseDto> getCartItems(User user) {
-//        Cart cart = cartRepository.findByUserId(user.getId()).orElse(createCart(user));
-
         if (cartRepository.findByUserId(user.getId()).isEmpty()) {
             createCart(user);
         }
@@ -53,11 +51,20 @@ public class CartServiceImpl implements CartService{
         List<CartItem> cartItemList = cartItemRepository.findByCartId(cart.getId());
         Long totalPrice = 0L;
         Long totalCookingTime = 0L;
+        Long optionPrice = 0L;
 
         if (cartItemList != null) {
             for (CartItem cartItem : cartItemList) {
-                totalPrice += (cartItem.getProduct().getProductPrice() * cartItem.getQuantity());
-                totalCookingTime += (cartItem.getProduct().getCookingTime()) * cartItem.getQuantity();
+                if (cartItem.getOptionList().isEmpty()) {
+                    totalPrice += (cartItem.getProduct().getProductPrice() * cartItem.getQuantity());
+                    totalCookingTime += (cartItem.getProduct().getCookingTime()) * cartItem.getQuantity();
+                } else {
+                    for (Option option : cartItem.getOptionList()) {
+                        optionPrice += option.getOptionPrice();
+                    }
+                    totalPrice += ((cartItem.getProduct().getProductPrice() + optionPrice) * cartItem.getQuantity());
+                    totalCookingTime += (cartItem.getProduct().getCookingTime()) * cartItem.getQuantity();
+                }
             }
         }
 
@@ -100,7 +107,7 @@ public class CartServiceImpl implements CartService{
             cartItemRepository.save(cartItem);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("상품을 장바구니에 담았습니다.", HttpStatus.OK.value()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto("상품을 장바구니에 담았습니다.", HttpStatus.CREATED.value()));
     }
 
     @Override

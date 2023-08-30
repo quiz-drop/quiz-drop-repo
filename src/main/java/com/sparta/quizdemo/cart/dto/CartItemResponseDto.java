@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.cart.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.option.dto.OptionResponseDto;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import java.util.stream.Collectors;
 
 @Getter
 public class CartItemResponseDto {
+    private Long id;
+    private Long productId;
     private String productName;
     private Long productPrice;
     private String productImage;
@@ -17,6 +20,8 @@ public class CartItemResponseDto {
     private List<OptionResponseDto> optionList;
 
     public CartItemResponseDto(CartItem cartItem) {
+        this.id = cartItem.getId();
+        this.productId = cartItem.getProduct().getId();
         this.productName = cartItem.getProduct().getProductName();
         this.productPrice = cartItem.getProduct().getProductPrice();
         this.productImage = cartItem.getProduct().getProductImage();

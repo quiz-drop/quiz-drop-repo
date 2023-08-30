@@ -29,6 +29,9 @@ public class Order extends TimeStamped {
     @Column(name = "request")
     private String request;
 
+    @Column(name = "delivery")
+    private Boolean delivery;
+
     @Setter
     @Column(name = "orderComplete")
     private Boolean orderComplete;
@@ -37,14 +40,17 @@ public class Order extends TimeStamped {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
+    private String username;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     private List<OrderItem> orderItemList = new ArrayList<>();
 
-    public Order(User user, Long totalPrice, LocalDateTime completeTime, String request, Boolean orderComplete) {
+    public Order(User user, Long totalPrice, LocalDateTime completeTime, Boolean delivery, String request, Boolean orderComplete) {
         this.user = user;
         this.totalPrice = totalPrice;
         this.completeTime = completeTime;
         this.request = request;
+        this.delivery = delivery;
         this.orderComplete = orderComplete;
     }
 }

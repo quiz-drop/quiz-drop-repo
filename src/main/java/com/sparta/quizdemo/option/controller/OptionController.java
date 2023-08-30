@@ -27,6 +27,12 @@ public class OptionController {
         return optionService.createOption(optionRequestDto);
     }
 
+    @Operation(summary = "모든 옵션 목록 조회")
+    @GetMapping("/product/options")
+    public ResponseEntity<List<OptionResponseDto>> getOptionList() {
+        return optionService.getOptionList();
+    }
+
     @Operation(summary = "카테고리별 옵션 목록 조회")
     @GetMapping("/product/options/{categoryName}")
     public ResponseEntity<List<OptionResponseDto>> getOptions(@PathVariable String categoryName) {

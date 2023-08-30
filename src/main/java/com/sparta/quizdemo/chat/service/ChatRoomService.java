@@ -1,6 +1,7 @@
 package com.sparta.quizdemo.chat.service;
 
 import com.sparta.quizdemo.chat.entity.ChatRoom;
+import com.sparta.quizdemo.chat.repository.ChatRoomRepository;
 import com.sparta.quizdemo.user.entity.User;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +14,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -24,6 +22,7 @@ import java.util.Map;
 public class ChatRoomService {
     // 채팅방(topic)에 발행되는 메시지를 처리할 Listner
     private final RedisMessageListenerContainer redisMessageListener;
+    private final ChatRoomRepository chatRoomRepository;
 
     // 구독 처리 서비스
     private final RedisSubscriber redisSubscriber;
@@ -52,7 +51,7 @@ public class ChatRoomService {
 
             log.info("user : " + username);
             log.info("ChatRoomId : " + roomId);
-            return new ChatRoom(username, roomId);
+            return new ChatRoom(user, roomId);
         } else {
             // 채팅방이 존재하지 않는 경우에만 생성
             ChatRoom chatRoom = ChatRoom.create(user);
@@ -87,7 +86,6 @@ public class ChatRoomService {
             }
             return chatRooms;
         });
-
     }
 
     /* chatRoom 단권 조회 */
@@ -101,8 +99,13 @@ public class ChatRoomService {
     }
 
     /* 채팅방 나가기 */
-    public void deleteChatRoom(String username) {
+    public void deleteChatRoom(String username, String chatRoomId) {
         redisTemplate.opsForHash().delete(CHAT_ROOMS, username);
+        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByRoomId(chatRoomId);
+        if (optionalChatRoom.isPresent()) {
+            ChatRoom chatRoom = optionalChatRoom.get();
+            chatRoomRepository.delete(chatRoom);
+        }
     }
 
     public void enterChatRoom(String roomId) {

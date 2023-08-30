@@ -44,9 +44,15 @@ public class OrderController {
     }
 
     @Operation(summary = "나의 주문 목록 조회")
-    @GetMapping("/order")
+    @GetMapping("/orders")
     public ResponseEntity<List<OrderResponseDto>> getMyOrders(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.getMyOrders(userDetails.getUser());
+    }
+
+    @Operation(summary = "주문 단건 조회")
+    @GetMapping("/order/{orderNo}")
+    public ResponseEntity<OrderResponseDto> getOneOrder(@PathVariable Long orderNo, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return orderService.getOneOrder(orderNo, userDetails.getUser());
     }
 
     @Operation(summary = "주문 취소")

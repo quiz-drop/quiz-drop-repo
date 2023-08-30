@@ -25,28 +25,28 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.region.static}")
+    private String region;
     private final AmazonS3 amazonS3;
 
-    public List<String> uploadImage(List<MultipartFile> multipartFile) {
-        List<String> fileNameList = new ArrayList<>();
+    public String uploadImage(MultipartFile multipartFile) {
 
-        multipartFile.forEach(file -> {
-            String fileName = createFileName(file.getOriginalFilename());
+        String fileName = createFileName(multipartFile.getOriginalFilename());
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(file.getSize());
-            objectMetadata.setContentType(file.getContentType());
+            objectMetadata.setContentLength(multipartFile.getSize());
+            objectMetadata.setContentType(multipartFile.getContentType());
 
-            try(InputStream inputStream = file.getInputStream()) {
+            try(InputStream inputStream = multipartFile.getInputStream()) {
                 amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
             } catch(IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
             }
 
-            fileNameList.add(fileName);
-        });
 
-        return fileNameList;
+
+        fileName = "https://" + bucket +".s3."+ region + ".amazonaws.com/" + fileName;
+        return fileName;
     }
 
     public void deleteImage(String fileName) {
@@ -54,6 +54,7 @@ public class AwsS3Service {
     }
 
     private String createFileName(String fileName) {
+        https://quizdropbucket.s3.ap-northeast-2.amazonaws.com/2c26f144-6f89-4cb9-8102-ba5462fcb9a8.png
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }
 
