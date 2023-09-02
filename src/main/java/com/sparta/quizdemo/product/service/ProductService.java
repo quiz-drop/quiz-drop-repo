@@ -46,7 +46,7 @@ public interface ProductService {
      * @param productNo 수정 대상 상품 번호
      * @param productRequestDto 수정될 상품 정보
      */
-    ResponseEntity<ProductResponseDto> updateProduct(Long productNo, ProductRequestDto productRequestDto);
+    ResponseEntity<ProductResponseDto> updateProduct(Long productNo, MultipartFile multipartFile, String productRequestDto) throws JsonProcessingException;
 
     /**
      * 상품 삭제 API
