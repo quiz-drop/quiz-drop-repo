@@ -30,7 +30,16 @@ public class Address {
     @JoinColumn(name="user_id")
     private User user;
 
+    //회원가입용
     public Address(SignupRequestDto requestDto, User user){
+        this.zip_code = requestDto.getZip_code();
+        this.address1 = requestDto.getAddress1();
+        this.address2 = requestDto.getAddress2();
+        this.user = user;
+    }
+
+    //소셜 로그인 시 주소 등록용
+    public Address(UserRequestDto requestDto, User user){
         this.zip_code = requestDto.getZip_code();
         this.address1 = requestDto.getAddress1();
         this.address2 = requestDto.getAddress2();

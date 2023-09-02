@@ -57,7 +57,7 @@ public class User extends TimeStamped {
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Cart cart;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Order> orderList;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)

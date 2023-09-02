@@ -25,6 +25,7 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final RedisRefreshTokenRepository redisRefreshTokenRepository;
 
+
     public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
@@ -140,5 +141,14 @@ public class UserService {
     public void logout(User user) {
         String username = user.getUsername();
         redisRefreshTokenRepository.deleteRefreshToken(username);
+    }
+
+    public void addAddress(UserRequestDto requestDto, User user) {
+        User findUser = userRepository.findUserById(user.getId()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+        Address address = new Address(requestDto, user);
+        addressRepository.save(address);
+
     }
 }
