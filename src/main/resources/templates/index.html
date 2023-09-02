@@ -36,10 +36,10 @@
             <span class="fw-bold" id="username" th:text="${username}"></span> 님 방문을 환영합니다.
         </div>
         <div class="d-flex justify-content-end">
-            <a href="/api/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
-            <a href="/login-test"><button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button></a>
-            <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
-            <a href="/api/user/signup"><button type="submit" class="btn btn-dark ms-2" id="signup-btn">SignUp</button></a>
+            <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
+            <a href="/login"><button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button></a>
+            <button type="button" onclick="logout()"class="btn btn-dark ms-2" id="logout-btn">Logout</button>
+            <a href="/signup"><button type="submit" class="btn btn-dark ms-2" id="signup-btn">SignUp</button></a>
             <a href="/cart"><button type="submit" class="btn btn-primary ms-2" id="cart-btn">장바구니</button></a>
             <a href="/admin"><button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button></a>
         </div>
@@ -56,6 +56,7 @@
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
+    <h3 class="fw-bold">전체 상품 목록</h3>
     <div class = "col row" id = "product-list">
         <!-- 상품 목록 동적 생성 -->
     </div>
@@ -117,6 +118,23 @@
     $(document).ready(function () {
         getProduct();
     });
+    function logout() {
+        //리프레시 토큰 삭제 요청
+
+        fetch('/api/user/logout', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.msg)
+                // 쿠키 삭제
+                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/"
+            });
+
+
+
+    }
     function getProduct() {
         fetch('/api/products', {
             method: 'GET',

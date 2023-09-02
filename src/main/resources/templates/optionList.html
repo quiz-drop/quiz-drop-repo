@@ -28,8 +28,8 @@
     </div>
     <div class="d-flex justify-content-end">
       <a href="/new-option"><button type="submit" class="btn btn-dark ms-2" id="newoption-btn">옵션 생성</button></a>
-      <a href="/api/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
-      <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
+      <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
+      <button type="button" onclick="logout()"class="btn btn-dark ms-2" id="logout-btn">Logout</button>
       <a href="/admin"><button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button></a>
     </div>
   </div>
@@ -158,6 +158,23 @@
       console.log(error)
       alert("에러가 발생했습니다.");
     });
+  }
+  function logout() {
+    //리프레시 토큰 삭제 요청
+
+    fetch('/api/user/logout', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'}
+    }).then(response => response.json())
+            .then(data => {
+              alert(data.msg)
+              // 쿠키 삭제
+              document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              window.location.href = "/"
+            });
+
+
+
   }
 </script>
 </body>
