@@ -160,20 +160,24 @@
         var admin_btn = document.getElementById("admin-btn");
         var userRole = document.getElementById("userRole")
         var chatList = document.getElementById("chat-btn");
+        var chatRoom = document.getElementById("chat-icon");
 
         // "Authorization" 쿠키가 존재하는 경우 로그인 상태
         if (checkAuthorizationCookie()) {
             logout_btn.style.display = "block";
             mypage_btn.style.display = "block";
+            chatRoom.style.display = "block";
             welcome.style.display = "block";
             cart_btn.style.display = "block";
 
             if (userRole.innerText === "ADMIN") {
                 admin_btn.style.display = "block";
                 chatList.style.display = "block";
+                chatRoom.style.display = "none";
             } else {
                 admin_btn.style.display = "none";
                 chatList.style.display = "none";
+                chatRoom.style.display = "block";
             }
 
             login_btn.style.display = "none";
