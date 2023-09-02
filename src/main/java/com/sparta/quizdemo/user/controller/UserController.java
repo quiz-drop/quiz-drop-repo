@@ -58,10 +58,11 @@ public class UserController {
     // 회원 탈퇴
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/user/info")
-    public void deleteUser(
+    public ResponseEntity<ApiResponseDto> deleteUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserRequestDto requestDto) {
         userService.deleteUser(requestDto,userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto("회원 탈퇴 완료", HttpStatus.OK.value()));
     }
 
     // 회원 조회
