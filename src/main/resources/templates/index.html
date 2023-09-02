@@ -82,6 +82,9 @@
             <a href="/admin">
                 <button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button>
             </a>
+            <a href="/chatList">
+                <button type="submit" class="btn btn-warning ms-2" id="chat-btn">chatList</button>
+            </a>
         </div>
     </div>
 </nav>
@@ -156,6 +159,7 @@
         var cart_btn = document.getElementById("cart-btn");
         var admin_btn = document.getElementById("admin-btn");
         var userRole = document.getElementById("userRole")
+        var chatList = document.getElementById("chat-btn");
 
         // "Authorization" 쿠키가 존재하는 경우 로그인 상태
         if (checkAuthorizationCookie()) {
@@ -166,8 +170,10 @@
 
             if (userRole.innerText === "ADMIN") {
                 admin_btn.style.display = "block";
+                chatList.style.display = "block";
             } else {
                 admin_btn.style.display = "none";
+                chatList.style.display = "none";
             }
 
             login_btn.style.display = "none";
@@ -178,6 +184,7 @@
             welcome.style.display = "none";
             cart_btn.style.display = "none";
             admin_btn.style.display = "none";
+            chatList.style.display = "none";
 
             login_btn.style.display = "block";
             signup_btn.style.display = "block";
@@ -197,7 +204,6 @@
             // "Authorization" 쿠키가 존재하지 않는 경우 false 반환
             return false;
         }
-    }
 
     $(document).ready(function () {
         getProduct();
