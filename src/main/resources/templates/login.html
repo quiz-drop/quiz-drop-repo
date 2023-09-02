@@ -3,21 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
 </head>
 <body>
+<nav class="navbar mb-5" style="background-color: #ff921d">
+    <div class="container-fluid d-flex mx-3">
+        <a class="navbar-brand" href="/">
+            <div class="ms-5 fs-4 fw-bold">BurgerDrop</div>
+        </a>
+        <div class="" id="welcome">
+
+
+        </div>
+        <div class="d-flex justify-content-end">
+            <a href="/login"><button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button></a>
+            <a href="/signup"><button type="submit" class="btn btn-dark ms-2" id="signup-btn">SignUp</button></a>
+        </div>
+    </div>
+</nav>
 <div class="container">
-    <div class="title">로그인</div>
+    <h1 class="title fw-bold">로그인</h1>
     <form id="loginForm">
-        <div class="form-group">
-            <label for="username">사용자명:</label>
-            <input type="username" id="username" name="username" required>
+        <div class="form-group mt-3">
+            <label for="username" class="form-label">사용자명:</label>
+            <input type="username" class=" form-control" id="username" name="username" required>
         </div>
-        <div class="form-group">
+        <div class="form-group mt-3">
             <label for="password">비밀번호:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" class="form-control"id="password" name="password" required>
         </div>
-        <div class="form-group">
-            <input type="submit" value="로그인">
+        <div class="form-group mt-3">
+            <input type="submit" class="btn btn-dark" value="로그인">
+            <a href="/" class="btn btn-outline-dark">뒤로가기</a>
         </div>
         <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=c390826fdfc5d14fa1931ae20fbe0e11&state=test&redirect_uri=http://localhost:8080/api/auth/kakao/login">
             카카오
@@ -26,7 +45,7 @@
         <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=cGQgfh0jvo5wJ7iUQD5a&state=test&redirect_uri=http://localhost:8080/api/auth/naver/login">
             네이버
         </a>
-        <a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=1048741760252-41qatbor2qcqf4se37mcp0hitqnjd4sh.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/google/login&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email">"
+        <a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=1048741760252-41qatbor2qcqf4se37mcp0hitqnjd4sh.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/google/login&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email">
             구글
         </a>
     </form>

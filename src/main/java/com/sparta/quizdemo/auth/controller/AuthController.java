@@ -29,7 +29,7 @@ public class AuthController {
 
         String token = naverService.naverLogin(code);
         jwtUtil.addJwtToCookie(token, response);
-        return new RedirectView("/login-test");
+        return new RedirectView("/");
     }
 
     @GetMapping("/kakao/login")
@@ -37,7 +37,7 @@ public class AuthController {
 
         String token = kakaoService.kakaoLogin(code);
         jwtUtil.addJwtToCookie(token, response);
-        return new RedirectView("/login-test");
+        return new RedirectView("/");
     }
 
     @GetMapping("/google/login")
@@ -46,6 +46,6 @@ public class AuthController {
         String token = googleService.googleLogin(code);
         jwtUtil.addJwtToCookie(token, response);
 
-        return new RedirectView("/login-test");
+        return new RedirectView("/");
     }
 }
