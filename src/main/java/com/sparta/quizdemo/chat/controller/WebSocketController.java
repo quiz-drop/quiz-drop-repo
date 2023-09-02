@@ -24,7 +24,10 @@ public class WebSocketController {
     private final UserService userService;
     private NotificationService notificationService;
 
-    // 해당하는 방에 메세지를 보낸것
+    /*
+    * publicher
+    * 해당하는 방에 메세지를 보냄
+    */
     @MessageMapping("/chat/send")
     @SendTo
     public void sendMsg(@Payload Map<String, Object> data, ChatMessage message) {
