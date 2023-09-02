@@ -61,19 +61,18 @@
         </a>
         <div class="" id="welcome">
             <span id="userRole" th:text="${userRole}"></span>
-            <span class="fw-bold" id="username" th:text="${username}"></span> 님 방문을 환영합니다.
+            <span class="fw-bold" id="username" th:text="${username}"></span>
+            <span id="userAddress" th:text="${userAddress}"></span>
         </div>
         <div class="d-flex justify-content-end">
-            <a href="/api/mypage">
+            <a href="/mypage">
                 <button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button>
             </a>
-            <a href="/login-test">
+            <a href="/login">
                 <button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button>
             </a>
-            <a href="/">
-                <button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button>
-            </a>
-            <a href="/api/user/signup">
+            <button type="button" onclick="logout()" class="btn btn-dark ms-2" id="logout-btn">Logout</button>
+            <a href="/signup">
                 <button type="submit" class="btn btn-dark ms-2" id="signup-btn">SignUp</button>
             </a>
             <a href="/cart">
@@ -99,6 +98,7 @@
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
+    <h3 class="fw-bold">전체 상품 목록</h3>
     <div class="col row" id="product-list">
         <!-- 상품 목록 동적 생성 -->
     </div>
@@ -204,10 +204,28 @@
             // "Authorization" 쿠키가 존재하지 않는 경우 false 반환
             return false;
         }
+    }
 
     $(document).ready(function () {
         getProduct();
     });
+
+    function logout() {
+        //리프레시 토큰 삭제 요청
+
+        fetch('/api/user/logout', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.msg)
+                // 쿠키 삭제
+                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/"
+            });
+
+
+    }
 
     function getProduct() {
         fetch('/api/products', {
@@ -332,60 +350,6 @@
                 }
             })
     }
-
-    /* 알림 */
-    const notificationButton = document.getElementById('notification-button');
-    const notificationBar = document.getElementById('notification-bar');
-    const notificationCount = document.getElementById('notification-count');
-
-    // 서버로부터 알림 목록을 가져와서 동적으로 표시하는 함수
-    function fetchNotifications() {
-        // 서버 엔드포인트에 GET 요청을 보냅니다.
-        axios.get('/notifications')
-            .then((response) => {
-                const notifications = response.data; // 서버에서 받은 알림 데이터
-
-                // 알림 리스트를 동적으로 생성하여 notificationBar에 추가합니다.
-                notificationBar.innerHTML = '';
-                notifications.forEach((notification) => {
-                    const notificationItem = document.createElement('div');
-                    notificationItem.textContent = notification.message;
-                    notificationBar.appendChild(notificationItem);
-                });
-
-                // 알림 카운트 업데이트
-                notificationCount.textContent = notifications.length;
-            })
-            .catch((error) => {
-                console.error('알림 가져오기 실패', error);
-            });
-    }
-
-    // 알림 삭제 요청을 서버에 보내는 함수
-    function deleteNotification(notificationId) {
-        axios.delete(`/notifications/delete/${notificationId}`)
-            .then(() => {
-                // 삭제가 성공하면 알림 다시 가져오기
-                fetchNotifications();
-            })
-            .catch((error) => {
-                console.error('알림 삭제 실패', error);
-            });
-    }
-
-    notificationButton.addEventListener('click', () => {
-        if (notificationBar.style.display === 'block') {
-            notificationBar.style.display = 'none';
-        } else {
-            notificationBar.style.display = 'block';
-            // 알림을 서버에서 가져와서 알림 리스트를 동적으로 생성하는 함수 호출
-            fetchNotifications();
-        }
-    });
-
-    // 페이지 로드 시 알림 데이터를 가져올 수 있도록 호출
-    fetchNotifications();
-
 </script>
 </body>
 </html>

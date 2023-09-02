@@ -58,10 +58,11 @@ public class UserController {
     // 회원 탈퇴
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/user/info")
-    public void deleteUser(
+    public ResponseEntity<ApiResponseDto> deleteUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserRequestDto requestDto) {
         userService.deleteUser(requestDto,userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto("회원 탈퇴 완료", HttpStatus.OK.value()));
     }
 
     // 회원 조회
@@ -80,6 +81,12 @@ public class UserController {
         return userService.getAddress(userDetails.getUser());
     }
 
+    // 로그 아웃
+    @PostMapping("/user/logout")
+    public ResponseEntity<ApiResponseDto> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.logout(userDetails.getUser()) ;
+        return ResponseEntity.ok().body(new ApiResponseDto("로그 아웃 완료", HttpStatus.OK.value()));
+    }
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<ApiResponseDto> handleMethodArgumentNotValidException(IllegalArgumentException ex) {
         ApiResponseDto restApiException = new ApiResponseDto(ex.getMessage(),HttpStatus.BAD_REQUEST.value());

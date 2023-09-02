@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.user.service;
 
+import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.user.dto.UserResponseDto;
 import com.sparta.quizdemo.user.entity.Address;
 import com.sparta.quizdemo.user.entity.User;
@@ -22,12 +23,14 @@ public class UserService {
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
 
-    public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.redisRefreshTokenRepository = redisRefreshTokenRepository;
     }
 
     // ADMIN_TOKEN
@@ -41,7 +44,7 @@ public class UserService {
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
         if (checkUsername.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            throw new IllegalArgumentException("중복된 ID가 존재합니다.");
         }
 
         // email 중복확인 to Do
@@ -84,10 +87,6 @@ public class UserService {
         Address updateAddress = addressRepository.findByUser_id(user.getId()).orElseThrow(
                 () -> new NullPointerException("주소가 존재하지 않습니다.")
         );
-
-        if(updateUser.getSocialId() != null){
-            throw new IllegalArgumentException("소셜 로그인한 사용자는 수정이 불가합니다.");
-        }
 
         if(!passwordEncoder.matches(requestDto.getPassword(),updateUser.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 틀립니다.");
@@ -136,5 +135,10 @@ public class UserService {
     }
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public void logout(User user) {
+        String username = user.getUsername();
+        redisRefreshTokenRepository.deleteRefreshToken(username);
     }
 }

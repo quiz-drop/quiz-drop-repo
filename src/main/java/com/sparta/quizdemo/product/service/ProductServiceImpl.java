@@ -92,8 +92,13 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ResponseEntity<ProductResponseDto> updateProduct(Long productNo, ProductRequestDto productRequestDto) {
+    public ResponseEntity<ProductResponseDto> updateProduct(Long productNo, MultipartFile multipartFile,String productRequestDto_temp) throws JsonProcessingException {
         Product product = productRepository.findById(productNo).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
+        ProductRequestDto productRequestDto = conversionDto(productRequestDto_temp);
+
+        String fileName = awsS3Service.uploadImage(multipartFile);
+        productRequestDto.setFileName(fileName);
+
         product.update(productRequestDto, product.getOrderCount());
         productRepository.save(product);
         return ResponseEntity.status(HttpStatus.OK).body(new ProductResponseDto(product));
@@ -112,8 +117,9 @@ public class ProductServiceImpl implements ProductService{
             orderItemRepository.delete(orderItem);
         }
 
-
-        awsS3Service.deleteImage(product.getProductImage());
+        if (product.getProductImage() != null) {
+            awsS3Service.deleteImage(product.getProductImage());
+        }
         productRepository.delete(product);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("상품이 삭제 되었습니다", HttpStatus.OK.value()));
     }

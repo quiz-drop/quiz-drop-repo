@@ -30,7 +30,7 @@
             <a href="/new-product"><button type="submit" class="btn btn-dark ms-2" id="newproduct-btn">상품 생성</button></a>
             <a href="/optionList-page"><button type="submit" class="btn btn-dark ms-2" id="newoption-btn">옵션 목록</button></a>
             <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
-            <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
+            <button type="button" onclick="logout()"class="btn btn-dark ms-2" id="logout-btn">Logout</button>
         </div>
     </div>
 </nav>
@@ -291,6 +291,23 @@
                     $('#visitorlist').append(temp_html)
                 }
             })
+    }
+    function logout() {
+        //리프레시 토큰 삭제 요청
+
+        fetch('/api/user/logout', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.msg)
+                // 쿠키 삭제
+                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/"
+            });
+
+
+
     }
 </script>
 </body>

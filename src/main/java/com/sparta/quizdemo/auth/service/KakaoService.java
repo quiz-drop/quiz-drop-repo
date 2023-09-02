@@ -156,8 +156,8 @@ public class KakaoService {
 
         if (kakaoUser == null) {
             // 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
-            String kakaoUsername = kakaoUserInfo.getUsername();
-            User sameEmailUser = userRepository.findByUsername(kakaoUsername).orElse(null);
+            String kakaoUsername = kakaoUserInfo.getEmail();
+            User sameEmailUser = userRepository.findByEmail(kakaoUsername).orElse(null);
             if (sameEmailUser != null) {
                 kakaoUser = sameEmailUser;
                 // 기존 회원정보에 카카오 Id 추가
