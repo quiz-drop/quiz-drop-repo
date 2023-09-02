@@ -11,20 +11,47 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
     <link href="/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>BurgerDrop | 홈</title>
 </head>
 <body>
-<div class="category-bar d-flex flex-column justify-content-center" style="height: 100%; width: 60px; background-color: #FF4004;position: fixed;z-index: 999">
-<ul style="list-style: none;padding-left: 0">
-    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('burger')"><img alt="" src="/images/burger.png" width="40px" height="40px" style="background-color: white"></a></li>
-    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('side')"><img alt="" src="/images/fries.png" width="40px" height="40px"  style="background-color: white"></a></li>
-    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('drink')"><img alt="" src="/images/drink.png" width="40px" height="40px"  style="background-color: white"></a></li>
-    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('dessert')"><img alt="" src="/images/dessert.png" width="40px" height="40px"  style="background-color: white"></a></li>
-    <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('likes')"><img alt="" src="/images/likes.png" width="40px" height="40px"  style="background-color: white"></a></li>
-</ul>
+<div class="category-bar d-flex flex-column justify-content-center"
+     style="height: 100%; width: 60px; background-color: #FF4004;position: fixed;z-index: 999">
+    <ul style="list-style: none;padding-left: 0">
+        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('burger')"><img alt=""
+                                                                                                  src="/images/burger.png"
+                                                                                                  width="40px"
+                                                                                                  height="40px"
+                                                                                                  style="background-color: white"></a>
+        </li>
+        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('side')"><img alt=""
+                                                                                                src="/images/fries.png"
+                                                                                                width="40px"
+                                                                                                height="40px"
+                                                                                                style="background-color: white"></a>
+        </li>
+        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('drink')"><img alt=""
+                                                                                                 src="/images/drink.png"
+                                                                                                 width="40px"
+                                                                                                 height="40px"
+                                                                                                 style="background-color: white"></a>
+        </li>
+        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('dessert')"><img alt=""
+                                                                                                   src="/images/dessert.png"
+                                                                                                   width="40px"
+                                                                                                   height="40px"
+                                                                                                   style="background-color: white"></a>
+        </li>
+        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('likes')"><img alt=""
+                                                                                                 src="/images/likes.png"
+                                                                                                 width="40px"
+                                                                                                 height="40px"
+                                                                                                 style="background-color: white"></a>
+        </li>
+    </ul>
 </div>
 <!-- 네비게이션 바 start -->
 <nav class="navbar mb-5" style="background-color: #ff921d">
@@ -37,12 +64,24 @@
             <span class="fw-bold" id="username" th:text="${username}"></span> 님 방문을 환영합니다.
         </div>
         <div class="d-flex justify-content-end">
-            <a href="/api/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
-            <a href="/login-test"><button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button></a>
-            <a href="/"><button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button></a>
-            <a href="/api/user/signup"><button type="submit" class="btn btn-dark ms-2" id="signup-btn">SignUp</button></a>
-            <a href="/cart"><button type="submit" class="btn btn-primary ms-2" id="cart-btn">장바구니</button></a>
-            <a href="/admin"><button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button></a>
+            <a href="/api/mypage">
+                <button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button>
+            </a>
+            <a href="/login-test">
+                <button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button>
+            </a>
+            <a href="/">
+                <button type="submit" class="btn btn-dark ms-2" id="logout-btn">Logout</button>
+            </a>
+            <a href="/api/user/signup">
+                <button type="submit" class="btn btn-dark ms-2" id="signup-btn">SignUp</button>
+            </a>
+            <a href="/cart">
+                <button type="submit" class="btn btn-primary ms-2" id="cart-btn">장바구니</button>
+            </a>
+            <a href="/admin">
+                <button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button>
+            </a>
         </div>
     </div>
 </nav>
@@ -51,13 +90,13 @@
         <input id="keyword" type="text" placeholder="검색어를 입력해주세요">
         <button onclick="searchProduct()">검색하기</button>
     </div>
-    <div class = "col row" id = "search-productlist">
+    <div class="col row" id="search-productlist">
         <!-- 검색 결과 목록 동적 생성 -->
     </div>
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
-    <div class = "col row" id = "product-list">
+    <div class="col row" id="product-list">
         <!-- 상품 목록 동적 생성 -->
     </div>
 </div>
@@ -108,7 +147,7 @@
         });
     });
 
-    window.onload = function() {
+    window.onload = function () {
         var login_btn = document.getElementById("login-btn");
         var signup_btn = document.getElementById("signup-btn");
         var logout_btn = document.getElementById("logout-btn");
@@ -163,6 +202,7 @@
     $(document).ready(function () {
         getProduct();
     });
+
     function getProduct() {
         fetch('/api/products', {
             method: 'GET',
@@ -178,7 +218,7 @@
                     let createdAt = data[i].createdAt;
 
                     let productImage;
-                    if(data[i].productImage === '' || data[i].productImage == null) {
+                    if (data[i].productImage === '' || data[i].productImage == null) {
                         productImage = "/images/img.png"
                     } else {
                         productImage = data[i].productImage;
@@ -222,7 +262,7 @@
                     let createdAt = data[i].createdAt;
 
                     let productImage;
-                    if(data[i].productImage === '' || data[i].productImage == null) {
+                    if (data[i].productImage === '' || data[i].productImage == null) {
                         productImage = "/images/img.png"
                     } else {
                         productImage = data[i].productImage;
@@ -249,7 +289,7 @@
     }
 
     function getCategoryProduct(category) {
-        fetch('/api/products/'+category, {
+        fetch('/api/products/' + category, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'}
         })
@@ -262,7 +302,7 @@
                     let createdAt = data[i].createdAt;
 
                     let productImage;
-                    if(data[i].productImage === '' || data[i].productImage == null) {
+                    if (data[i].productImage === '' || data[i].productImage == null) {
                         productImage = "/images/img.png"
                     } else {
                         productImage = data[i].productImage;
@@ -286,6 +326,60 @@
                 }
             })
     }
+
+    /* 알림 */
+    const notificationButton = document.getElementById('notification-button');
+    const notificationBar = document.getElementById('notification-bar');
+    const notificationCount = document.getElementById('notification-count');
+
+    // 서버로부터 알림 목록을 가져와서 동적으로 표시하는 함수
+    function fetchNotifications() {
+        // 서버 엔드포인트에 GET 요청을 보냅니다.
+        axios.get('/notifications')
+            .then((response) => {
+                const notifications = response.data; // 서버에서 받은 알림 데이터
+
+                // 알림 리스트를 동적으로 생성하여 notificationBar에 추가합니다.
+                notificationBar.innerHTML = '';
+                notifications.forEach((notification) => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.textContent = notification.message;
+                    notificationBar.appendChild(notificationItem);
+                });
+
+                // 알림 카운트 업데이트
+                notificationCount.textContent = notifications.length;
+            })
+            .catch((error) => {
+                console.error('알림 가져오기 실패', error);
+            });
+    }
+
+    // 알림 삭제 요청을 서버에 보내는 함수
+    function deleteNotification(notificationId) {
+        axios.delete(`/notifications/delete/${notificationId}`)
+            .then(() => {
+                // 삭제가 성공하면 알림 다시 가져오기
+                fetchNotifications();
+            })
+            .catch((error) => {
+                console.error('알림 삭제 실패', error);
+            });
+    }
+
+    notificationButton.addEventListener('click', () => {
+        if (notificationBar.style.display === 'block') {
+            notificationBar.style.display = 'none';
+        } else {
+            notificationBar.style.display = 'block';
+            // 알림을 서버에서 가져와서 알림 리스트를 동적으로 생성하는 함수 호출
+            fetchNotifications();
+        }
+    });
+
+    // 페이지 로드 시 알림 데이터를 가져올 수 있도록 호출
+    fetchNotifications();
+
 </script>
 </body>
 </html>

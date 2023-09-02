@@ -1,80 +1,404 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--    <style>-->
+<!--        * {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            width: 500px;-->
+<!--            margin: 0 auto;-->
+<!--            padding: 25px-->
+<!--        }-->
+
+<!--        .container h1 {-->
+<!--            text-align: left;-->
+<!--            padding: 5px 5px 5px 5px;-->
+<!--            color: black;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        .chatting {-->
+<!--            border: 1px solid gray;-->
+<!--            width: 700px;-->
+<!--            height: 700px;-->
+<!--            overflow: auto;-->
+<!--        }-->
+
+<!--        .chatting p {-->
+<!--            text-align: left;-->
+<!--        }-->
+
+<!--        input {-->
+<!--            width: 450px;-->
+<!--            height: 50px;-->
+<!--        }-->
+
+<!--        th {-->
+<!--            width: 100px;-->
+<!--        }-->
+
+<!--        #yourMsg {-->
+<!--            width: 700px;-->
+<!--        }-->
+
+<!--        .me {-->
+<!--            color: blue;-->
+<!--        }-->
+
+<!--        .other {-->
+<!--            color: red;-->
+<!--        }-->
+<!--    </style>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container" id="container">-->
+<!--    <h1 id="title_room">채팅방제목</h1>-->
+<!--    <div id="chatting" class="chatting">-->
+<!--    </div>-->
+<!--    <div id="yourMsg">-->
+<!--        <table class="inputTable">-->
+<!--            <tr>-->
+<!--                <th>메시지</th>-->
+<!--                <th><input id="msg" placeholder="보내실 메시지를 입력하세요."></th>-->
+<!--                <th>-->
+<!--                    <button onclick="send()" id="sendBtn">보내기</button>-->
+<!--                    <button onclick="disconnect()" id="disconnectBtn">끊기</button>-->
+<!--                </th>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>-->
+<!--<script>-->
+<!--    const token = Cookies.get('Authorization'); // 쿠키에서 토큰을 가져옵니다.-->
+<!--    const payloads = JSON.parse(atob(token.split(".")[1])); // 토큰을 디코딩하고 페이로드를 가져옵니다.-->
+<!--    const username = payloads.sub;-->
+
+<!--    const urlSearch = new URLSearchParams(location.search);-->
+<!--    const roomId = urlSearch.get('roomId');-->
+<!--    $(document).ready(function () {-->
+<!--        // 채팅방에 저장된 채팅내용 조회-->
+<!--        $.ajax({-->
+<!--            url: `/api/chat/chatRoom/${roomId}`,-->
+<!--            method: 'GET',-->
+<!--            headers: {-->
+<!--                'Authorization': token // 토큰을 요청 헤더에 추가-->
+<!--            },-->
+<!--            success: function (response) {-->
+<!--                response.forEach(function (chatMessage) {-->
+<!--                    const chatContent = $('<div>', {-->
+<!--                        class: 'testChat',-->
+<!--                        text: chatMessage.message // 필드명을 message로 변경-->
+<!--                    });-->
+<!--                    const chatContentTime = $('<div>', {-->
+<!--                        class: 'chatContentTime',-->
+<!--                        text: chatMessage.createAt // 필드명을 createAt으로 변경-->
+<!--                    });-->
+
+<!--                    $('#chatting').append(chatContent, chatContentTime);-->
+<!--                });-->
+<!--            },-->
+<!--            error: function (xhr, status, error) {-->
+<!--                alert("채팅 내용 불러오기 실패");-->
+<!--                console.log(xhr);-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+
+<!--    var socket = new SockJS("/chat");-->
+<!--    stompClient = Stomp.over(socket);-->
+
+<!--    function connect() {-->
+<!--        console.log("socket", socket);-->
+<!--        console.log("stompClient", stompClient);-->
+
+<!--        // 이 채팅룸을 클릭했을때 해당하는 roomId을 가지고 온다.-->
+<!--        stompClient.connect({}, function () {-->
+<!--                sub = stompClient.subscribe('/topic/' + roomId, function (e) {-->
+
+<!--                    console.log("e : ", e);-->
+<!--                    showMessage(JSON.parse(e.body));-->
+<!--                });-->
+
+<!--            },-->
+<!--            function (e) {-->
+<!--                alert('통신끊김');-->
+<!--            }-->
+<!--        );-->
+
+<!--    }-->
+
+<!--    connect();-->
+
+<!--    function disconnect() {-->
+<!--        stompClient.disconnect();-->
+<!--    }-->
+
+<!--    //엔터 눌렀을때 전송-->
+<!--    $('#msg').keypress(function (e) {-->
+<!--        if (e.keyCode === 13) send();-->
+<!--    });-->
+
+<!--    //화면에 메시지를 표시하는 함수-->
+<!--    function showMessage(data) {-->
+<!--        if (data.sender === username) {-->
+<!--            $('#chatting').append("<p class='me'>" + data.sender + " : " + data.message + "</p>");-->
+<!--        } else {-->
+<!--            $('#chatting').append("<p class='other'>" + data.sender + " : " + data.message + "</p>");-->
+<!--        }-->
+<!--    }-->
+
+<!--    //메시지 브로커로 메시지 전송-->
+<!--    function send() {-->
+<!--        data = {-->
+<!--            'sender': username,-->
+<!--            'message': $("#msg").val(),-->
+<!--            'roomId': roomId-->
+<!--        };-->
+
+<!--        stompClient.send("/app/chat/send", {}, JSON.stringify(data));-->
+
+<!--        //보낼때 채팅 저장-->
+<!--        $.ajax({-->
+<!--            url: `/api/chat/save`,-->
+<!--            method: 'POST',-->
+<!--            contentType: "application/json",-->
+<!--            data: JSON.stringify({-->
+<!--                'roomId': roomId,-->
+<!--                'username': username,-->
+<!--                'message': $("#msg").val()-->
+<!--            }),-->
+<!--            success: function (response) {-->
+<!--                alert("저장완료");-->
+<!--                $("#msg").val('');-->
+<!--            },-->
+<!--            error: function (xhr, status, error) {-->
+<!--                alert("저장 실패")-->
+<!--                console.log(xhr);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅 앱</title>
     <style>
-        * {
+        /* styles.css */
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
         }
 
-        .container {
-            width: 500px;
-            margin: 0 auto;
-            padding: 25px
+        .chat-container {
+            max-width: 600px; /* 원하는 너비로 변경 */
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
         }
 
-        .container h1 {
-            text-align: left;
-            padding: 5px 5px 5px 5px;
-            color: black;
+        .chat-header {
+            background-color: #0099ff;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-avatar img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-username {
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .chat-messages {
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .chat-messages .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+
+        .chat-messages .message.sender {
+            background-color: #0099ff;
+            color: #fff;
+            float: right;
+        }
+
+        .chat-messages .message.receiver {
+            background-color: #e5e5e5;
+            float: left;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .chat-input input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .chat-input button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            border: none;
+            background-color: #0099ff;
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* 나가기 버튼 스타일 */
+        #exit-button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            background-color: #ff0000; /* 원하는 배경색으로 설정하세요 */
+            color: #fff; /* 텍스트 색상 설정 */
+            border-radius: 20px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* 나가기 버튼 호버 효과 */
+        #exit-button:hover {
+            background-color: #cc0000; /* 마우스 호버 시 배경색 변경 */
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* 모달 내용 스타일 */
+        .modal h2 {
+            margin-bottom: 10px;
+        }
+
+        .modal p {
             margin-bottom: 20px;
         }
 
-        .chatting {
-            border: 1px solid gray;
-            width: 700px;
-            height: 700px;
-            overflow: auto;
+        /* 모달 버튼 스타일 */
+        .modal button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            background-color: #0099ff;
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            outline: none;
         }
 
-        .chatting p {
-            text-align: left;
+        /* 모달 버튼 호버 효과 */
+        .modal button:hover {
+            background-color: #0077cc;
         }
 
-        input {
-            width: 450px;
-            height: 50px;
+        /* 수정된 CSS 코드 */
+        .chat-messages .message.me {
+            background-color: #0099ff;
+            color: #fff;
+            float: right;
+            clear: both; /* 우측 정렬 후 레이아웃 클리어 */
         }
 
-        th {
-            width: 100px;
+        .chat-messages .message.other {
+            background-color: #e5e5e5;
+            color: #000; /* 상대방 메시지의 텍스트 색상 변경 (선택 사항) */
+            float: left;
+            clear: both; /* 좌측 정렬 후 레이아웃 클리어 */
         }
 
-        #yourMsg {
-            width: 700px;
-        }
 
-        .me {
-            color: blue;
-        }
 
-        .other {
-            color: red;
-        }
     </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 </head>
 <body>
-<div class="container" id="container">
-    <h1 id="title_room">채팅방제목</h1>
-    <div id="chatting" class="chatting">
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="chat-avatar">
+            <img src="user-avatar.jpg" alt="사용자 프로필 사진">
+        </div>
+        <div class="chat-username">
+            BD user
+        </div>
     </div>
-    <div id="yourMsg">
-        <table class="inputTable">
-            <tr>
-                <th>메시지</th>
-                <th><input id="msg" placeholder="보내실 메시지를 입력하세요."></th>
-                <th>
-                    <button onclick="send()" id="sendBtn">보내기</button>
-                    <button onclick="disconnect()" id="disconnectBtn">끊기</button>
-                </th>
-            </tr>
-        </table>
+    <div class="chat-messages" id="chatting">
+        <!-- 채팅 메시지가 여기에 추가됩니다. -->
+    </div>
+    <div class="chat-input">
+        <input type="text" id="msg" placeholder="메시지를 입력하세요">
+        <button id="send-button" onclick="send()">전송</button>
+    </div>
+    <button id="exit-button">나가기</button>
+</div>
+
+<!-- 모달 다이얼로그 -->
+<div id="exit-modal" class="modal">
+    <div class="modal-content">
+        <h2>채팅방 나가기</h2>
+        <p>채팅방에서 나가시겠습니까?</p>
+        <button id="confirm-exit">예</button>
+        <button id="cancel-exit">취소</button>
     </div>
 </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
@@ -113,6 +437,48 @@
                 console.log(xhr);
             }
         });
+
+        // "나가기" 버튼 클릭 시 모달 창 표시
+        $('#exit-button').click(function () {
+            const modal = document.getElementById('exit-modal');
+            modal.style.display = 'block';
+        });
+
+        // "예" 버튼 클릭 시 채팅방 종료 및 삭제 처리
+        $('#confirm-exit').click(function () {
+            // 여기에 채팅방 삭제와 메인 페이지로 이동하는 코드를 추가
+            // 채팅방 삭제 요청을 서버로 보냅니다.
+            $.ajax({
+                url: `/api/chat/deleteRoom/${roomId}`, // roomId를 적절하게 가져와야 합니다.
+                method: 'DELETE',
+                headers: {
+                    'Authorization': token
+                },
+                success: function (response) {
+                    // 채팅방 삭제 성공 시 메인 페이지로 이동
+                    window.location.href = '/'; // 적절한 메인 페이지 URL로 수정하세요.
+                },
+                error: function (xhr, status, error) {
+                    alert("채팅방 삭제 실패");
+                    console.log(xhr);
+                }
+            });
+
+            // 모달 창 숨기기
+            const modal = document.getElementById('exit-modal');
+            modal.style.display = 'none';
+        });
+
+        // "취소" 버튼 클릭 시 모달 창 숨김
+        $('#cancel-exit').click(function () {
+            const modal = document.getElementById('exit-modal');
+            modal.style.display = 'none';
+        });
+
+        // 엔터 눌렀을 때 전송
+        $('#msg').keypress(function (e) {
+            if (e.keyCode === 13) send();
+        });
     });
 
     var socket = new SockJS("/chat");
@@ -144,18 +510,28 @@
         stompClient.disconnect();
     }
 
-    //엔터 눌렀을때 전송
-    $('#msg').keypress(function (e) {
-        if (e.keyCode === 13) send();
-    });
-
     //화면에 메시지를 표시하는 함수
+    // function showMessage(data) {
+    //     if (data.sender === username) {
+    //         $('#chatting').append("<p class='me'>" + data.sender + " : " + data.message + "</p>");
+    //     } else {
+    //         $('#chatting').append("<p class='other'>" + data.sender + " : " + data.message + "</p>");
+    //     }
+    // }
     function showMessage(data) {
-        if (data.sender === username) {
-            $('#chatting').append("<p class='me'>" + data.sender + " : " + data.message + "</p>");
-        } else {
-            $('#chatting').append("<p class='other'>" + data.sender + " : " + data.message + "</p>");
-        }
+        const chatMessages = document.getElementById('chatting');
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = data.sender + ' : ' + data.message;
+        messageDiv.classList.add(data.sender === username ? 'me' : 'other');
+        chatMessages.appendChild(messageDiv);
+
+        // 스크롤을 아래로 이동하여 최신 메시지를 보여줍니다.
+        scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        var chatMessages = document.getElementById('chatting');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     //메시지 브로커로 메시지 전송
@@ -188,7 +564,6 @@
             }
         });
     }
-
 </script>
 </body>
 </html>

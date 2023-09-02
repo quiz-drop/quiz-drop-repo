@@ -38,7 +38,7 @@ public class ChatRoomController {
     public ResponseEntity<ApiResponseDto> deleteRoom(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                      @PathVariable String roomId) {
         chatRoomService.deleteRoom(userDetails.getUser(), roomId);
-        return ResponseEntity.ok().body(new ApiResponseDto("채팅방 삭제 완료", HttpStatus.OK.value()));
+        return ResponseEntity.ok().body(new ApiResponseDto("료채팅방 삭제 완", HttpStatus.OK.value()));
     }
 
     /* message 조회 */

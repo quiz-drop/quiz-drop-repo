@@ -30,7 +30,7 @@ public class ChatRoom extends TimeStamped {
     @Column(unique = true)
     private String roomId;
 
-    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
     public ChatRoom(User user, String roomId) {
