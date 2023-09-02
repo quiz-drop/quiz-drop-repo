@@ -66,9 +66,22 @@ public class RedisRefreshTokenRepository {
     }
 
     //리프레시 토큰 삭제 (로그아웃 시)
-    public void deleteRefreshToken(String refreshToken) {
-        redisTemplate.delete(refreshToken);
+    public void deleteRefreshToken(String username) {
+        Set<String> refreshTokenKeys = redisTemplate.keys("*");
+
+        // 유저 이름에 매칭되는 리프레시 토큰 찾기
+        for (String refreshToken : refreshTokenKeys) {
+
+            String storedUsername = redisTemplate.opsForValue().get(refreshToken);
+
+            // 리프레시 토큰의 유저네임과 매칭되는 유저네임 찾기
+            if (storedUsername != null && storedUsername.equals(username)) {
+
+                redisTemplate.delete(refreshToken);
+            }
+        }
     }
+
 
     //리프레시 토큰 조회
     public Optional<String> findByUsername(String username) {
