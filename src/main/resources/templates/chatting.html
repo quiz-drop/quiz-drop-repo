@@ -366,6 +366,28 @@
         }
 
 
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        button#home-btn {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button#home-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
 
     </style>
 </head>
@@ -398,12 +420,16 @@
         <button id="cancel-exit">취소</button>
     </div>
 </div>
-
+<button id="home-btn">Home</button>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
+    // 홈 버튼 클릭 시 이동할 경로 설정
+    document.getElementById("home-btn").addEventListener("click", function() {
+        window.location.href = "/";
+    });
     const token = Cookies.get('Authorization'); // 쿠키에서 토큰을 가져옵니다.
     const payloads = JSON.parse(atob(token.split(".")[1])); // 토큰을 디코딩하고 페이로드를 가져옵니다.
     const username = payloads.sub;
