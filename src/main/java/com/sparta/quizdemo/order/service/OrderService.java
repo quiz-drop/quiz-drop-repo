@@ -143,16 +143,8 @@ public class OrderService {
             }
 
             String url = "";
-            String orderUsername = order.getUser().getUsername();
-            Optional<User> orderUser = orderRepository.findByUsername(order.getUser().getUsername());
-            if (orderUser.isPresent()) {
-                User receiver = orderUser.get();
-                String content = receiver + "님! 주문이 완료되었습니다!";
-                notificationService.send(receiver, NotificationType.ORDER, content, url);
-            } else {
-                log.error("User not found");
-                throw new IllegalArgumentException("존재하지 않는 유저입니다.");
-            }
+            String content = user.getUsername() + "님! 주문이 완료되었습니다!";
+            notificationService.send(user, NotificationType.ORDER, content, url);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto("결제가 완료 되었습니다.", HttpStatus.CREATED.value()));
         } else {
@@ -256,16 +248,8 @@ public class OrderService {
                     }
 
                     String url = "";
-                    String orderUsername = order.getUser().getUsername();
-                    Optional<User> orderUser = orderRepository.findByUsername(order.getUser().getUsername());
-                    if (orderUser.isPresent()) {
-                        User receiver = orderUser.get();
-                        String content = receiver + "님! 배달이 완료되었습니다!";
-                        notificationService.send(receiver, NotificationType.DELIVERY, content, url);
-                    } else {
-                        log.error("User not found");
-                        throw new IllegalArgumentException("존재하지 않는 유저입니다.");
-                    }
+                    String content = order.getUser().getUsername() + "님! 수령시간이 되었습니다!";
+                    notificationService.send(order.getUser(), NotificationType.DELIVERY, content, url);
                 }
             }
         }
