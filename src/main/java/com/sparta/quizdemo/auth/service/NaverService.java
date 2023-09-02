@@ -149,8 +149,8 @@ public class NaverService {
 
         if (naverUser == null) {
             // 네이버 사용자  (username) 동일한  (username) 가진 회원이 있는지 확인
-            String naverUsername = naverUserInfo.getUsername();
-            User sameUsernameUser = userRepository.findByUsername(naverUsername).orElse(null);
+            String naverUsername = naverUserInfo.getEmail();
+            User sameUsernameUser = userRepository.findByEmail(naverUsername).orElse(null);
             if (sameUsernameUser != null) {
                 naverUser = sameUsernameUser;
                 // 기존 회원정보에 카카오 Id 추가

@@ -1,46 +1,40 @@
 package com.sparta.quizdemo.chat.entity;
 
+import com.sparta.quizdemo.common.entity.TimeStamped;
 import com.sparta.quizdemo.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "chatRoom")
-@NoArgsConstructor
-public class ChatRoom {
+public class ChatRoom extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "chatRoom_id")
     private Long id;
-
-    @Column
-    private String roomId;
 
     @Column
     private String username;
 
-    @OneToMany(mappedBy = "chatRoom")
-    private List<ChatMessage> chatMessages = new ArrayList<>();
-
     @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(unique = true)
+    private String roomId;
+
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ChatMessage> chatMessages = new ArrayList<>();
 
     public ChatRoom(User user, String roomId) {
         this.roomId = roomId;
-        this.username = user.getUsername();
-    }
-
-    public static ChatRoom create(User user) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = UUID.randomUUID().toString();
-        chatRoom.username = user.getUsername();
-        return chatRoom;
+        this.user = user;
     }
 }

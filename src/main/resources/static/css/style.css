@@ -12,3 +12,13 @@ textarea {width: -webkit-fill-available; height: fit-content; overflow-wrap: any
 /* index.html */
 .feed {-webkit-box-shadow: 1px 1px 15px 1px rgba(0,0,0,0.17); box-shadow: 1px 1px 15px 1px rgba(0,0,0,0.17);}
 .feed:hover {transition : 0.5s; -webkit-box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.25); box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.25);}
+
+/* 문의하기 아이콘 */
+.inquiry-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #007bff; /* You can change the color to your preference */
+}

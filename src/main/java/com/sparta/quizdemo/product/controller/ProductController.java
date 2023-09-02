@@ -60,8 +60,8 @@ public class ProductController {
     @Transactional
     @Secured("ROLE_ADMIN")
     @PutMapping("/product/{productNo}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long productNo, @RequestBody ProductRequestDto productRequestDto) {
-        return productService.updateProduct(productNo, productRequestDto);
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long productNo, @RequestPart MultipartFile multipartFile,@RequestParam("productRequestDto") String productRequestDto) throws JsonProcessingException {
+        return productService.updateProduct(productNo, multipartFile, productRequestDto);
     }
 
     @Operation(summary = "상품 삭제", description = "관리자 제한")

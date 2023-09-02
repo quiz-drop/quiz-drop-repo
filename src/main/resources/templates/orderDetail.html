@@ -63,6 +63,8 @@
     loadOrderData()
   });
   function loadOrderData() {
+    var delete_btn = document.getElementById("delete-btn");
+
     fetch('/api/order/'+order_id, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'}
@@ -83,7 +85,14 @@
               }
 
               let completeTime = data.completeTime;
-              let orderComplete = data.orderComplete;
+              let orderComplete;
+
+              if (data.orderComplete) {
+                delete_btn.style.display = "none";
+                orderComplete = "완료";
+              } else {
+                orderComplete = "미수령";
+              }
 
               let temp2_html = `
               <div>주문번호 : ${orderid}</div>

@@ -22,6 +22,7 @@ public class HomeController {
         if(userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
+            model.addAttribute("userAddress", userDetails.getUser().getAddress().getAddress1());
         }
         return "index";
     }
@@ -87,5 +88,55 @@ public class HomeController {
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
         return "backOffice";
+    }
+    @GetMapping("/signup")
+    public String signup() {
+
+        return "signup";
+    }
+    @GetMapping("/login")
+    String login(){
+        return "login";
+    }
+    @GetMapping("/mypage")
+    String mypage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        if(userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("userRole", userDetails.getUser().getRole());
+        }
+        return "mypage";
+    }
+    @GetMapping("/user/orders")
+    String orders(Model model,  @AuthenticationPrincipal UserDetailsImpl userDetails){
+        if(userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("userRole", userDetails.getUser().getRole());
+        }
+        return "myOrders";
+    }
+
+    @GetMapping("/user/update")
+    String update(Model model,  @AuthenticationPrincipal UserDetailsImpl userDetails){
+        if(userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("userRole", userDetails.getUser().getRole());
+        }
+        return "myUpdate";
+    }
+    @GetMapping("/user/reviews")
+    String reviews(Model model,  @AuthenticationPrincipal UserDetailsImpl userDetails){
+        if(userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("userRole", userDetails.getUser().getRole());
+        }
+        return "myReviews";
+    }
+    @GetMapping("/user/delete")
+    String delete(Model model,  @AuthenticationPrincipal UserDetailsImpl userDetails){
+        if(userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("userRole", userDetails.getUser().getRole());
+        }
+        return "myDelete";
     }
 }

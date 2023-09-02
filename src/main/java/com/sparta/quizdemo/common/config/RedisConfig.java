@@ -1,6 +1,5 @@
 package com.sparta.quizdemo.common.config;
 
-import com.sparta.quizdemo.chat.service.RedisSubscriber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -10,10 +9,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.Topic;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -21,8 +17,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @EnableCaching // Redis 캐시를 사용하는 경우 활성화
 public class RedisConfig {
-
-    private static final String TOPIC_NAME = "channel";
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -48,10 +42,10 @@ public class RedisConfig {
      * RedisMessageListenerContainer 로부터 메시지를 dispatch 받고,
      * 실제 메시지를 처리하는 비즈니스 로직이 담긴 Subscriber Bean 추가
      */
-    @Bean
-    public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-        return new MessageListenerAdapter(subscriber, "onMessage");
-    }
+//    @Bean
+//    public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
+//        return new MessageListenerAdapter(subscriber, "onMessage");
+//    }
 
     /* 어플리케이션에서 사용할 redisTemplate 설정 */
     @Bean
@@ -70,10 +64,7 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    @Bean
-    public Topic createTopic() {
-        return new ChannelTopic(TOPIC_NAME);
-    }
+
 
     //레디스 캐시
     @Bean

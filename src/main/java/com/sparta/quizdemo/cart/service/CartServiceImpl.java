@@ -87,20 +87,28 @@ public class CartServiceImpl implements CartService{
             options.add(option);
         }
 
-        if (cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId()).isPresent()) {
-            CartItem cartItem = cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId()).orElseThrow();
+        if (!cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId()).isEmpty()) {
+            List<CartItem> cartItemList = cartItemRepository.findByProductIdAndCartId(product.getId(), cart.getId());
             List<Long> optionChoiceNo = new ArrayList<>();
-            for (Option option : cartItem.getOptionList()) {
-                optionChoiceNo.add(option.getId());
-            }
+            Boolean temp = true;
 
-            if (cartItemRequestDto.getOptionList().equals(optionChoiceNo)) {
-                Integer tempQuantity = cartItem.getQuantity();
-                cartItem.setQuantity(tempQuantity + cartItemRequestDto.getQuantity());
-                cartItemRepository.save(cartItem);
-            } else {
-                cartItem = new CartItem(cartItemRequestDto.getQuantity(), cart, product, options);
-                cartItemRepository.save(cartItem);
+            for (CartItem cartItem : cartItemList) {
+                for (Option option : cartItem.getOptionList()) {
+                    optionChoiceNo.add(option.getId());
+                }
+
+                if (cartItemRequestDto.getOptionList().equals(optionChoiceNo) && temp.equals(true)) {
+                    Integer tempQuantity = cartItem.getQuantity();
+                    cartItem.setQuantity(tempQuantity + cartItemRequestDto.getQuantity());
+                    cartItemRepository.save(cartItem);
+                    temp = false;
+                } else {
+                    if (temp.equals(true)) {
+                        cartItem = new CartItem(cartItemRequestDto.getQuantity(), cart, product, options);
+                        cartItemRepository.save(cartItem);
+                        temp = false;
+                    }
+                }
             }
         } else {
             CartItem cartItem = new CartItem(cartItemRequestDto.getQuantity(), cart, product, options);
