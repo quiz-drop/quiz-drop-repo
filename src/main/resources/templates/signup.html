@@ -144,7 +144,7 @@
         var detailAddress = $("#sample6_detailAddress").val();
 
         console.log(username,password,nickname,mail,postcode,address,detailAddress)
-        if(username === '' && password === '' && nickname === '' && mail === '' && postcode === ''  ){
+        if(username === '' || password === '' || nickname === '' || mail === '' || postcode === ''  ){
             alert("입력되지 않은 정보가 있습니다.")
             return;
         }
