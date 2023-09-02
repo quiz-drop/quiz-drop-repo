@@ -17,5 +17,10 @@ public class TestController {
         return "chatting";
     }
 
+    @GetMapping("/chatList")
+    public String getChatList() {
+        return "chatList";
+    }
+
 
 }
