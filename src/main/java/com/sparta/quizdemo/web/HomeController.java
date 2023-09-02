@@ -88,4 +88,21 @@ public class HomeController {
         }
         return "backOffice";
     }
+    @GetMapping("/signup")
+    public String signup() {
+
+        return "signup";
+    }
+    @GetMapping("/login")
+    String login(){
+        return "login";
+    }
+    @GetMapping("/mypage")
+    String mypage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        if(userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("userRole", userDetails.getUser().getRole());
+        }
+        return "mypage";
+    }
 }
