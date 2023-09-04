@@ -34,13 +34,18 @@
         <div class="my-5 fs-2 fw-bold">상품 수정</div>
         <div class="row mt-4">
             <div class="col-md-6">
-
                 <input type="text" id="productName" name="productName" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품이름">
+                <label th:text="${productName}"></label>
                 <input type="text" id="productPrice" name="productPrice" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품가격">
+                <label th:text="${productPrice}"></label>
                 <input type="file" id ="productImage" name="productImage" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="이미지 URL을 입력하세요">
+                <label th:text="${productImage}"></label>
                 <textarea id = "productIntro" name="productIntro" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품설명"></textarea>
+                <label th:text="${productIntro}"></label>
                 <input type="text" id="cookingTime" name="cookingTime" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="조리시간">
+                <label th:text="${cookingTime}"></label>
                 <input type="text" id="category" name="category" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="카테고리">
+                <label th:text="${category}"></label>
             </div>
         </div>
         <div class="row my-5">

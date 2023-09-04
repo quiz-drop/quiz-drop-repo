@@ -68,7 +68,15 @@ public class HomeController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/edit-product/{productId}")
     public String updateProduct(@PathVariable Long productId, Model model) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
+
         model.addAttribute("productId", productId);
+        model.addAttribute("productName", product.getProductName());
+        model.addAttribute("productPrice", product.getProductPrice());
+        model.addAttribute("productImage", product.getProductImage());
+        model.addAttribute("productIntro", product.getProductIntro());
+        model.addAttribute("cookingTime", product.getCookingTime());
+        model.addAttribute("category", product.getCategory());
         return "editProduct";
     }
 

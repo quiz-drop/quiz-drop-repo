@@ -80,13 +80,19 @@ public class BackofficeService implements HandlerInterceptor {
         List<User> userList = userRepository.findAll();
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
 
-        for (User user : userList) {
-            if (user.getUsername().contains(keyword)) {
+        if (keyword.equals("")) {
+            for (User user : userList) {
                 userResponseDtoList.add(new UserResponseDto(user));
             }
+        } else {
+            for (User user : userList) {
+                if (user.getUsername().contains(keyword)) {
+                    userResponseDtoList.add(new UserResponseDto(user));
+                }
 
-            if (user.getNickname().contains(keyword)) {
-                userResponseDtoList.add(new UserResponseDto(user));
+                if (user.getNickname().contains(keyword)) {
+                    userResponseDtoList.add(new UserResponseDto(user));
+                }
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDtoList);
@@ -161,7 +167,7 @@ public class BackofficeService implements HandlerInterceptor {
         return ip;
     }
 
-    @Scheduled(cron = "0 0 * * * *") // 1시간마다 레디스에 쌓인 방문자들 정보를 DB로 전송
+    @Scheduled(cron = "0 */5 * * * *") // 5분마다 레디스에 쌓인 방문자들 정보를 DB로 전송
     public void updateVisitorData() {
         Set<String> keys = redisTemplate.keys("*_*");
 
