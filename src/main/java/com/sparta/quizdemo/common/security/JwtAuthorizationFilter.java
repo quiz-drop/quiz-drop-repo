@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
-import com.sparta.quizdemo.common.util.JwtUtil;
+import com.sparta.quizdemo.util.JwtUtil;
 import com.sparta.quizdemo.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -23,7 +23,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Optional;
 
 @Slf4j(topic = "JWT 검증 및 인가")

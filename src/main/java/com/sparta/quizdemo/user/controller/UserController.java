@@ -55,6 +55,16 @@ public class UserController {
         return ResponseEntity.ok().body(new ApiResponseDto("정보 수정 완료", HttpStatus.OK.value()));
     }
 
+    //주소 등록
+    @Operation(summary = "주소 등록")
+    @PatchMapping("/user/info")
+    public ResponseEntity<ApiResponseDto> addAddress(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody UserRequestDto requestDto) {
+        userService.addAddress(requestDto,userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto("주소 등록 완료", HttpStatus.OK.value()));
+    }
+
     // 회원 탈퇴
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/user/info")

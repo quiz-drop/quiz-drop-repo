@@ -22,7 +22,11 @@ public class HomeController {
         if(userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
-            model.addAttribute("userAddress", userDetails.getUser().getAddress().getAddress1());
+            if(userDetails.getUser().getAddress() != null ){
+                model.addAttribute("userAddress", userDetails.getUser().getAddress().getAddress1());
+            }else{
+                model.addAttribute("userAddress", "주소없음");
+            }
         }
         return "index";
     }
@@ -146,5 +150,11 @@ public class HomeController {
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
         return "myDelete";
+    }
+
+    @GetMapping("/user/address")
+    String address(Model model,  @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        return "myAddress";
     }
 }

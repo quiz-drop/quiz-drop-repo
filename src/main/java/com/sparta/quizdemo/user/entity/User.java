@@ -24,6 +24,7 @@ import java.util.List;
 public class User extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -57,7 +58,7 @@ public class User extends TimeStamped {
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Cart cart;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Order> orderList;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
