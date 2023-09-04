@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.common.config;
+package com.sparta.quizdemo.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

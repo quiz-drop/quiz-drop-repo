@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.common.config;
+package com.sparta.quizdemo.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;

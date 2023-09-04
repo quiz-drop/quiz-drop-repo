@@ -211,6 +211,14 @@
     }
 
     $(document).ready(function () {
+        var userAddress = $("#userAddress").text();
+
+        // 예시: userAddress가 '주소없음'인 경우 처리
+        if (userAddress === '주소없음') {
+            alert("이런! 주소가 등록이 안되어있군요. 주소를 등록해주세요")
+            window.location.href ='/user/address';
+        }
+
         getProduct();
     });
 

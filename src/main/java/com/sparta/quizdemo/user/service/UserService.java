@@ -4,7 +4,7 @@ import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.user.dto.UserResponseDto;
 import com.sparta.quizdemo.user.entity.Address;
 import com.sparta.quizdemo.user.entity.User;
-import com.sparta.quizdemo.common.util.JwtUtil;
+import com.sparta.quizdemo.util.JwtUtil;
 import com.sparta.quizdemo.user.repository.AddressRepository;
 import com.sparta.quizdemo.user.repository.UserRepository;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
@@ -24,6 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RedisRefreshTokenRepository redisRefreshTokenRepository;
+
 
     public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository) {
         this.userRepository = userRepository;
@@ -140,5 +141,14 @@ public class UserService {
     public void logout(User user) {
         String username = user.getUsername();
         redisRefreshTokenRepository.deleteRefreshToken(username);
+    }
+
+    public void addAddress(UserRequestDto requestDto, User user) {
+        User findUser = userRepository.findUserById(user.getId()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+        Address address = new Address(requestDto, user);
+        addressRepository.save(address);
+
     }
 }

@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.common.config;
+package com.sparta.quizdemo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
