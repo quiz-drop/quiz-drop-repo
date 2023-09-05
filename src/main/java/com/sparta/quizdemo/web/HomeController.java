@@ -19,7 +19,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String mainPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if(userDetails != null) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
             model.addAttribute("userAddress", userDetails.getUser().getAddress().getAddress1());
@@ -33,7 +33,7 @@ public class HomeController {
 
         model.addAttribute("category", product.getCategory());
         model.addAttribute("productId", productId);
-        if(userDetails != null) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
@@ -83,32 +83,36 @@ public class HomeController {
     @Secured("ROLE_ADMIN")
     @GetMapping("/admin")
     public String backOffice(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if(userDetails != null) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
         return "backOffice";
     }
+
     @GetMapping("/signup")
     public String signup() {
 
         return "signup";
     }
+
     @GetMapping("/login")
-    String login(){
+    String login() {
         return "login";
     }
+
     @GetMapping("/mypage")
-    String mypage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        if(userDetails != null) {
+    String mypage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
         return "mypage";
     }
+
     @GetMapping("/user/orders")
-    String orders(Model model,  @AuthenticationPrincipal UserDetailsImpl userDetails){
-        if(userDetails != null) {
+    String orders(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
@@ -116,27 +120,38 @@ public class HomeController {
     }
 
     @GetMapping("/user/update")
-    String update(Model model,  @AuthenticationPrincipal UserDetailsImpl userDetails){
-        if(userDetails != null) {
+    String update(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
         return "myUpdate";
     }
+
     @GetMapping("/user/reviews")
-    String reviews(Model model,  @AuthenticationPrincipal UserDetailsImpl userDetails){
-        if(userDetails != null) {
+    String reviews(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
         return "myReviews";
     }
+
     @GetMapping("/user/delete")
-    String delete(Model model,  @AuthenticationPrincipal UserDetailsImpl userDetails){
-        if(userDetails != null) {
+    String delete(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails != null) {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
         return "myDelete";
+    }
+
+    @GetMapping("/comment")
+    String comment(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("userRole", userDetails.getUser().getRole());
+        }
+        return "comment";
     }
 }
