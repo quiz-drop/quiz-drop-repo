@@ -66,20 +66,20 @@ public class RedisConfig {
 
 
 
-    //레디스 캐시
-    @Bean
-    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
-        //key, value 형태의 값을 직렬화(REST API에서 사용하는 JSON 형태로 변환) 시켜주고 리턴
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeKeysWith(RedisSerializationContext
-                        .SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext
-                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-
-        return RedisCacheManager
-                .RedisCacheManagerBuilder
-                .fromConnectionFactory(redisConnectionFactory)
-                .cacheDefaults(redisCacheConfiguration)
-                .build();
-    }
+//    //레디스 캐시
+//    @Bean
+//    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
+//        //key, value 형태의 값을 직렬화(REST API에서 사용하는 JSON 형태로 변환) 시켜주고 리턴
+//        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+//                .serializeKeysWith(RedisSerializationContext
+//                        .SerializationPair.fromSerializer(new StringRedisSerializer()))
+//                .serializeValuesWith(RedisSerializationContext
+//                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+//
+//        return RedisCacheManager
+//                .RedisCacheManagerBuilder
+//                .fromConnectionFactory(redisConnectionFactory)
+//                .cacheDefaults(redisCacheConfiguration)
+//                .build();
+//    }
 }
