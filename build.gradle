@@ -51,6 +51,9 @@ dependencies {
 
 	// 레디스
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// Docker MySQL
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 }
 
 tasks.named('test') {
