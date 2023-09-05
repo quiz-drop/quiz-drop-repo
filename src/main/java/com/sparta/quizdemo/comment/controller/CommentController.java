@@ -36,22 +36,22 @@ public class CommentController {
     }
 
     @DeleteMapping("/{comment_id}") //댓글 삭제
-    public ResponseEntity<ApiResponseDto> deleteComment(@PathVariable long comment_id) {
-        return commentService.deleteComment(comment_id);
+    public ResponseEntity<ApiResponseDto> deleteComment(@PathVariable long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.delete_Comment(comment_id, userDetails.getUser());
     }
 
 
     // 댓글 좋아요
-    @PostMapping("/likes/{comment_id}")
-    public ResponseEntity<ApiResponseDto> likeComment(@PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PostMapping("/likes/{comment_id}/user/{user_id}")
+    public ResponseEntity<ApiResponseDto> likeComment(@PathVariable Long user_id, @PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
-        return commentService.create_CommentLike(comment_id, user);
+        return commentService.create_CommentLike(user_id, comment_id, user);
     }
 
     // 댓글 좋아요 삭제
-    @DeleteMapping("/likes/{comment_id}")
-    public ResponseEntity<ApiResponseDto> deleteLikeComment(@PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @DeleteMapping("/likes/{comment_id}/user/{user_id}")
+    public ResponseEntity<ApiResponseDto> deleteLikeComment(@PathVariable Long user_id, @PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
-        return commentService.delete_CommentLike(comment_id, user);
+        return commentService.delete_CommentLike(user_id, comment_id, user);
     }
 }
