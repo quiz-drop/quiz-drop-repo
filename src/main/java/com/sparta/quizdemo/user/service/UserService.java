@@ -84,21 +84,25 @@ public class UserService {
         User updateUser = userRepository.findUserById(user.getId()).orElseThrow(
                 () -> new NullPointerException("유저가 존재하지 않습니다.")
         );
-
         Address updateAddress = addressRepository.findByUser_id(user.getId()).orElseThrow(
                 () -> new NullPointerException("주소가 존재하지 않습니다.")
         );
+        //소셜 유저인 경우
+        if(updateUser.getSocial() != null){
+            updateUser.update(requestDto);
+            updateAddress.update(requestDto);
 
-        if(!passwordEncoder.matches(requestDto.getPassword(),updateUser.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 틀립니다.");
+        } else {
+            if (!passwordEncoder.matches(requestDto.getPassword(), updateUser.getPassword())) {
+                throw new IllegalArgumentException("비밀번호가 틀립니다.");
+            }
+
+            String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+
+
+            updateUser.update(requestDto, newPassword);
+            updateAddress.update(requestDto);
         }
-
-        String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
-        //String email = requestDto.getEmail();
-
-        updateUser.update(requestDto,newPassword);
-        updateAddress.update(requestDto);
-
     }
 
 
