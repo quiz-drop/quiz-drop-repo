@@ -77,9 +77,13 @@ public class ProductServiceImpl implements ProductService{
         List<Product> productList = productRepository.findAll();
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
 
-        for (Product product : productList) {
-            if (product.getProductName().contains(keyword)) {
-                productResponseDtoList.add(new ProductResponseDto(product));
+        if (keyword.isBlank()) {
+            throw new IllegalArgumentException("검색어를 입력해주세요.");
+        } else {
+            for (Product product : productList) {
+                if (product.getProductName().contains(keyword)) {
+                    productResponseDtoList.add(new ProductResponseDto(product));
+                }
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(productResponseDtoList);

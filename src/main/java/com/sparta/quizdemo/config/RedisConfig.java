@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -24,10 +25,20 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Value("${spring.data.redis.password}")
+    private String password;
+
     /* Redis 저장소와 연결 */
     @Bean
     public RedisConnectionFactory connectionFactory() {
-        return new LettuceConnectionFactory(redisHost, redisPort);
+        RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
+	    redisConfiguration.setHostName(redisHost);
+	    redisConfiguration.setPort(redisPort);
+	    redisConfiguration.setPassword(password);
+	    LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisConfiguration);
+
+        return lettuceConnectionFactory;
+
     }
 
     /* redis pub/sub 메시지를 처리하는 listener 설정 */

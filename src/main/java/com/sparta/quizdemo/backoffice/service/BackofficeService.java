@@ -43,9 +43,13 @@ public class BackofficeService implements HandlerInterceptor {
         List<Visitor> visitorList = backofficeRepository.findAll();
         List<Visitor> findingList = new ArrayList<>();
 
-        for (Visitor visitor : visitorList) {
-            if (visitor.getVisitorIP().contains(keyword)) {
-                findingList.add(visitor);
+        if (keyword.isBlank()) {
+            throw new IllegalArgumentException("검색어를 입력해주세요.");
+        } else {
+            for (Visitor visitor : visitorList) {
+                if (visitor.getVisitorIP().contains(keyword)) {
+                    findingList.add(visitor);
+                }
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(findingList);
@@ -80,10 +84,8 @@ public class BackofficeService implements HandlerInterceptor {
         List<User> userList = userRepository.findAll();
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
 
-        if (keyword.equals("")) {
-            for (User user : userList) {
-                userResponseDtoList.add(new UserResponseDto(user));
-            }
+        if (keyword.isBlank()) {
+            throw new IllegalArgumentException("검색어를 입력해주세요.");
         } else {
             for (User user : userList) {
                 if (user.getUsername().contains(keyword)) {

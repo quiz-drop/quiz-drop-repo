@@ -19,10 +19,6 @@ dependencies {
 	// websocket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-	// redis
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-//	implementation 'io.lettuce:lettuce-core:6.1.5.RELEASE'
-
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
@@ -45,13 +41,16 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	// json mapper
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
 	// 레디스
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// Docker MySQL
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 }
 
 tasks.named('test') {
