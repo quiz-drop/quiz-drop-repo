@@ -29,11 +29,11 @@
     <h1 class="h1 fw-bold">회원가입</h1>
         <div class="mb-3">
             <label for="username" class="form-label">ID</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+            <input type="text" class="form-control" id="username" name="username" placeholder="영문자, 숫자 4글자 이상" required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+            <input type="password" class="form-control" id="password" name="password" placeholder="영문자, 숫자, 특수문자가 포함된 4글자 이상" required>
         </div>
         <div class="mb-3">
             <label for="chkPassword" class="form-label">Password Confirm</label>
@@ -111,7 +111,7 @@
     alert("인증번호 발송");
     $("#Confirm").attr("value",data);
 },error:function(request, status, error){
-    alert("메일을 입력해주세요\ncode:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+    alert("메일을 입력해주세요");
 }
 }
     );
@@ -179,9 +179,9 @@
                 // 이후 리디렉션 또는 다른 작업을 수행할 수 있습니다.
                 window.location.href = "/login"
             },
-            error: function (request, status, error) {
+            error: function (data, request, status, error) {
                 // 오류 처리
-                alert("회원가입 실패\n"+request.responseText);
+                alert(data.responseText);
             }
         });
     }
