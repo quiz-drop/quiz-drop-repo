@@ -2,7 +2,6 @@ package com.sparta.quizdemo.comment.entity;
 
 import com.sparta.quizdemo.comment.dto.CommentRequestDto;
 import com.sparta.quizdemo.common.entity.TimeStamped;
-import com.sparta.quizdemo.product.entity.Product;
 import com.sparta.quizdemo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -41,17 +40,15 @@ public class Comment extends TimeStamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+
 
     public Comment(CommentRequestDto commentRequestDto, User user) {
-        this.content = commentRequestDto.getComment_content();
+        this.content = commentRequestDto.getContent();
         this.user = user;
     }
 
     public void update(CommentRequestDto commentRequestDto, User user) {
-        this.content = commentRequestDto.getComment_content();
+        this.content = commentRequestDto.getContent();
         this.user = user;
     }
 }
