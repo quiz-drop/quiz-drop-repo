@@ -1,11 +1,11 @@
-package com.sparta.quizdemo.common.config;
+package com.sparta.quizdemo.config;
 
 import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.backoffice.service.BackofficeService;
 import com.sparta.quizdemo.common.security.JwtAuthenticationFilter;
 import com.sparta.quizdemo.common.security.JwtAuthorizationFilter;
 import com.sparta.quizdemo.common.security.UserDetailsServiceImpl;
-import com.sparta.quizdemo.common.util.JwtUtil;
+import com.sparta.quizdemo.util.JwtUtil;
 import com.sparta.quizdemo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
