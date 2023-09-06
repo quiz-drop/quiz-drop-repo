@@ -149,4 +149,9 @@ public class HomeController {
 
         return "myAddress";
     }
+    @GetMapping("/password")
+    String password(){
+
+        return "findPassword";
+    }
 }

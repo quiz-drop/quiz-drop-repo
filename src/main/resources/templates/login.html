@@ -34,9 +34,12 @@
             <label for="password">비밀번호:</label>
             <input type="password" class="form-control"id="password" name="password" required>
         </div>
-        <div class="form-group mt-3">
-            <input type="submit" class="btn btn-dark" value="로그인">
-            <a href="/" class="btn btn-outline-dark">뒤로가기</a>
+        <div class="form-group mt-3 d-flex justify-content-between">
+            <div>
+                <input type="submit" class="btn btn-dark" value="로그인">
+                <a href="/" class="btn btn-outline-dark">뒤로가기</a>
+            </div>
+            <a href="/password" class="btn btn-dark">비밀번호 찾기</a>
         </div>
         <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=c390826fdfc5d14fa1931ae20fbe0e11&state=test&redirect_uri=http://localhost:8080/api/auth/kakao/login">
             카카오

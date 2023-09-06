@@ -62,6 +62,15 @@ public class UserController {
         return ResponseEntity.ok().body(new ApiResponseDto("정보 수정 완료", HttpStatus.OK.value()));
     }
 
+    //비밀번호 수정
+    @Operation(summary = "비밀번호 수정")
+    @PatchMapping("/user/info/password")
+    public ResponseEntity<ApiResponseDto> updatePassword(@RequestBody UserRequestDto requestDto) {
+
+        userService.updatePassword(requestDto);
+        return ResponseEntity.ok().body(new ApiResponseDto("비밀번호 수정 완료", HttpStatus.OK.value()));
+    }
+
     //소셜 유저 정보 수정
     @Operation(summary = "소셜 유저 정보 수정")
     @PutMapping("/user/info/social")
