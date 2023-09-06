@@ -110,6 +110,11 @@ public class User extends TimeStamped {
     public void update(UserRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
     }
+
+    public void update(String password) {
+        this.password = password;
+    }
+
     public User socialUpdate(String socialId, String social) {
         this.socialId = socialId;
         this.social = social;
