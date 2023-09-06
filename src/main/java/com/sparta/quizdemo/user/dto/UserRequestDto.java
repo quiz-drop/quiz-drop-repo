@@ -26,6 +26,7 @@ public class UserRequestDto {
     @NotBlank(message = "비밀번호 입력이 안되었습니다.")
     private String password;
 
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=!]).{4,}$")
     @NotBlank(message = "새 비밀번호 입력이 안되었습니다.")
     private String newPassword;
 

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class SignupRequestDto {
     /*
-    * 영문자, 숫자 4글자 이상 10글자 미만
+    * 영문자, 숫자 4글자 이상
     * */
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).{4,}$")
     private String username;
@@ -24,7 +24,7 @@ public class SignupRequestDto {
     /*
     * 특수문자 금지
     * */
-    @Pattern(regexp = "^(?![\\W_]+)[A-Za-z0-9]{4,}$")
+
     private String nickname;
 
     /*

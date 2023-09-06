@@ -78,27 +78,48 @@ public class UserService {
         addressRepository.save(address);
     }
 
+    //비밀번호 수정
+    @Transactional
+    public void updatePassword(UserRequestDto requestDto) {
+
+        User findedUser = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+        if(findedUser.getSocial() != null){
+            throw new IllegalArgumentException("소셜 유저는 비밀번호 변경이 불가능합니다. 소셜로그인을 해주세요");
+        }
+        String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+
+
+        findedUser.update(newPassword);
+
+    }
+
     //회원 정보 수정
     @Transactional
     public void updateUser(UserRequestDto requestDto, User user) {
         User updateUser = userRepository.findUserById(user.getId()).orElseThrow(
                 () -> new NullPointerException("유저가 존재하지 않습니다.")
         );
-
         Address updateAddress = addressRepository.findByUser_id(user.getId()).orElseThrow(
                 () -> new NullPointerException("주소가 존재하지 않습니다.")
         );
+        //소셜 유저인 경우
+        if(updateUser.getSocial() != null){
+            updateUser.update(requestDto);
+            updateAddress.update(requestDto);
 
-        if(!passwordEncoder.matches(requestDto.getPassword(),updateUser.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 틀립니다.");
+        } else {
+            if (!passwordEncoder.matches(requestDto.getPassword(), updateUser.getPassword())) {
+                throw new IllegalArgumentException("비밀번호가 틀립니다.");
+            }
+
+            String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+
+
+            updateUser.update(requestDto, newPassword);
+            updateAddress.update(requestDto);
         }
-
-        String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
-        //String email = requestDto.getEmail();
-
-        updateUser.update(requestDto,newPassword);
-        updateAddress.update(requestDto);
-
     }
 
 
@@ -151,4 +172,6 @@ public class UserService {
         addressRepository.save(address);
 
     }
+
+
 }

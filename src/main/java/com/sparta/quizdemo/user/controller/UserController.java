@@ -39,7 +39,7 @@ public class UserController {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
             }
-            throw new IllegalArgumentException("잘못된 입력입니다.");
+            throw new IllegalArgumentException("형식에 맞게 입력해주세요");
         }
         userService.signup(requestDto);
         return ResponseEntity.ok().body(new ApiResponseDto("회원가입 완료", HttpStatus.CREATED.value()));
@@ -48,9 +48,36 @@ public class UserController {
     //정보 수정
     @Operation(summary = "유저 정보 수정")
     @PutMapping("/user/info")
-    public ResponseEntity<ApiResponseDto> updateUser(
+    public ResponseEntity<ApiResponseDto> updateUser(@Valid  BindingResult bindingResult,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserRequestDto requestDto) {
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        if(fieldErrors.size() > 0) {
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
+            }
+            throw new IllegalArgumentException("형식에 맞게 입력해주세요");
+        }
+        userService.updateUser(requestDto,userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto("정보 수정 완료", HttpStatus.OK.value()));
+    }
+
+    //비밀번호 수정
+    @Operation(summary = "비밀번호 수정")
+    @PatchMapping("/user/info/password")
+    public ResponseEntity<ApiResponseDto> updatePassword(@RequestBody UserRequestDto requestDto) {
+
+        userService.updatePassword(requestDto);
+        return ResponseEntity.ok().body(new ApiResponseDto("비밀번호 수정 완료", HttpStatus.OK.value()));
+    }
+
+    //소셜 유저 정보 수정
+    @Operation(summary = "소셜 유저 정보 수정")
+    @PutMapping("/user/info/social")
+    public ResponseEntity<ApiResponseDto> updateSocialUser(
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                     @RequestBody UserRequestDto requestDto) {
+
         userService.updateUser(requestDto,userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("정보 수정 완료", HttpStatus.OK.value()));
     }

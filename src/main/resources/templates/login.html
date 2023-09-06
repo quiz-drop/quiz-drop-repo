@@ -34,20 +34,23 @@
             <label for="password">비밀번호:</label>
             <input type="password" class="form-control"id="password" name="password" required>
         </div>
-        <div class="form-group mt-3">
-            <input type="submit" class="btn btn-dark" value="로그인">
-            <a href="/" class="btn btn-outline-dark">뒤로가기</a>
+        <div class="form-group mt-3 d-flex justify-content-between">
+            <div>
+                <input type="submit" class="btn btn-dark" value="로그인">
+                <a href="/" class="btn btn-outline-dark">뒤로가기</a>
+            </div>
+            <a href="/password" class="btn btn-dark">비밀번호 찾기</a>
         </div>
         <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=c390826fdfc5d14fa1931ae20fbe0e11&state=test&redirect_uri=http://localhost:8080/api/auth/kakao/login">
             카카오
         </a>
 
-        <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=cGQgfh0jvo5wJ7iUQD5a&state=test&redirect_uri=http://localhost:8080/api/auth/naver/login">
-            네이버
-        </a>
-        <a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=1048741760252-41qatbor2qcqf4se37mcp0hitqnjd4sh.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/google/login&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email">
-            구글
-        </a>
+<!--        <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=cGQgfh0jvo5wJ7iUQD5a&state=test&redirect_uri=http://localhost:8080/api/auth/naver/login">-->
+<!--            네이버-->
+<!--        </a>-->
+<!--        <a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=1048741760252-41qatbor2qcqf4se37mcp0hitqnjd4sh.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/google/login&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email">-->
+<!--            구글-->
+<!--        </a>-->
     </form>
 </div>
 <script>
@@ -71,14 +74,10 @@
                     alert('로그인 성공');
                     window.location.href = '/'; // 로그인 성공 시 이동할 페이지 경로
                 } else {
-                    return response.json().then(function (data) {
-                        throw new Error(data.msg);
-                    });
+                        alert('아이디 비밀번호가 일치하지 않습니다.');
                 }
-            }).catch(function(error) {
-            console.error(error);
-            alert(error);
-        });
+            });
+
     });
 
 
