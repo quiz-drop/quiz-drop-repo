@@ -44,7 +44,7 @@
     $(document).ready(function () {
         getUserData();
     });
-
+let social;
     function logout() {
         //리프레시 토큰 삭제 요청
 
@@ -76,7 +76,7 @@
                     let zipCode = data.zip_code;
                     let address1 = data.address1;
                     let address2 = data.address2;
-
+                    social = data.social;
                     let temp_html = `
                        <p class="fw-bold h3" > 아이디 : ${username}</p>
                         <p class="fw-bold h3">닉네임 : ${nickname}</p>
@@ -90,15 +90,23 @@
             });
     }
     function updatePage(){
-        window.location.href="/user/update"
+        if(social === null){
+            window.location.href="/user/update"
+        }else{
+            alert('소셜 계정인 경우 닉네임과 주소만 변경이 가능합니다.')
+            window.location.href="/user/update"
+        }
+
     }
     function orderedPage(){
-
-        alert("준비중입니다.")
-        //window.location.href="/user/orders"
+        window.location.href="/user/orders"
     }
     function deletePage(){
-        window.location.href="/user/delete"
+        if(social === null){
+            window.location.href="/user/delete"
+        }else{
+            alert('소셜 계정인 경우 탈퇴가 불가합니다.\n 해당 SNS에 문의해주세요')
+        }
     }
     function reviewPage(){
         alert("준비중입니다.")
