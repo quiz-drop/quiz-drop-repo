@@ -106,6 +106,10 @@ public class User extends TimeStamped {
         this.password = newPassword;
     }
 
+    //소셜 유저인 경우
+    public void update(UserRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+    }
     public User socialUpdate(String socialId, String social) {
         this.socialId = socialId;
         this.social = social;

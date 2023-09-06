@@ -172,4 +172,9 @@ public class HomeController {
         }
         return "comment";
     }
+    @GetMapping("/password")
+    String password(){
+
+        return "findPassword";
+    }
 }
