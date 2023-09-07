@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <!-- Bootstrap 5 CSS 파일 추가 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+<nav class="navbar mb-5" style="background-color: #ff921d">
+    <div class="container-fluid d-flex mx-3">
+        <a class="navbar-brand" href="/">
+            <div class="ms-5 fs-4 fw-bold">BurgerDrop</div>
+        </a>
+        <div class="" id="welcome">
+
+
+        </div>
+        <div class="d-flex justify-content-end">
+            <a href="/login"><button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button></a>
+            <a href="/signup"><button type="submit" class="btn btn-dark ms-2" id="signup-btn">SignUp</button></a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1 class="h1 fw-bold">회원가입</h1>
+        <div class="mb-3">
+            <label for="username" class="form-label">ID</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="영문자, 숫자 4글자 이상" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="영문자, 숫자, 특수문자가 포함된 4글자 이상" required>
+        </div>
+        <div class="mb-3">
+            <label for="chkPassword" class="form-label">Password Confirm</label>
+            <input type="password" class="form-control" id="chkPassword" name="chkPassword" required>
+        </div>
+        <div class="mb-3">
+            <label for="nickname" class="form-label">Nickname</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" required>
+        </div>
+        <div class="mb-3">
+            <div id="mail_input" name="mail_input">
+                <label for="mail" class="form-label">Mail</label>
+                <input type="text" name="mail" class="form-control" id="mail" required>
+                <button type="button" id="sendBtn" class="btn btn-secondary mt-3" name="sendBtn" onclick="sendNumber()">인증번호</button>
+            </div>
+            <br>
+            <div id="mail_number" name="mail_number" style="display: none">
+                <div class="d-flex align-items-center">
+                    <input type="text" name="number" id="number" placeholder="인증번호 입력">
+                    <button type="button" name="confirmBtn"  class="btn btn-outline-secondary" id="confirmBtn" onclick="confirmNumber()">이메일 인증</button>
+                </div>
+            </div>
+            <br>
+            <input type="text" id="Confirm" name="Confirm" style="display: none" value="">
+            <span id="msg" name="msg" style="color: blue;display: none">인증이 완료 되었습니다.</span>
+        </div>
+        <input type="button" onClick="sample6_execDaumPostcode()"   class="btn btn-secondary mt-3"  value="우편번호 찾기"><br>
+        <input type="text" class="form-control mt-3" id="sample6_postcode" placeholder="우편번호" disabled>
+        <input type="text" class="form-control mt-3" id="sample6_address" placeholder="주소" disabled><br>
+        <input type="text" class="form-control" id="sample6_detailAddress" placeholder="상세주소">
+    <div>
+        <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;">관리자
+        <input id="admin-token" type="password" name="adminToken" value="" placeholder="관리자 암호" class="login-input-box form-control" style="display:none">
+    </div>
+        <button type="button" name="signupBtn" id="signupBtn" onclick="signup()" class="mt-3 btn btn-dark" >가입하기</button>
+        <a href="/" class="mt-3 btn btn-outline-dark">뒤로가기</a>
+
+</div>
+
+
+
+
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+
+    function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('sample6_postcode').value = data.zonecode;
+                document.getElementById("sample6_address").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("sample6_detailAddress").focus();
+
+            }
+        }).open();
+    }
+
+    function sendNumber(){
+    $("#mail_number").css("display","block");
+    $.ajax({
+    url:"/api/mail",
+    type:"post",
+    dataType:"json",
+    data:{"mail" : $("#mail").val()},
+    success: function(data){
+    alert("인증번호 발송");
+    $("#Confirm").attr("value",data);
+},error:function(request, status, error){
+    alert("메일을 입력해주세요");
+}
+}
+    );
+}
+
+    var isConfirm = false;
+    function confirmNumber(){
+    var number1 = $("#number").val();
+    var number2 = $("#Confirm").val();
+
+    if(number1 === number2){
+    alert("인증되었습니다.");
+    isConfirm = true;
+        $("#msg").css("display", "block");
+}else{
+    alert("번호가 다릅니다.");
+}
+}
+
+    function signup() {
+
+        // 각 입력 필드의 값을 가져옴
+        var username = $("#username").val();
+        var password = $("#password").val()
+        var chkPassword = $("#chkPassword").val();
+        var nickname = $("#nickname").val();
+        var mail = $("#mail").val();
+        var postcode = $("#sample6_postcode").val();
+        var address = $("#sample6_address").val();
+        var detailAddress = $("#sample6_detailAddress").val();
+        var adminCheck = $("#admin-check").is(":checked");
+        var adminToken = $("#admin-token").val();
+
+        console.log(adminCheck)
+        console.log(adminToken)
+
+        if(username === '' || password === '' || nickname === '' || mail === '' || postcode === ''  ){
+            alert("입력되지 않은 정보가 있습니다.")
+            return;
+        }
+
+        // 비밀번호 확인
+        if (password !== chkPassword) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return; // 비밀번호가 일치하지 않는 경우 함수 종료
+        }
+        // 이메일 인증 확인
+        if (!isConfirm) {
+            alert("이메일 인증을 완료해주세요");
+            return; // 인증되지 않은 경우 함수 종료
+        }
+        // 필요한 데이터를 가지고 API 요청 또는 회원 가입 처리를 수행
+        $.ajax({
+            url: "/api/user/signup",
+            type: "post",
+            contentType: "application/json", // Content-Type을 JSON으로 설정
+            data: JSON.stringify( {
+                username: username,
+                password: password,
+                nickname: nickname,
+                email: mail,
+                zip_code: postcode,
+                address1: address,
+                address2: detailAddress,
+                admin : adminCheck,
+                adminToken : adminToken
+            }),
+            success: function (data) {
+                // 회원 가입이 성공한 경우 처리
+                alert("회원가입이 완료되었습니다. 로그인을 해주세요");
+                // 이후 리디렉션 또는 다른 작업을 수행할 수 있습니다.
+                window.location.href = '/login'
+            },
+            error: function (data, request, status, error) {
+                // 오류 처리
+                alert(data.responseText);
+            }
+        });
+    }
+    function onclickAdmin() {
+        // Get the checkbox
+        var checkBox = document.getElementById("admin-check");
+        // Get the output text
+        var box = document.getElementById("admin-token");
+
+        // If the checkbox is checked, display the output text
+        if (checkBox.checked == true){
+            box.style.display = "block";
+        } else {
+            box.style.display = "none";
+        }
+    }
+
+
+</script>
+</body>
+</html>

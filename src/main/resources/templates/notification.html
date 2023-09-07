@@ -1,0 +1,187 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Notification Test Page</title>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>-->
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+<!--    <script>-->
+<!--        let eventSource = null;-->
+
+<!--        function createES() {-->
+<!--            const eventSource = new EventSource(`/subscribe`);-->
+
+<!--            eventSource.addEventListener("sse", function (event) {-->
+
+<!--                console.log(event);-->
+
+<!--                console.log(event.data);-->
+<!--                const rawData = JSON.parse(event.data);-->
+<!--                const ntId = rawData.id;-->
+<!--                const content = rawData.content;-->
+<!--                const nt = rawData.notificationType;-->
+<!--                const title = rawData.title;-->
+<!--                console.log(content + nt + title);-->
+
+<!--                (async () => {-->
+
+<!--                    if (Notification.permission === "granted") {-->
+<!--                        showNotification2(content, nt, title, ntId);-->
+<!--                        //showNotification();-->
+<!--                    } else if (Notification.permission !== "denied") {-->
+<!--                        Notification.requestPermission().then(function (permission) {-->
+<!--                            if (permission === "granted") {-->
+<!--                                showNotification2(content, nt, title, ntId);-->
+<!--                                //showNotification();-->
+<!--                            }-->
+<!--                        });-->
+<!--                    }-->
+<!--                })();-->
+<!--            });-->
+<!--        }-->
+
+<!--        function closeEventSource() {-->
+<!--            if (eventSource) {-->
+<!--                eventSource.close();-->
+<!--                eventSource = null;-->
+<!--            }-->
+<!--        }-->
+
+<!--        function showNotification2(content, notificationType, title, ntId) {-->
+<!--            const notificationOptions = {-->
+<!--                body: notificationType + ": " + content,-->
+<!--                icon: "path/to/icon.png" // 사용자에게 보일 아이콘의 경로-->
+<!--            };-->
+
+<!--            const notification = new Notification(title, notificationOptions);-->
+
+<!--            notification.onclick = function () {-->
+<!--                // 알림 클릭 시 수행할 동작 설정-->
+<!--                window.open("http://localhost:8080/api/users/user-login");-->
+<!--                notification.close();-->
+
+<!--            };-->
+
+<!--            notification.onshow = function () {-->
+<!--                console.log("isRead true 로 변경");-->
+<!--                $.ajax({-->
+<!--                    url: `/api/notification/${ntId}`, // 요청을 보낼 서버의 URL-->
+<!--                    method: 'PATCH', // 요청 메소드 (GET, POST 등)-->
+<!--                    contentType: "application/json",-->
+<!--                    success: function (response) {-->
+<!--                        console.log("읽기 처리 완료");-->
+<!--                    },-->
+<!--                    error: function (xhr, status, error) {-->
+<!--                        console.log("읽기 처리 실패");-->
+<!--                    }-->
+<!--                });-->
+<!--            }-->
+<!--        }-->
+
+<!--        function showNotification() {-->
+<!--            const notificationOptions = {-->
+<!--                body: "example",-->
+<!--                icon: "path/to/icon.png" // 사용자에게 보일 아이콘의 경로-->
+<!--            };-->
+
+<!--            const notification = new Notification("로그인 알림", notificationOptions);-->
+
+<!--            notification.onclick = function () {-->
+<!--                // 알림 클릭 시 수행할 동작 설정-->
+<!--                window.open("http://localhost:8080/api/users/user-login");-->
+<!--                notification.close();-->
+<!--                //isRead true 로 변경-->
+<!--            };-->
+
+<!--        }-->
+
+<!--        window.onload = createES();-->
+
+<!--        window.onbeforeunload = closeEventSource();-->
+
+<!--    </script>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--<h1>로그인 된 상태의 어느 페이지</h1>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        /* CSS 스타일을 직접 포함합니다. */
+        /* ... 이전에 정의한 CSS 스타일 ... */
+    </style>
+    <title>알림</title>
+</head>
+<body>
+<div class="notification-container">
+    <div class="notification-icon">
+        <span id="notification-count">0</span>
+        <button id="notification-button">
+            <img src="notification-icon.png" alt="알림 아이콘">
+        </button>
+    </div>
+    <div class="notification-bar" id="notification-bar">
+        <!-- 알림 리스트가 여기에 출력됩니다 -->
+    </div>
+</div>
+<script>
+    const notificationButton = document.getElementById('notification-button');
+    const notificationBar = document.getElementById('notification-bar');
+    const notificationCount = document.getElementById('notification-count');
+
+    // 서버로부터 알림 목록을 가져와서 동적으로 표시하는 함수
+    function fetchNotifications() {
+        // 서버 엔드포인트에 GET 요청을 보냅니다.
+        axios.get('/notifications')
+            .then((response) => {
+                const notifications = response.data; // 서버에서 받은 알림 데이터
+
+                // 알림 리스트를 동적으로 생성하여 notificationBar에 추가합니다.
+                notificationBar.innerHTML = '';
+                notifications.forEach((notification) => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.textContent = notification.message;
+                    notificationBar.appendChild(notificationItem);
+                });
+
+                // 알림 카운트 업데이트
+                notificationCount.textContent = notifications.length;
+            })
+            .catch((error) => {
+                console.error('알림 가져오기 실패', error);
+            });
+    }
+
+    // 알림 삭제 요청을 서버에 보내는 함수
+    function deleteNotification(notificationId) {
+        axios.delete(`/notifications/delete/${notificationId}`)
+            .then(() => {
+                // 삭제가 성공하면 알림 다시 가져오기
+                fetchNotifications();
+            })
+            .catch((error) => {
+                console.error('알림 삭제 실패', error);
+            });
+    }
+
+    notificationButton.addEventListener('click', () => {
+        if (notificationBar.style.display === 'block') {
+            notificationBar.style.display = 'none';
+        } else {
+            notificationBar.style.display = 'block';
+            // 알림을 서버에서 가져와서 알림 리스트를 동적으로 생성하는 함수 호출
+            fetchNotifications();
+        }
+    });
+
+    // 페이지 로드 시 알림 데이터를 가져올 수 있도록 호출
+    fetchNotifications();
+</script>
+</body>
+</html>

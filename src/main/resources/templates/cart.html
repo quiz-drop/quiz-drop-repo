@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <link href="/css/style.css" rel="stylesheet">
+    <title>BurgerDrop | 장바구니</title>
+</head>
+<body>
+<!-- 네비게이션 바 start -->
+<nav class="navbar mb-5" style="background-color: #ff921d">
+    <div class="container-fluid d-flex mx-3">
+        <a class="navbar-brand" href="/">
+            <div class="ms-5 fs-4 fw-bold">BurgerDrop</div>
+        </a>
+        <div class="" id="welcome">
+            <span class="fw-bold" id="username" th:text="${username}"></span> 님의 장바구니
+        </div>
+        <div class="d-flex justify-content-end">
+            <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
+        </div>
+    </div>
+</nav>
+<div class="container my-3">
+    <input type="radio" name="method" value="package">
+    <label>포장</label>
+    <input type="radio" name="method" value="delivery">
+    <label>배달</label>
+</div>
+<!-- 장바구니에 담은 상품 목록 start -->
+<div class="container mb-5">
+    <h5>장바구니에 담은 상품 목록</h5>
+    <div class="col row" id="cartItem-list">
+        <!-- cartItem 동적 데이터 삽입 -->
+    </div>
+</div>
+<div class="container my-3">
+    <hr class="border border-3">
+    <h5>총 가격</h5>
+    <div id="totalPrice">
+<!--        totalPrice 표시-->
+    </div>
+    <div class="d-flex justify-content-end">
+        <div>
+            <input id="request" type="text" placeholder="요구사항이 있으시다면 입력해 주세요.">
+            <input id="payment" type="text" placeholder="총 금액을 입력해 주세요">
+            <button type="button" class="float-end btn btn-dark mt-2 mb-5" style="margin-left: 3px" onclick="makeOrder()">주문하기</button>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        getCartItem();
+    });
+    function getCartItem() {
+        fetch('/api/cart', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#cartItem-list').empty()
+                let totalPrice = data.totalPrice;
+                let deliveryMethod = data.deliveryMethod;
+
+                for (let i = 0; i < data.cartItemList.length; i++) {
+                    let productName = data.cartItemList[i].productName;
+                    let productPrice = data.cartItemList[i].productPrice;
+
+                    let productImage;
+                    if(data.cartItemList[i].productImage === '' || data.cartItemList[i].productImage == null) {
+                        productImage = "/images/img.png"
+                    } else {
+                        productImage = data.cartItemList[i].productImage;
+                    }
+
+                    let productId = data.cartItemList[i].productId;
+                    let cartItemId = data.cartItemList[i].id;
+                    let productQuantity = data.cartItemList[i].quantity;
+                    var strArray = [];
+
+                    for (let j = 0; j < data.cartItemList[i].optionList.length; j++) {
+                        strArray.push(data.cartItemList[i].optionList[j].optionName);
+                        productPrice = productPrice + data.cartItemList[i].optionList[j].optionPrice;
+                    }
+
+                    let temp_html = `<a href = product/${productId} class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${productName}</h5>
+                                                    <p class="card-text text-truncate">가격 : ${productPrice}</p>
+                                                     <p class="card-text text-mute">수량 : ${productQuantity}</p>
+                                                     <p class="card-text text-mute">선택한 옵션 : ${strArray}</p>
+                                                     <button onclick="cancelCartItem(${cartItemId})">X</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#cartItem-list').append(temp_html)
+                }
+
+                $('#totalPrice').append(totalPrice)
+                $('#totalPrice').append("(" + deliveryMethod + ")")
+            })
+    }
+
+    function makeOrder() {
+        let method = document.getElementsByName("method");
+        let temp_method;
+        method.forEach((radio) => {
+            if (radio.checked) {
+                temp_method = radio.defaultValue;
+            }
+        })
+
+        if (temp_method === "delivery") {
+            temp_method = true;
+        } else {
+            temp_method = false;
+        }
+
+        let data = {
+            delivery: temp_method,
+            request: document.getElementById("request").value,
+            payment: document.getElementById("payment").value
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '/api/order',
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',                         // Alert 타입
+                    title: '주문 완료!'        // Alert 제목
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.href = '/';
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',                         // Alert 타입
+                    title: '상세한 주소를 입력해 주세요'// Alert 제목
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+    }
+
+    function cancelCartItem(cartItemId) {
+        $.ajax({
+            type: "DELETE",
+            url:'/api/cart/'+cartItemId,
+            dataType:"json"
+        }).done(function(res){
+            alert("장바구니에서 상품을 취소했습니다.")
+            window.location.reload();
+        }).fail(function (request, status, error){
+            console.log(status)
+            console.log(error)
+            alert("에러가 발생했습니다.");
+        });
+    }
+</script>
+</body>
+</html>

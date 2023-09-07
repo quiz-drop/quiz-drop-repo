@@ -1,0 +1,24 @@
+/* common css */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+*{font-family: 'Noto Sans KR', sans-serif;}
+/* 로고 호버 */
+a {text-decoration: none; color: black;}
+a:hover {color: #d9d9d9!important; transition: 0.2s !important;}
+.none {display: none;}
+textarea {width: -webkit-fill-available; height: fit-content; overflow-wrap: anywhere;}
+.btn-group, .btn-group-vertical {position: relative; display: inline-flex; vertical-align: middle; flex-direction: row; flex-wrap: nowrap; height: fit-content;}
+.text-wrap { overflow-wrap: anywhere;}
+.footer {margin-top: 150px}
+/* index.html */
+.feed {-webkit-box-shadow: 1px 1px 15px 1px rgba(0,0,0,0.17); box-shadow: 1px 1px 15px 1px rgba(0,0,0,0.17);}
+.feed:hover {transition : 0.5s; -webkit-box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.25); box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.25);}
+
+/* 문의하기 아이콘 */
+.inquiry-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #007bff; /* You can change the color to your preference */
+}
