@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.user.entity;
 
+import com.sparta.quizdemo.backoffice.dto.OneUserRequestDto;
 import com.sparta.quizdemo.cart.entity.Cart;
 import com.sparta.quizdemo.chat.entity.ChatRoom;
 import com.sparta.quizdemo.comment.entity.Comment;
@@ -121,4 +122,8 @@ public class User extends TimeStamped {
         return this;
     }
 
+    public void oneUserUpdate(OneUserRequestDto userRequestDto) {
+        this.username = userRequestDto.getUsername();
+        this.nickname = userRequestDto.getNickname();
+    }
 }

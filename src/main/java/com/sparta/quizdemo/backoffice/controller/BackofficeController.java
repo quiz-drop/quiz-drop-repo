@@ -1,10 +1,10 @@
 package com.sparta.quizdemo.backoffice.controller;
 
 import com.sparta.quizdemo.backoffice.dto.KeywordRequestDto;
+import com.sparta.quizdemo.backoffice.dto.OneUserRequestDto;
 import com.sparta.quizdemo.backoffice.entity.Visitor;
 import com.sparta.quizdemo.backoffice.service.BackofficeService;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
-import com.sparta.quizdemo.user.dto.UserRequestDto;
 import com.sparta.quizdemo.user.dto.UserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +46,11 @@ public class BackofficeController {
     @GetMapping("/countorder")
     public Long countOrder() { return backofficeService.countOrder(); }
 
+    @Operation(summary = "전체 매출금액 카운터", description = "관리자 제한. 총 매출금액 합산")
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/countincome")
+    public Long countIncome() { return backofficeService.countIncome(); }
+
     @Operation(summary = "유저 목록 조회", description = "관리자 제한. 전체 유저 목록을 조회합니다.")
     @Secured("ROLE_ADMIN")
     @GetMapping("/userlist")
@@ -63,7 +68,7 @@ public class BackofficeController {
     @Operation(summary = "일반 유저 정보 수정", description = "관리자 제한. 관리자가 아닌 유저의 정보를 수정합니다.")
     @Secured("ROLE_ADMIN")
     @PutMapping("/user/{userName}")
-    public ResponseEntity<UserResponseDto> updateOneUSer(@PathVariable String userName, @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserResponseDto> updateOneUSer(@PathVariable String userName, @RequestBody OneUserRequestDto userRequestDto) {
         return backofficeService.updateOneUSer(userName, userRequestDto);
     }
 

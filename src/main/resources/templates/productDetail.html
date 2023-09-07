@@ -27,6 +27,8 @@
             <span class="fw-bold" id="username" th:text="${username}"></span>
         </div>
         <div class="d-flex justify-content-end">
+            <a href="/login"><button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button></a>
+            <a href="/signup"><button type="submit" class="btn btn-dark ms-2" id="signup-btn">SignUp</button></a>
             <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
             <button type="button" onclick="logout()"class="btn btn-dark ms-2" id="logout-btn">Logout</button>
             <button type="submit" class="btn btn-dark ms-2" style="margin-right: 3px" id="update-btn" onclick="updateProduct()">수정</button>
@@ -66,19 +68,55 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     window.onload = function() {
+        var login_btn = document.getElementById("login-btn");
+        var signup_btn = document.getElementById("signup-btn");
+        var logout_btn = document.getElementById("logout-btn");
+        var mypage_btn = document.getElementById("myPage-btn");
         var update_btn = document.getElementById("update-btn");
         var delete_btn = document.getElementById("delete-btn");
         var admin_btn = document.getElementById("admin-btn");
         var userRole = document.getElementById("userRole")
 
-        if (userRole.innerText === "ADMIN") {
-            update_btn.style.display = "block";
-            delete_btn.style.display = "block";
-            admin_btn.style.display = "block";
+        if (checkAuthorizationCookie()) {
+            logout_btn.style.display = "block";
+            mypage_btn.style.display = "block";
+
+            if (userRole.innerText === "ADMIN") {
+                update_btn.style.display = "block";
+                delete_btn.style.display = "block";
+                admin_btn.style.display = "block";
+            } else {
+                update_btn.style.display = "none";
+                delete_btn.style.display = "none";
+                admin_btn.style.display = "none";
+            }
+
+            login_btn.style.display = "none";
+            signup_btn.style.display = "none";
         } else {
+            logout_btn.style.display = "none";
+            mypage_btn.style.display = "none";
             update_btn.style.display = "none";
             delete_btn.style.display = "none";
             admin_btn.style.display = "none";
+
+            login_btn.style.display = "block";
+            signup_btn.style.display = "block";
+        }
+
+        function checkAuthorizationCookie() {
+            var cookies = document.cookie.split(";");
+
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+
+                // "Authorization" 쿠키가 존재하는 경우 true 반환
+                if (cookie.startsWith("Authorization")) {
+                    return true;
+                }
+            }
+            // "Authorization" 쿠키가 존재하지 않는 경우 false 반환
+            return false;
         }
     }
 </script>

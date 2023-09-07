@@ -35,6 +35,9 @@
     </div>
 </nav>
 <div class="container mb-5">
+    <h3>총 매출금액</h3>
+    <div id="incomeCount"></div>
+    <hr class="border border-3">
     <h3>유저 검색</h3>
     <div>
         <input id="keyword" type="text" placeholder="검색어를 입력해주세요">
@@ -44,6 +47,12 @@
         <!-- 검색 결과 목록 동적 생성 -->
     </div>
     <hr class="border border-3">
+</div>
+<div class="container mb-5">
+    <h3 class="fw-bold">전체 유저 목록</h3>
+    <div class="col row" id="user-list">
+        <!-- 유저 목록 동적 생성 -->
+    </div>
 </div>
 <div class="container mb-5">
     <h3>총 주문횟수</h3>
@@ -73,7 +82,7 @@
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
-    <h3>총 방문자 수</h3>
+    <h3>조회수</h3>
     <div id="visitCount"></div>
     <hr class="border border-3">
     <h3>방문목록</h3>
@@ -103,7 +112,7 @@
                     let role = data[i].role;
                     let orderCount = data[i].orderCount;
 
-                    let temp_html = `<a class= "col-3">
+                    let temp_html = `<a href = user-page/${username} class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
                                                 <div class="card-body">
@@ -155,12 +164,26 @@
     }
 
     $(document).ready(function () {
+        getIncomeCount();
+        getUserList();
         getOrderCount();
         getReadyOrder();
         getDoneOrder();
         getVisitCount();
         getVisitorList();
     });
+    function getIncomeCount() {
+        fetch('/api/admin/countincome', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#incomeCount').empty()
+                $('#incomeCount').append('<h5>' + data + '</h5>')
+        })
+    }
+
     function getOrderCount() {
         fetch('/api/admin/countorder', {
             method: 'GET',
@@ -170,6 +193,37 @@
             .then(data => {
                 $('#orderCount').empty()
                 $('#orderCount').append('<h5>' + data + '</h5>')
+            })
+    }
+
+    function getUserList() {
+        fetch('/api/admin/userlist', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                $('#user-list').empty()
+                for (let i = 0; i < data.length; i++) {
+                    let username = data[i].username;
+                    let nickname = data[i].nickname;
+                    let role = data[i].role;
+                    let orderCount = data[i].orderCount;
+
+                    let temp_html = `<a href = user-page/${username} class= "col-3">
+                                         <div class= "col" style="margin-top: 30px">
+                                            <div class="card h-100 feed border-0">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">${username}</h5>
+                                                    <p class="card-text text-truncate">닉네임 : ${nickname}</p>
+                                                    <p class="card-text text-truncate">주문횟수 : ${orderCount}</p>
+                                                    <p class="card-text text-muted">권한 : ${role}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </a>`
+                    $('#user-list').append(temp_html)
+                }
             })
     }
 

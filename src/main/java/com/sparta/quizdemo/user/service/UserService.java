@@ -1,19 +1,22 @@
 package com.sparta.quizdemo.user.service;
 
 import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
-import com.sparta.quizdemo.user.dto.UserResponseDto;
-import com.sparta.quizdemo.user.entity.Address;
-import com.sparta.quizdemo.user.entity.User;
-import com.sparta.quizdemo.util.JwtUtil;
-import com.sparta.quizdemo.user.repository.AddressRepository;
-import com.sparta.quizdemo.user.repository.UserRepository;
+import com.sparta.quizdemo.backoffice.entity.BlackEmail;
+import com.sparta.quizdemo.backoffice.repository.BlackEmailRepository;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.user.dto.SignupRequestDto;
 import com.sparta.quizdemo.user.dto.UserRequestDto;
+import com.sparta.quizdemo.user.dto.UserResponseDto;
+import com.sparta.quizdemo.user.entity.Address;
+import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.user.repository.AddressRepository;
+import com.sparta.quizdemo.user.repository.UserRepository;
+import com.sparta.quizdemo.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,14 +24,16 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final BlackEmailRepository blackEmailRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RedisRefreshTokenRepository redisRefreshTokenRepository;
 
 
-    public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository) {
+    public UserService(UserRepository userRepository, AddressRepository addressRepository, BlackEmailRepository blackEmailRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
+        this.blackEmailRepository = blackEmailRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.redisRefreshTokenRepository = redisRefreshTokenRepository;
@@ -53,6 +58,13 @@ public class UserService {
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {
             throw new IllegalArgumentException("중복된 Email 입니다.");
+        }
+
+        List<BlackEmail> blackEmailList = blackEmailRepository.findAll();
+        for (BlackEmail blackEmail : blackEmailList) {
+            if (blackEmail.getBlackEmail().equals(requestDto.getEmail())) {
+                throw new IllegalArgumentException("차단된 Email 입니다.");
+            }
         }
 
         String nickname = requestDto.getNickname();

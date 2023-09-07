@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>정보 수정</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+<nav class="navbar mb-5" style="background-color: #ff921d">
+  <div class="container-fluid d-flex mx-3">
+    <a class="navbar-brand" href="/">
+      <div class="ms-5 fs-4 fw-bold">BurgerDrop</div>
+    </a>
+    <div class="" id="welcome">
+      <span class="fw-bold" id="username" th:text="${username}"></span> 님의 Info
+    </div>
+    <div class="d-flex justify-content-end">
+      <a href="/admin"><button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button></a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h3 class="fw-bold my-5">회원 정보 수정</h3>
+      <div id="ex-info">원래 정보
+        <p><span id="formal-username" th:text="${username}"></span></p>
+        <p><span th:text="${nickname}"></span></p>
+        <p><span th:text="${zipCode}"></span></p>
+        <p><span th:text="${address1}"></span></p>
+        <p><span th:text="${address2}"></span></p>
+      </div>
+      <div id="update-box">
+        <input type="text" class="form-control" name="nickname" id="username-text" placeholder="ID"><br>
+        <input type="text" class="form-control" name="nickname" id="nickname" placeholder="nickname"><br>
+        <input type="button" onClick="sample6_execDaumPostcode()" class="btn-dark" value="우편번호 찾기"><br>
+        <input type="text" class="form-control mt-3" id="sample6_postcode" placeholder="우편번호" disabled>
+        <input type="text" class="form-control mt-3" id="sample6_address" placeholder="주소" disabled><br>
+        <input type="text" class="form-control" id="sample6_detailAddress" placeholder="상세주소">
+        <br>
+        <button class="btn btn-dark" onclick="updateOneUser()">수정하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function sample6_execDaumPostcode() {
+    new daum.Postcode({
+      oncomplete: function (data) {
+        // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+        // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+        // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+        var addr = ''; // 주소 변수
+        var extraAddr = ''; // 참고항목 변수
+        //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+        if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+          addr = data.roadAddress;
+        } else { // 사용자가 지번 주소를 선택했을 경우(J)
+          addr = data.jibunAddress;
+        }
+
+        // 우편번호와 주소 정보를 해당 필드에 넣는다.
+        document.getElementById('sample6_postcode').value = data.zonecode;
+        document.getElementById("sample6_address").value = addr;
+        // 커서를 상세주소 필드로 이동한다.
+        document.getElementById("sample6_detailAddress").focus();
+
+      }
+    }).open();
+  }
+
+  function updateOneUser() {
+    let user_name = document.getElementById("formal-username").innerText;
+
+    var username = $("#username-text").val();
+    var nickname = $("#nickname").val();
+    var postcode = $("#sample6_postcode").val();
+    var address = $("#sample6_address").val();
+    var detailAddress = $("#sample6_detailAddress").val();
+
+    $.ajax({
+      url: "/api/admin/user/" + user_name,
+      type: "PUT",
+      contentType: "application/json", // Content-Type을 JSON으로 설정
+      data: JSON.stringify( {
+        username: username,
+        nickname: nickname,
+        zip_code: postcode,
+        address1: address,
+        address2: detailAddress
+      }),
+      success: function (res) {
+        alert("유저 정보를 수정하였습니다.");
+        window.location.href = "/admin"
+      },
+      error: function (request, status, error) {
+        // 오류 처리
+        alert("정보 수정 실패\n"+request.responseText);
+      }
+    });
+  }
+</script>
+</body>
+</html>
