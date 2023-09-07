@@ -134,6 +134,7 @@ public class UserService {
         }
 
         userRepository.delete(deleteUser);
+        redisRefreshTokenRepository.deleteRefreshToken(user.getUsername());
     }
 
 
@@ -172,6 +173,4 @@ public class UserService {
         addressRepository.save(address);
 
     }
-
-
 }

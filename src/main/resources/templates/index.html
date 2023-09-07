@@ -15,6 +15,7 @@
             crossorigin="anonymous"></script>
     <link href="/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <title>BurgerDrop | 홈</title>
 </head>
 <body>
@@ -88,9 +89,10 @@
     </div>
 </nav>
 <div class="container mb-5">
-    <div>
-        <input id="keyword" type="text" placeholder="검색어를 입력해주세요">
-        <button onclick="searchProduct()">검색하기</button>
+    <div class="d-flex align-items-center">
+
+        <input id="keyword" class="form-control w-25 d-inline me-2" type="text" placeholder="검색어를 입력해주세요">
+        <button class="btn btn-dark" onclick="searchProduct()"><i class="fas fa-search"></i></button>
     </div>
     <div class="col row" id="search-productlist">
         <!-- 검색 결과 목록 동적 생성 -->
@@ -98,7 +100,6 @@
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
-    <h3 class="fw-bold">전체 상품 목록</h3>
     <div class="col row" id="product-list">
         <!-- 상품 목록 동적 생성 -->
     </div>

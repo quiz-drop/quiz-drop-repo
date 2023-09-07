@@ -47,18 +47,20 @@
             <div id="mail_input" name="mail_input">
                 <label for="mail" class="form-label">Mail</label>
                 <input type="text" name="mail" class="form-control" id="mail" required>
-                <button type="button" id="sendBtn" name="sendBtn" onclick="sendNumber()">인증번호</button>
+                <button type="button" id="sendBtn" class="btn btn-secondary mt-3" name="sendBtn" onclick="sendNumber()">인증번호</button>
             </div>
             <br>
             <div id="mail_number" name="mail_number" style="display: none">
-                <input type="text" name="number" id="number" placeholder="인증번호 입력">
-                <button type="button" name="confirmBtn" id="confirmBtn" onclick="confirmNumber()">이메일 인증</button>
+                <div class="d-flex align-items-center">
+                    <input type="text" name="number" id="number" placeholder="인증번호 입력">
+                    <button type="button" name="confirmBtn"  class="btn btn-outline-secondary" id="confirmBtn" onclick="confirmNumber()">이메일 인증</button>
+                </div>
             </div>
             <br>
             <input type="text" id="Confirm" name="Confirm" style="display: none" value="">
             <span id="msg" name="msg" style="color: blue;display: none">인증이 완료 되었습니다.</span>
         </div>
-        <input type="button" onClick="sample6_execDaumPostcode()" class="btn-primary" value="우편번호 찾기"><br>
+        <input type="button" onClick="sample6_execDaumPostcode()"   class="btn btn-secondary mt-3"  value="우편번호 찾기"><br>
         <input type="text" class="form-control mt-3" id="sample6_postcode" placeholder="우편번호" disabled>
         <input type="text" class="form-control mt-3" id="sample6_address" placeholder="주소" disabled><br>
         <input type="text" class="form-control" id="sample6_detailAddress" placeholder="상세주소">
