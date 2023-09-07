@@ -3,6 +3,8 @@ package com.sparta.quizdemo.web;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.product.entity.Product;
 import com.sparta.quizdemo.product.repository.ProductRepository;
+import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequiredArgsConstructor
 public class HomeController {
 
+    private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
     @GetMapping("/")
@@ -100,6 +103,36 @@ public class HomeController {
             model.addAttribute("userRole", userDetails.getUser().getRole());
         }
         return "backOffice";
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/user-page/{userName}")
+    public String getUserInfoPage(Model model, @PathVariable String userName) {
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new NullPointerException("해당 아이디의 유저가 존재하지 않습니다."));
+
+        model.addAttribute("userNo", user.getId());
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("nickname", user.getNickname());
+        model.addAttribute("role", user.getRole());
+        model.addAttribute("zipCode", user.getAddress().getZip_code());
+        model.addAttribute("address1", user.getAddress().getAddress1());
+        model.addAttribute("address2", user.getAddress().getAddress2());
+
+        return "user-page";
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/user-info-update-page/{userName}")
+    public String updateOneUserInfoPage(Model model, @PathVariable String userName) {
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new NullPointerException("해당 아이디의 유저가 존재하지 않습니다."));
+
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("nickname", user.getNickname());
+        model.addAttribute("zipCode", user.getAddress().getZip_code());
+        model.addAttribute("address1", user.getAddress().getAddress1());
+        model.addAttribute("address2", user.getAddress().getAddress2());
+
+        return "one-user-info-update";
     }
 
     @GetMapping("/signup")
