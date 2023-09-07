@@ -7,6 +7,8 @@ import com.sparta.quizdemo.backoffice.repository.BackofficeRepository;
 import com.sparta.quizdemo.backoffice.repository.BlackEmailRepository;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
+import com.sparta.quizdemo.order.entity.Order;
+import com.sparta.quizdemo.order.repository.OrderRepository;
 import com.sparta.quizdemo.user.dto.UserRequestDto;
 import com.sparta.quizdemo.user.dto.UserResponseDto;
 import com.sparta.quizdemo.user.entity.Address;
@@ -38,6 +40,7 @@ public class BackofficeService implements HandlerInterceptor {
     private final BackofficeRepository backofficeRepository;
     private final AddressRepository addressRepository;
     private final BlackEmailRepository blackEmailRepository;
+    private final OrderRepository orderRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
     public ResponseEntity<List<Visitor>> getVisitors() {
@@ -76,7 +79,14 @@ public class BackofficeService implements HandlerInterceptor {
     }
 
     public Long countIncome() {
-        return null;
+        List<Order> orderList = orderRepository.findAll();
+        Long totalIncome = 0L;
+        for (Order order : orderList) {
+            if (order.getOrderComplete()) {
+                totalIncome += order.getTotalPrice();
+            }
+        }
+        return totalIncome;
     }
 
     public ResponseEntity<List<UserResponseDto>> getUserList() {

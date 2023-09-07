@@ -130,7 +130,7 @@ public class OrderService {
             orderRepository.save(order);
 
             List<Order> userOrderList = orderRepository.findAllByUserIdOrderByCreatedAtAsc(user.getId());
-            if (userOrderList.size() > 10) {
+            if (userOrderList.size() > 100) {
                 orderRepository.delete(userOrderList.remove(0));
             }
 
@@ -241,7 +241,7 @@ public class OrderService {
                     for (Order order2 : totalOrderList) {
                         if (order2.getOrderComplete()) {
                             completedOrderList.add(order2);
-                            if (completedOrderList.size() > 100) {
+                            if (completedOrderList.size() > 10000) {
                                 orderRepository.delete(completedOrderList.remove(0));
                             }
                         }
