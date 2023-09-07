@@ -12,6 +12,7 @@ import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.user.repository.AddressRepository;
 import com.sparta.quizdemo.user.repository.UserRepository;
 import com.sparta.quizdemo.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,8 @@ public class UserService {
     }
 
     // ADMIN_TOKEN
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("${ADMIN_TOKEN}")
+    private String ADMIN_TOKEN;
 
     //회원가입
     public void signup(SignupRequestDto requestDto) {

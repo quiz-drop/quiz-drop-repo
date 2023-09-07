@@ -11,6 +11,7 @@ import com.sparta.quizdemo.user.repository.UserRepository;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,8 @@ public class KakaoService {
     private final RestTemplate restTemplate; // 수동 등록한 Bean
     private final JwtUtil jwtUtil;
     private final RedisRefreshTokenRepository redisRefreshTokenRepository;
-
+    @Value("${kakao.client.id}")
+    private String kakaoClientId;
     public String kakaoLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String[] tokens = getToken(code);
@@ -78,7 +80,7 @@ public class KakaoService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id","c390826fdfc5d14fa1931ae20fbe0e11"); // 자신의 REST API 키
+        body.add("client_id",kakaoClientId); // 자신의 REST API 키
         body.add("redirect_uri","http://burger-drop.shop/api/auth/kakao/login"); // 애플리케이션 등록시 설정한 redirect_uri
         body.add("code",code); // 인가 코드
         body.add("state", "test");
