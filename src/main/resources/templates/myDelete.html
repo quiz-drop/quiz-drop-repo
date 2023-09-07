@@ -41,6 +41,9 @@
     </div>
 </div>
 <script>
+  $(document).ready(function () {
+    getUserData();
+  });
   function deleteUser() {
     if (confirm("정말 탈퇴하시겠습니까?")) {
       var password = $("#password").val();
@@ -75,7 +78,17 @@
               window.location.href = "/"
             });
   }
-
+  let social;
+  function getUserData() {
+    fetch('/api/user/info', {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'}
+    })
+            .then(response => response.json())
+            .then(data => {
+              social = data.social;
+            });
+  }
   function updatePage(){
     if(social === null){
       window.location.href="/user/update"
@@ -83,7 +96,6 @@
       alert('소셜 계정인 경우 닉네임과 주소만 변경이 가능합니다.')
       window.location.href="/user/update"
     }
-
   }
   function orderedPage(){
     window.location.href="/user/orders"
