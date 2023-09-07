@@ -44,7 +44,7 @@
     $(document).ready(function () {
         getUserData();
     });
-let social;
+
     function logout() {
         //리프레시 토큰 삭제 요청
 
@@ -59,6 +59,7 @@ let social;
                 window.location.href = "/"
             });
     }
+    let social;
     function getUserData() {
         fetch('/api/user/info', {
             method: 'GET',
