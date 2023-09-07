@@ -79,7 +79,7 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id","c390826fdfc5d14fa1931ae20fbe0e11"); // 자신의 REST API 키
-        body.add("redirect_uri","http://localhost:8080/api/auth/kakao/login"); // 애플리케이션 등록시 설정한 redirect_uri
+        body.add("redirect_uri","http://52.79.243.166:8080/api/auth/kakao/login"); // 애플리케이션 등록시 설정한 redirect_uri
         body.add("code",code); // 인가 코드
         body.add("state", "test");
 
