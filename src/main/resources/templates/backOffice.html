@@ -73,7 +73,7 @@
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
-    <h3>총 방문자 수</h3>
+    <h3>조회수</h3>
     <div id="visitCount"></div>
     <hr class="border border-3">
     <h3>방문목록</h3>
@@ -103,7 +103,7 @@
                     let role = data[i].role;
                     let orderCount = data[i].orderCount;
 
-                    let temp_html = `<a class= "col-3">
+                    let temp_html = `<a href = user-page/${username} class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
                                                 <div class="card-body">
