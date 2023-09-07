@@ -48,9 +48,10 @@ public class UserController {
     //정보 수정
     @Operation(summary = "유저 정보 수정")
     @PutMapping("/user/info")
-    public ResponseEntity<ApiResponseDto> updateUser(@Valid  BindingResult bindingResult,
+    public ResponseEntity<ApiResponseDto> updateUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody UserRequestDto requestDto) {
+            @RequestBody UserRequestDto requestDto,
+            @Valid  BindingResult bindingResult) {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if(fieldErrors.size() > 0) {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
