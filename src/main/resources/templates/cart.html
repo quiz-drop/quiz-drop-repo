@@ -32,9 +32,9 @@
 </nav>
 <div class="container my-3">
     <input type="radio" name="method" value="package">
-    <label>포장</label>
+    <label class="fw-bold">포장</label>
     <input type="radio" name="method" value="delivery">
-    <label>배달</label>
+    <label class="fw-bold">배달(+2000)</label>
 </div>
 <!-- 장바구니에 담은 상품 목록 start -->
 <div class="container mb-5">
@@ -51,9 +51,9 @@
     </div>
     <div class="d-flex justify-content-end">
         <div>
-            <input id="request" type="text" placeholder="요구사항이 있으시다면 입력해 주세요.">
-            <input id="payment" type="text" placeholder="총 금액을 입력해 주세요">
-            <button type="button" class="float-end btn btn-dark mt-2 mb-5" style="margin-left: 3px" onclick="makeOrder()">주문하기</button>
+            <input id="request" class="form-control" type="text" placeholder="요구사항을 입력해 주세요">
+            <input id="payment" class="form-control mt-3 d-none" type="text" placeholder="총 금액을 확인해 주세요">
+            <button type="button" id=payment-btn class="float-end btn btn-warning fw-bold mt-2 mb-5" style="margin-left: 3px" onclick="makeOrder()"></button>
         </div>
     </div>
 </div>
@@ -61,7 +61,48 @@
 <script>
     $(document).ready(function () {
         getCartItem();
+
+
+        let switch_ = false;
+        $("input[name='method']").change(function () {
+
+            var totalPriceText = $('#totalPrice').text();
+
+            // 선택된 라디오 버튼의 값을 가져옴
+            var selectedMethod = $("input[name='method']:checked").val();
+
+            console.log(totalPriceText);
+            var totalPriceInt = parseInt(totalPriceText, 10);
+            let deliveryPrice = totalPriceInt+2000;
+            let totalPriceIntPackage = totalPriceInt-2000;
+
+            // 선택된 값에 따라 totalPrice 업데이트
+            if (selectedMethod === "package") {
+                // 'package' 선택 시 가격 업데이트
+                if(!switch_){
+                    switch_ = true;
+                    $("#totalPrice").text(totalPriceInt+"원");
+                    $("#payment").val(totalPriceInt);
+                    $("#payment-btn").text(totalPriceInt+"원 주문하기");
+
+                }else{
+                    $("#totalPrice").text(totalPriceIntPackage+"원");
+                    $("#payment").val(totalPriceIntPackage);
+                    $("#payment-btn").text(totalPriceIntPackage+"원 주문하기");
+                }
+
+            } else if (selectedMethod === "delivery") {
+                switch_ = true;
+                // 'standard' 선택 시 가격 업데이트
+                $("#totalPrice").text(deliveryPrice+"원");
+                $("#payment").val(deliveryPrice);
+                $("#payment-btn").text(deliveryPrice+"원 주문하기");
+            }
+        });
     });
+
+
+
     function getCartItem() {
         fetch('/api/cart', {
             method: 'GET',
@@ -94,25 +135,28 @@
                         productPrice = productPrice + data.cartItemList[i].optionList[j].optionPrice;
                     }
 
-                    let temp_html = `<a href = product/${productId} class= "col-3">
-                                         <div class= "col" style="margin-top: 30px">
+                    let temp_html = `
+                                         <div class= "col-3" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
                                                 <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
                                                 <div class="card-body">
+                                                <a href = product/${productId} class="">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
                                                     <p class="card-text text-truncate">가격 : ${productPrice}</p>
                                                      <p class="card-text text-mute">수량 : ${productQuantity}</p>
                                                      <p class="card-text text-mute">선택한 옵션 : ${strArray}</p>
-                                                     <button onclick="cancelCartItem(${cartItemId})">X</button>
+                                                     </a>
+                                                     <button class="fw-bold text-end" style="border:0;outline: 0;background-color: inherit "  onclick="cancelCartItem(${cartItemId})">X</button>
                                                 </div>
                                             </div>
                                         </div>
-                                     </a>`
+                                     `
                     $('#cartItem-list').append(temp_html)
                 }
 
-                $('#totalPrice').append(totalPrice)
-                $('#totalPrice').append("(" + deliveryMethod + ")")
+                $('#payment').val(totalPrice)
+                $('#payment-btn').text(totalPrice+"원 주문하기")
+                $('#totalPrice').append(totalPrice+"원")
             })
     }
 
@@ -172,12 +216,28 @@
             dataType:"json"
         }).done(function(res){
             alert("장바구니에서 상품을 취소했습니다.")
-            window.location.reload();
+            window.location.href="/cart"
         }).fail(function (request, status, error){
             console.log(status)
             console.log(error)
             alert("에러가 발생했습니다.");
         });
+    }
+    function logout() {
+        //리프레시 토큰 삭제 요청
+
+        fetch('/api/user/logout', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.msg)
+                // 쿠키 삭제
+                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/"
+            });
+
+
     }
 </script>
 </body>

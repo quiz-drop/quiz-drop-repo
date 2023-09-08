@@ -35,13 +35,13 @@
     </div>
 </nav>
 <div class="container mb-5">
-    <h3>총 매출금액</h3>
-    <div id="incomeCount"></div>
-    <hr class="border border-3">
-    <h3>유저 검색</h3>
+    <h3 class="fw-bold my-5" >총 매출금액</h3>
+    <div id="incomeCount" class="fw-bold fs-3"></div>
+    <hr class="border border-3 ">
+    <h3 class="fw-bold my-5">유저 검색</h3>
     <div>
-        <input id="keyword" type="text" placeholder="검색어를 입력해주세요">
-        <button onclick="searchUser()">검색하기</button>
+        <input id="keyword" type="text" class="mt-3 form-control" placeholder="아이디를 입력해주세요">
+        <button class="mt-3 btn btn-warning"onclick="searchUser()">검색하기</button>
     </div>
     <div class = "col row" id = "search-userlist">
         <!-- 검색 결과 목록 동적 생성 -->
@@ -49,32 +49,32 @@
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
-    <h3 class="fw-bold">전체 유저 목록</h3>
+    <h3 class="fw-bold my-5">전체 유저 목록</h3>
     <div class="col row" id="user-list">
         <!-- 유저 목록 동적 생성 -->
     </div>
 </div>
 <div class="container mb-5">
-    <h3>총 주문횟수</h3>
+    <h3 class="fw-bold my-5">총 주문횟수</h3>
     <div id="orderCount"></div>
     <hr class="border border-3">
-    <h3>주문목록</h3>
-    <h5>준비 중인 주문 목록</h5>
+    <h3 class="fw-bold my-5">주문목록</h3>
+    <h5 class="mt-3">준비 중인 주문 목록</h5>
     <div class = "col row" id = "ready-orderlist">
         <!-- 준비 중인 주문 목록 동적 생성 -->
     </div>
     <hr class="border border-3">
-    <h5>완료된 주문 목록</h5>
+    <h5 class="mt-3">완료된 주문 목록</h5>
     <div class = "col row" id = "done-orderlist">
         <!-- 완료된 주문 목록 동적 생성 -->
     </div>
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
-    <h3>방문자 IP주소 검색</h3>
+    <h3 class="fw-bold my-5">방문자 IP주소 검색</h3>
     <div>
-        <input id="IPkeyword" type="text" placeholder="IP주소의 일부 또는 전체를 입력해주세요.">
-        <button onclick="searchVisitor()">검색하기</button>
+        <input id="IPkeyword" type="text" class="form-control mt-3" placeholder="IP주소의 일부 또는 전체를 입력해주세요.">
+        <button onclick="searchVisitor()" class="btn btn-warning mt-3">검색하기</button>
     </div>
     <div class = "col row" id = "search-visitorlist">
         <!-- 검색 결과 목록 동적 생성 -->
@@ -82,10 +82,10 @@
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
-    <h3>조회수</h3>
+    <h3 class="fw-bold my-5">조회수</h3>
     <div id="visitCount"></div>
     <hr class="border border-3">
-    <h3>방문목록</h3>
+    <h3 class="fw-bold my-5">방문목록</h3>
     <div class = "col row" id = "visitorlist">
         <!-- 준비 중인 주문 목록 동적 생성 -->
     </div>
@@ -180,7 +180,7 @@
             .then(response => response.json())
             .then(data => {
                 $('#incomeCount').empty()
-                $('#incomeCount').append('<h5>' + data + '</h5>')
+                $('#incomeCount').append('<h5>' + data + '원</h5>')
         })
     }
 

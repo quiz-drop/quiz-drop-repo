@@ -60,14 +60,19 @@
                 let optionPrice = data[i].optionPrice;
 
                 let temp_html = `<div class="row">
-              <div class="d-flex p-3">
+              <div class="d-flex justify-content-around p-3">
                 <div class="d-none">${id}</div>
                 <div class="comment-board col-7 border border-0 justify-content-start text-wrap" id="edit-box-${id}">
                   <div class="comment-board form-control border border-0" id="optionName-text-${id}">${optionName}</div>
                   <textarea class="comment-board border border-0 border-bottom none" row="1" id="optionName-input-${id}">${optionName}</textarea>
                 </div>
                 <div class="col-2 text-center" id="category-text-${id}">${category}</div>
-                <textarea class="comment-board border border-0 border-bottom none" row="1" id="category-input-${id}">${category}</textarea>
+                <select id="category-input-${id}" name="category-input-${id}" style="display: none;">
+                <option value="burger">버거</option>
+                <option value="side">사이드</option>
+                <option value="drink">음료</option>
+                <option value="dessert">디저트</option>
+            </select>
                 <div class="col-1 text-center mb-2" id="optionPrice-text-${id}">+${optionPrice}</div>
                 <textarea class="comment-board border border-0 border-bottom none" row="1" id="optionPrice-input-${id}">${optionPrice}</textarea>
                 <div class="btn-group col-1 justify-content-end pe-4">
