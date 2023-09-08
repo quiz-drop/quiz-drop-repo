@@ -40,7 +40,12 @@
             <input type="file" id ="productImage" name="productImage" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="이미지 URL을 입력하세요">
             <textarea id = "productIntro" name="productIntro" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="상품설명"></textarea>
             <input type="text" id="cookingTime" name="cookingTime" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="조리시간">
-            <input type="text" id="category" name="category" class="form-control col-sm-5 mt-2 shadow border-0 p-3" placeholder="카테고리">
+            <select id="category" name="category" class="form-control col-sm-5 mt-2 shadow border-0 p-3">
+                <option value="burger">버거</option>
+                <option value="side">사이드</option>
+                <option value="drink">음료</option>
+                <option value="dessert">디저트</option>
+            </select>
         </div>
     </div>
     <div class="row my-5">
@@ -102,6 +107,22 @@
        }); //ajax 통신을 이용해서 파라미터를 json으로 변경하여 insert 요청
 
    });
+   function logout() {
+       //리프레시 토큰 삭제 요청
+
+       fetch('/api/user/logout', {
+           method: 'POST',
+           headers: {'Content-Type': 'application/json'}
+       }).then(response => response.json())
+           .then(data => {
+               alert(data.msg)
+               // 쿠키 삭제
+               document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+               window.location.href = "/"
+           });
+
+
+   }
 </script>
 </body>
 </html>
