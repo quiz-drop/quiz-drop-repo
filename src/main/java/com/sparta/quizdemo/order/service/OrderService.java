@@ -23,6 +23,7 @@ import com.sparta.quizdemo.sse.service.NotificationService;
 import com.sparta.quizdemo.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,8 @@ public class OrderService {
     private final CartServiceImpl cartService;
     private final NotificationService notificationService;
 
+    @Value("${kakao.apiKey}")
+    private String kakaoApiKey;
     public ResponseEntity<ApiResponseDto> createOrder(OrderRequestDto orderRequestDto, User user) {
         if (cartRepository.findByUserId(user.getId()).isEmpty()) {
             cartService.createCart(user);
@@ -130,7 +133,7 @@ public class OrderService {
             orderRepository.save(order);
 
             List<Order> userOrderList = orderRepository.findAllByUserIdOrderByCreatedAtAsc(user.getId());
-            if (userOrderList.size() > 10) {
+            if (userOrderList.size() > 100) {
                 orderRepository.delete(userOrderList.remove(0));
             }
 
@@ -241,7 +244,7 @@ public class OrderService {
                     for (Order order2 : totalOrderList) {
                         if (order2.getOrderComplete()) {
                             completedOrderList.add(order2);
-                            if (completedOrderList.size() > 100) {
+                            if (completedOrderList.size() > 10000) {
                                 orderRepository.delete(completedOrderList.remove(0));
                             }
                         }
@@ -254,9 +257,8 @@ public class OrderService {
             }
         }
     }
-
     public String getKakaoApiFromAddress(String roadFullAddr) {
-        String apiKey = "cd1ccf91994a50633a55d68e5f85d9a2";
+        String apiKey = kakaoApiKey;
         String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json";
         String jsonString = null;
 

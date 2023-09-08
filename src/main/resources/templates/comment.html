@@ -73,5 +73,23 @@
                   placeholder="리뷰 하나하나가 큰 도움이 됩니다! 리뷰작성해주시면 감사하겠습니다."></textarea>
     </div>
 </form>
+<script>
+    function logout() {
+        //리프레시 토큰 삭제 요청
+
+        fetch('/api/user/logout', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.msg)
+                // 쿠키 삭제
+                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/"
+            });
+
+
+    }
+</script>
 </body>
 </html>

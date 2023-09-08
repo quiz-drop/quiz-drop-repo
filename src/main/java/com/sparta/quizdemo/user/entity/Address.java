@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.user.entity;
 
+import com.sparta.quizdemo.backoffice.dto.OneUserRequestDto;
 import com.sparta.quizdemo.user.dto.SignupRequestDto;
 import com.sparta.quizdemo.user.dto.UserRequestDto;
 import jakarta.persistence.*;
@@ -50,5 +51,11 @@ public class Address {
         this.zip_code = requestDto.getZip_code();
         this.address1 = requestDto.getAddress1();
         this.address2 = requestDto.getAddress2();
+    }
+
+    public void oneAddressUpdate(OneUserRequestDto userRequestDto) {
+        this.zip_code = userRequestDto.getZip_code();
+        this.address1 = userRequestDto.getAddress1();
+        this.address2 = userRequestDto.getAddress2();
     }
 }
