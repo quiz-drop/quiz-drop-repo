@@ -56,19 +56,28 @@ public class HomeController {
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/new-product")
-    public String newProduct() {
+    public String newProduct(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        model.addAttribute("username", userDetails.getUsername());
+        model.addAttribute("userRole", userDetails.getUser().getRole());
         return "newProduct";
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/new-option")
-    public String newOption() {
+    public String newOption(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        model.addAttribute("username", userDetails.getUsername());
+        model.addAttribute("userRole", userDetails.getUser().getRole());
         return "newOption";
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/optionList-page")
-    public String optionListPage() {
+    public String optionListPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        model.addAttribute("username", userDetails.getUsername());
+        model.addAttribute("userRole", userDetails.getUser().getRole());
         return "optionList";
     }
 

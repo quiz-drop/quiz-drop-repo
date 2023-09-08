@@ -251,7 +251,15 @@
                     let productName = data[i].productName;
                     let productPrice = data[i].productPrice;
                     let category = data[i].category;
-                    let createdAt = data[i].createdAt;
+                    let createdAt_temp = data[i].createdAt; // 2023-09-07T21:02:48.852452
+                    let dateObject = new Date(createdAt_temp);
+
+                    let year = dateObject.getFullYear();
+                    let month = String(dateObject.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리 숫자로 패딩
+                    let day = String(dateObject.getDate()).padStart(2, '0'); // 일, 2자리 숫자로 패딩
+
+                    let createdAt = `${year}-${month}-${day}`;
+
 
                     let productImage;
                     if (data[i].productImage === '' || data[i].productImage == null) {
@@ -268,7 +276,7 @@
                                                 <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
-                                                    <p class="card-text text-truncate">${productPrice}</p>
+                                                    <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
                                                 </div>
                                             </div>
@@ -291,11 +299,19 @@
         })
             .then(response => response.json())
             .then(data => {
+                $('#product-list').empty()
                 $('#search-productlist').empty()
                 for (let i = 0; i < data.length; i++) {
                     let productName = data[i].productName;
                     let productPrice = data[i].productPrice;
-                    let createdAt = data[i].createdAt;
+                    let createdAt_temp = data[i].createdAt; // 2023-09-07T21:02:48.852452
+                    let dateObject = new Date(createdAt_temp);
+
+                    let year = dateObject.getFullYear();
+                    let month = String(dateObject.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리 숫자로 패딩
+                    let day = String(dateObject.getDate()).padStart(2, '0'); // 일, 2자리 숫자로 패딩
+
+                    let createdAt = `${year}-${month}-${day}`;
 
                     let productImage;
                     if (data[i].productImage === '' || data[i].productImage == null) {
@@ -313,7 +329,7 @@
                                                 <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
-                                                    <p class="card-text text-truncate">${productPrice}</p>
+                                                    <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
                                                 </div>
                                             </div>
@@ -331,11 +347,19 @@
         })
             .then(response => response.json())
             .then(data => {
+                $('#search-productlist').empty()
                 $('#product-list').empty()
                 for (let i = 0; i < data.length; i++) {
                     let productName = data[i].productName;
                     let productPrice = data[i].productPrice;
-                    let createdAt = data[i].createdAt;
+                    let createdAt_temp = data[i].createdAt; // 2023-09-07T21:02:48.852452
+                    let dateObject = new Date(createdAt_temp);
+
+                    let year = dateObject.getFullYear();
+                    let month = String(dateObject.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리 숫자로 패딩
+                    let day = String(dateObject.getDate()).padStart(2, '0'); // 일, 2자리 숫자로 패딩
+
+                    let createdAt = `${year}-${month}-${day}`;
 
                     let productImage;
                     if (data[i].productImage === '' || data[i].productImage == null) {
@@ -352,7 +376,7 @@
                                                 <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
-                                                    <p class="card-text text-truncate">${productPrice}</p>
+                                                    <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
                                                 </div>
                                             </div>
