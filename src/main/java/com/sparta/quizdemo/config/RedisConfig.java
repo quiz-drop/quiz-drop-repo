@@ -1,15 +1,24 @@
 package com.sparta.quizdemo.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableCaching // Redis 캐시를 사용하는 경우 활성화
@@ -71,22 +80,22 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    // Redis Cache
+    @Bean
+    public CacheManager productCacheManager(RedisConnectionFactory cf) {
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer 변경
+                .disableCachingNullValues()
+                .entryTtl(Duration.ofMinutes(3L)); // 캐시 수명 30분
 
+        Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
+        redisCacheConfigurationMap
+                .put("Products", redisCacheConfiguration.entryTtl(Duration.ofMinutes(5)));
 
-//    //레디스 캐시
-//    @Bean
-//    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
-//        //key, value 형태의 값을 직렬화(REST API에서 사용하는 JSON 형태로 변환) 시켜주고 리턴
-//        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-//                .serializeKeysWith(RedisSerializationContext
-//                        .SerializationPair.fromSerializer(new StringRedisSerializer()))
-//                .serializeValuesWith(RedisSerializationContext
-//                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-//
-//        return RedisCacheManager
-//                .RedisCacheManagerBuilder
-//                .fromConnectionFactory(redisConnectionFactory)
-//                .cacheDefaults(redisCacheConfiguration)
-//                .build();
-//    }
+        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(cf)
+                .withInitialCacheConfigurations(redisCacheConfigurationMap)
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
+    }
 }

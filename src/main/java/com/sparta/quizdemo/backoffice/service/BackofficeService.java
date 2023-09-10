@@ -9,7 +9,6 @@ import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.order.entity.Order;
 import com.sparta.quizdemo.order.repository.OrderRepository;
-import com.sparta.quizdemo.user.dto.UserRequestDto;
 import com.sparta.quizdemo.user.dto.UserResponseDto;
 import com.sparta.quizdemo.user.entity.Address;
 import com.sparta.quizdemo.user.entity.User;
@@ -18,19 +17,20 @@ import com.sparta.quizdemo.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.Charsets;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -192,11 +192,19 @@ public class BackofficeService implements HandlerInterceptor {
         return ip;
     }
 
-    @Scheduled(cron = "0 */5 * * * *") // 5분마다 레디스에 쌓인 방문자들 정보를 DB로 전송
+    @Scheduled(cron = "0 * * * * *") // 1분마다 레디스에 쌓인 방문자들 정보를 DB로 전송
     public void updateVisitorData() {
-        Set<String> keys = redisTemplate.keys("*_*");
+        List<Visitor> visitorList = backofficeRepository.findAll();
+        // keys 명령어를 사용한 레디스 조회
+//        Set<String> keys = redisTemplate.keys("*_*");
 
-        for (String key : keys) {
+        // 성능 향상을 위해 keys 명령어가 아닌 scan 명령어 사용
+        ScanOptions scanOptions = ScanOptions.scanOptions().match("*_*").count(100).build();
+        Cursor<byte[]> keys = redisTemplate.getConnectionFactory().getConnection().scan(scanOptions);
+
+        while (keys.hasNext()) {
+            byte[] next = keys.next();
+            String key = new String(next, Charsets.UTF_8);
             String[] parts = key.split("_");
             String visitorIP = parts[0];
             LocalDate date = LocalDate.parse(parts[1]);
@@ -212,6 +220,10 @@ public class BackofficeService implements HandlerInterceptor {
                         .build();
 
                 backofficeRepository.save(visitor);
+            }
+
+            if (visitorList.size() > 1000) {
+                backofficeRepository.delete(visitorList.remove(0));
             }
 
             redisTemplate.delete(key);

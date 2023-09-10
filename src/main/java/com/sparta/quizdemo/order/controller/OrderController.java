@@ -64,7 +64,7 @@ public class OrderController {
 
     // 완료된 주문 처리
     @Transactional
-    @Scheduled(cron = "0 */5 * * * *") // 5분마다 업데이트
+    @Scheduled(cron = "0 * * * * *") // 1분마다 업데이트
     public void completeOrder() {
         orderService.completeOrder();
     }
