@@ -47,7 +47,7 @@
   function deleteUser() {
     if (confirm("정말 탈퇴하시겠습니까?")) {
       var password = $("#password").val();
-      console.log(password)
+
 
       fetch('/api/user/info', {
         method: 'DELETE',
@@ -61,8 +61,10 @@
               .then(response => response.json())
               .then(data => {
                 alert(data.msg);
-                logout();
+                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/"
               });
+
     }
   }
   function logout() {
