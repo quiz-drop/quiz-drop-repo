@@ -205,7 +205,11 @@ public class HomeController {
 
         return "myAddress";
     }
+    @GetMapping("/user/info/username")
+    String findUsername(){
 
+        return "findUsername";
+    }
     @GetMapping("/comment")
     String comment(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
@@ -214,7 +218,7 @@ public class HomeController {
         }
         return "comment";
     }
-    @GetMapping("/password")
+    @GetMapping("/user/info/password")
     String password(){
 
         return "findPassword";
