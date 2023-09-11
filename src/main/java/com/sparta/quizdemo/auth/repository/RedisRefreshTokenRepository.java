@@ -25,12 +25,13 @@ public class RedisRefreshTokenRepository {
 
     //일반 로그인 시 리프레시 토큰 저장, +구글
     public void generateRefreshToken(String username) {
-        String refreshToken = UUID.randomUUID().toString();
+        String refreshToken = "refresh_"+UUID.randomUUID().toString();
         redisTemplate.opsForValue().set(refreshToken, username, expirationTimeSeconds, TimeUnit.SECONDS);
     }
 
     //네이버, 카카오 로그인 시 리프레시 토큰 저장
     public String generateRefreshTokenInSocial(String refreshToken, String username) {
+
         redisTemplate.opsForValue().set(refreshToken, username, expirationTimeSeconds, TimeUnit.SECONDS);
         return refreshToken;
     }
@@ -38,7 +39,7 @@ public class RedisRefreshTokenRepository {
     //username을 기준으로 리프레시 토큰을 찾으면서 유효한지까지 판별
     public Optional<String> findValidRefreshTokenByUsername(String username) {
         // 모든 키(리프레시 토큰)를 가져온다
-        Set<String> refreshTokenKeys = redisTemplate.keys("*");
+        Set<String> refreshTokenKeys = redisTemplate.keys("refresh_*");
 
         // 유저 이름에 매칭되는 리프레시 토큰 찾기
         for (String refreshToken : refreshTokenKeys) {
@@ -67,7 +68,7 @@ public class RedisRefreshTokenRepository {
 
     //리프레시 토큰 삭제 (로그아웃 시)
     public void deleteRefreshToken(String username) {
-        Set<String> refreshTokenKeys = redisTemplate.keys("*");
+        Set<String> refreshTokenKeys = redisTemplate.keys("refresh_*");
 
         // 유저 이름에 매칭되는 리프레시 토큰 찾기
         for (String refreshToken : refreshTokenKeys) {
