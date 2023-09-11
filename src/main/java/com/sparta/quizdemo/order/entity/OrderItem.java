@@ -27,7 +27,7 @@ public class OrderItem {
     @Column
     private Boolean scoreComplete;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
