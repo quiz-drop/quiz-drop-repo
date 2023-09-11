@@ -149,6 +149,19 @@
                     productImage = data.productImage;
                 }
 
+                let scoreStar;
+                if (productScore === 1) {
+                    scoreStar = "⭐"
+                } else if (productScore === 2) {
+                    scoreStar = "⭐⭐"
+                } else if (productScore === 3) {
+                    scoreStar = "⭐⭐⭐"
+                } else if (productScore === 4) {
+                    scoreStar = "⭐⭐⭐⭐"
+                } else if (productScore === 5) {
+                    scoreStar = "⭐⭐⭐⭐⭐"
+                }
+
                 let temp_html = `<div id="product-box">
                                 <div class="mb-5 fs-3 fw-bold" id = "product-name">${productName}</div>
                                 <!-- 글 작성  -->
@@ -163,7 +176,7 @@
                                           <p class="card-text text-wrap" id = "product-content">상품 소개 : ${productIntro}</p>
                                           <p class="card-text text-wrap" id = "product-price">상품 가격 : ${productPrice}원</p>
                                           <p class="card-text text-wrap" id = "product-cookingTime">조리 시간 : ${cookingTime}분</p>
-                                          <p class="card-text text-wrap" id = "product-score">평점 : ${productScore}점</p>
+                                          <p class="card-text text-wrap" id = "product-score">평점 : ${scoreStar}</p>
                                         </div>
                                       </div>
                                     </div>

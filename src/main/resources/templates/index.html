@@ -276,6 +276,19 @@
                     let productId = data[i].id;
                     let productScore = data[i].productScore;
 
+                    let scoreStar;
+                    if (productScore === 1) {
+                        scoreStar = "⭐"
+                    } else if (productScore === 2) {
+                        scoreStar = "⭐⭐"
+                    } else if (productScore === 3) {
+                        scoreStar = "⭐⭐⭐"
+                    } else if (productScore === 4) {
+                        scoreStar = "⭐⭐⭐⭐"
+                    } else if (productScore === 5) {
+                        scoreStar = "⭐⭐⭐⭐⭐"
+                    }
+
                     let temp_html = `<a href = product/${productId} class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
@@ -284,7 +297,7 @@
                                                     <h5 class="card-title fw-bold">${productName}</h5>
                                                     <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
-                                                    <p class="card-text text-muted">평점 : ${productScore}</p>
+                                                    <p class="card-text text-muted">평점 : ${scoreStar}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -331,6 +344,19 @@
                     let productId = data[i].id;
                     let productScore = data[i].productScore;
 
+                    let scoreStar;
+                    if (productScore === 1) {
+                        scoreStar = "⭐"
+                    } else if (productScore === 2) {
+                        scoreStar = "⭐⭐"
+                    } else if (productScore === 3) {
+                        scoreStar = "⭐⭐⭐"
+                    } else if (productScore === 4) {
+                        scoreStar = "⭐⭐⭐⭐"
+                    } else if (productScore === 5) {
+                        scoreStar = "⭐⭐⭐⭐⭐"
+                    }
+
                     let temp_html = `<a href = product/${productId} class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
@@ -339,7 +365,7 @@
                                                     <h5 class="card-title fw-bold">${productName}</h5>
                                                     <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
-                                                    <p class="card-text text-muted">평점 : ${productScore}</p>
+                                                    <p class="card-text text-muted">평점 : ${scoreStar}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -380,6 +406,19 @@
                     let productId = data[i].id;
                     let productScore = data[i].productScore;
 
+                    let scoreStar;
+                    if (productScore === 1) {
+                        scoreStar = "⭐"
+                    } else if (productScore === 2) {
+                        scoreStar = "⭐⭐"
+                    } else if (productScore === 3) {
+                        scoreStar = "⭐⭐⭐"
+                    } else if (productScore === 4) {
+                        scoreStar = "⭐⭐⭐⭐"
+                    } else if (productScore === 5) {
+                        scoreStar = "⭐⭐⭐⭐⭐"
+                    }
+
                     let temp_html = `<a href = product/${productId} class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
@@ -388,7 +427,7 @@
                                                     <h5 class="card-title fw-bold">${productName}</h5>
                                                     <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
-                                                    <p class="card-text text-muted">평점 : ${productScore}</p>
+                                                    <p class="card-text text-muted">평점 : ${scoreStar}</p>
                                                 </div>
                                             </div>
                                         </div>
