@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Title</title>
+
+    <style>
+        #myform fieldset {
+            display: inline-block;
+            direction: rtl;
+            border: 0;
+        }
+
+        #myform fieldset legend {
+            text-align: right;
+        }
+
+        #myform input[type=radio] {
+            display: none;
+        }
+
+        #myform label {
+            font-size: 3em;
+            color: transparent;
+            text-shadow: 0 0 0 #f0f0f0;
+        }
+
+        #myform label:hover {
+            text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+        }
+
+        #myform label:hover ~ label {
+            text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+        }
+
+        #myform input[type=radio]:checked ~ label {
+            text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+        }
+
+        #reviewContents {
+            width: 30%;
+            height: 100px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: solid 1.5px #D3D3D3;
+            border-radius: 5px;
+            font-size: 16px;
+            resize: none;
+            position: fixed;
+        }
+    </style>
+</head>
+<body>
+<form class="mb-3" name="myform" id="myform" method="post">
+    <fieldset>
+        <input type="radio" name="reviewStar" value="5" id="rate1"><label
+            for="rate1">★</label>
+        <input type="radio" name="reviewStar" value="4" id="rate2"><label
+            for="rate2">★</label>
+        <input type="radio" name="reviewStar" value="3" id="rate3"><label
+            for="rate3">★</label>
+        <input type="radio" name="reviewStar" value="2" id="rate4"><label
+            for="rate4">★</label>
+        <input type="radio" name="reviewStar" value="1" id="rate5"><label
+            for="rate5">★</label>
+    </fieldset>
+    <div>
+		<textarea class="col-auto form-control" type="text" id="reviewContents"
+                  placeholder="리뷰 하나하나가 큰 도움이 됩니다! 리뷰작성해주시면 감사하겠습니다."></textarea>
+    </div>
+</form>
+<script>
+    function logout() {
+        //리프레시 토큰 삭제 요청
+
+        fetch('/api/user/logout', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.msg)
+                // 쿠키 삭제
+                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/"
+            });
+
+
+    }
+</script>
+</body>
+</html>
