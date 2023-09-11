@@ -1,29 +1,36 @@
 package com.sparta.quizdemo.backoffice.service;
 
+import com.sparta.quizdemo.backoffice.dto.OneUserRequestDto;
+import com.sparta.quizdemo.backoffice.entity.BlackEmail;
 import com.sparta.quizdemo.backoffice.entity.Visitor;
 import com.sparta.quizdemo.backoffice.repository.BackofficeRepository;
+import com.sparta.quizdemo.backoffice.repository.BlackEmailRepository;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
-import com.sparta.quizdemo.user.dto.UserRequestDto;
+import com.sparta.quizdemo.order.entity.Order;
+import com.sparta.quizdemo.order.repository.OrderRepository;
 import com.sparta.quizdemo.user.dto.UserResponseDto;
+import com.sparta.quizdemo.user.entity.Address;
 import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.user.repository.AddressRepository;
 import com.sparta.quizdemo.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.Charsets;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +38,9 @@ public class BackofficeService implements HandlerInterceptor {
 
     private final UserRepository userRepository;
     private final BackofficeRepository backofficeRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AddressRepository addressRepository;
+    private final BlackEmailRepository blackEmailRepository;
+    private final OrderRepository orderRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
     public ResponseEntity<List<Visitor>> getVisitors() {
@@ -43,9 +52,13 @@ public class BackofficeService implements HandlerInterceptor {
         List<Visitor> visitorList = backofficeRepository.findAll();
         List<Visitor> findingList = new ArrayList<>();
 
-        for (Visitor visitor : visitorList) {
-            if (visitor.getVisitorIP().contains(keyword)) {
-                findingList.add(visitor);
+        if (keyword.isBlank()) {
+            throw new IllegalArgumentException("검색어를 입력해주세요.");
+        } else {
+            for (Visitor visitor : visitorList) {
+                if (visitor.getVisitorIP().contains(keyword)) {
+                    findingList.add(visitor);
+                }
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(findingList);
@@ -65,6 +78,17 @@ public class BackofficeService implements HandlerInterceptor {
         return totalOrderCount;
     }
 
+    public Long countIncome() {
+        List<Order> orderList = orderRepository.findAll();
+        Long totalIncome = 0L;
+        for (Order order : orderList) {
+            if (order.getOrderComplete()) {
+                totalIncome += order.getTotalPrice();
+            }
+        }
+        return totalIncome;
+    }
+
     public ResponseEntity<List<UserResponseDto>> getUserList() {
         List<User> userList = userRepository.findAll();
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
@@ -80,28 +104,33 @@ public class BackofficeService implements HandlerInterceptor {
         List<User> userList = userRepository.findAll();
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
 
-        for (User user : userList) {
-            if (user.getUsername().contains(keyword)) {
-                userResponseDtoList.add(new UserResponseDto(user));
-            }
+        if (keyword.isBlank()) {
+            throw new IllegalArgumentException("검색어를 입력해주세요.");
+        } else {
+            for (User user : userList) {
+                if (user.getUsername().contains(keyword)) {
+                    userResponseDtoList.add(new UserResponseDto(user));
+                }
 
-            if (user.getNickname().contains(keyword)) {
-                userResponseDtoList.add(new UserResponseDto(user));
+                if (user.getNickname().contains(keyword)) {
+                    userResponseDtoList.add(new UserResponseDto(user));
+                }
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDtoList);
     }
 
-    public ResponseEntity<UserResponseDto> updateOneUSer(String userName, UserRequestDto userRequestDto) {
+    public ResponseEntity<UserResponseDto> updateOneUSer(String userName, OneUserRequestDto userRequestDto) {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new NullPointerException("해당 ID의 유저가 존재하지 않습니다."));
+        Address address = addressRepository.findByUser_id(user.getId()).orElseThrow(() -> new NullPointerException("해당 유저의 주소 정보가 존재하지 않습니다."));
 
         if (user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new IllegalArgumentException("관리자 권한을 가진 유저입니다.");
         } else {
-            String newPassword = passwordEncoder.encode(userRequestDto.getNewPassword());
-            user.update(userRequestDto, newPassword);
+            user.oneUserUpdate(userRequestDto);
+            address.oneAddressUpdate(userRequestDto);
             userRepository.save(user);
-
+            addressRepository.save(address);
             return ResponseEntity.status(HttpStatus.OK).body(new UserResponseDto(user));
         }
     }
@@ -112,7 +141,9 @@ public class BackofficeService implements HandlerInterceptor {
         if (user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new IllegalArgumentException("관리자 권한을 가진 유저입니다.");
         } else {
+            BlackEmail blackEmail = new BlackEmail(user.getEmail());
             userRepository.delete(user);
+            blackEmailRepository.save(blackEmail);
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("해당 ID의 유저를 탈퇴시켰습니다.", HttpStatus.OK.value()));
         }
     }
@@ -161,11 +192,19 @@ public class BackofficeService implements HandlerInterceptor {
         return ip;
     }
 
-    @Scheduled(cron = "0 0 * * * *") // 1시간마다 레디스에 쌓인 방문자들 정보를 DB로 전송
+    @Scheduled(cron = "0 * * * * *") // 1분마다 레디스에 쌓인 방문자들 정보를 DB로 전송
     public void updateVisitorData() {
-        Set<String> keys = redisTemplate.keys("*_*");
+        List<Visitor> visitorList = backofficeRepository.findAll();
+        // keys 명령어를 사용한 레디스 조회
+//        Set<String> keys = redisTemplate.keys("*_*");
 
-        for (String key : keys) {
+        // 성능 향상을 위해 keys 명령어가 아닌 scan 명령어 사용
+        ScanOptions scanOptions = ScanOptions.scanOptions().match("*_*").count(100).build();
+        Cursor<byte[]> keys = redisTemplate.getConnectionFactory().getConnection().scan(scanOptions);
+
+        while (keys.hasNext()) {
+            byte[] next = keys.next();
+            String key = new String(next, Charsets.UTF_8);
             String[] parts = key.split("_");
             String visitorIP = parts[0];
             LocalDate date = LocalDate.parse(parts[1]);
@@ -181,6 +220,10 @@ public class BackofficeService implements HandlerInterceptor {
                         .build();
 
                 backofficeRepository.save(visitor);
+            }
+
+            if (visitorList.size() > 1000) {
+                backofficeRepository.delete(visitorList.remove(0));
             }
 
             redisTemplate.delete(key);
