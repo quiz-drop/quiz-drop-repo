@@ -1,19 +1,23 @@
 package com.sparta.quizdemo.user.service;
 
 import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
-import com.sparta.quizdemo.user.dto.UserResponseDto;
-import com.sparta.quizdemo.user.entity.Address;
-import com.sparta.quizdemo.user.entity.User;
-import com.sparta.quizdemo.common.util.JwtUtil;
-import com.sparta.quizdemo.user.repository.AddressRepository;
-import com.sparta.quizdemo.user.repository.UserRepository;
+import com.sparta.quizdemo.backoffice.entity.BlackEmail;
+import com.sparta.quizdemo.backoffice.repository.BlackEmailRepository;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.user.dto.SignupRequestDto;
 import com.sparta.quizdemo.user.dto.UserRequestDto;
+import com.sparta.quizdemo.user.dto.UserResponseDto;
+import com.sparta.quizdemo.user.entity.Address;
+import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.user.repository.AddressRepository;
+import com.sparta.quizdemo.user.repository.UserRepository;
+import com.sparta.quizdemo.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,20 +25,24 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final BlackEmailRepository blackEmailRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RedisRefreshTokenRepository redisRefreshTokenRepository;
 
-    public UserService(UserRepository userRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository) {
+
+    public UserService(UserRepository userRepository, AddressRepository addressRepository, BlackEmailRepository blackEmailRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
+        this.blackEmailRepository = blackEmailRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.redisRefreshTokenRepository = redisRefreshTokenRepository;
     }
 
     // ADMIN_TOKEN
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("${ADMIN_TOKEN}")
+    private String ADMIN_TOKEN;
 
     //회원가입
     public void signup(SignupRequestDto requestDto) {
@@ -52,6 +60,13 @@ public class UserService {
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {
             throw new IllegalArgumentException("중복된 Email 입니다.");
+        }
+
+        List<BlackEmail> blackEmailList = blackEmailRepository.findAll();
+        for (BlackEmail blackEmail : blackEmailList) {
+            if (blackEmail.getBlackEmail().equals(requestDto.getEmail())) {
+                throw new IllegalArgumentException("차단된 Email 입니다.");
+            }
         }
 
         String nickname = requestDto.getNickname();
@@ -77,27 +92,55 @@ public class UserService {
         addressRepository.save(address);
     }
 
+    //비밀번호 수정
+    @Transactional
+    public void updatePassword(UserRequestDto requestDto) {
+
+        User findedUser = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+        if(findedUser.getSocial() != null){
+            throw new IllegalArgumentException("소셜 유저는 비밀번호 변경이 불가능합니다. 소셜로그인을 해주세요");
+        }
+        String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+
+
+        findedUser.update(newPassword);
+
+    }
+
     //회원 정보 수정
     @Transactional
     public void updateUser(UserRequestDto requestDto, User user) {
         User updateUser = userRepository.findUserById(user.getId()).orElseThrow(
                 () -> new NullPointerException("유저가 존재하지 않습니다.")
         );
-
         Address updateAddress = addressRepository.findByUser_id(user.getId()).orElseThrow(
                 () -> new NullPointerException("주소가 존재하지 않습니다.")
         );
+        //소셜 유저인 경우
+        if(updateUser.getSocial() != null){
+            updateUser.update(requestDto);
+            updateAddress.update(requestDto);
 
-        if(!passwordEncoder.matches(requestDto.getPassword(),updateUser.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 틀립니다.");
+        } else {
+            if (!passwordEncoder.matches(requestDto.getPassword(), updateUser.getPassword())) {
+                throw new IllegalArgumentException("비밀번호가 틀립니다.");
+            }
+
+            //새로운 비밀번호 까지 변경
+            if(requestDto.getNewPassword()!=null){
+                String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+
+                updateUser.update(requestDto, newPassword);
+                updateAddress.update(requestDto);
+
+            }else{
+                //일반 정보 수정
+                updateUser.updateUser(requestDto);
+                updateAddress.update(requestDto);
+            }
         }
-
-        String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
-        //String email = requestDto.getEmail();
-
-        updateUser.update(requestDto,newPassword);
-        updateAddress.update(requestDto);
-
     }
 
 
@@ -112,6 +155,7 @@ public class UserService {
         }
 
         userRepository.delete(deleteUser);
+        redisRefreshTokenRepository.deleteRefreshToken(user.getUsername());
     }
 
 
@@ -141,4 +185,23 @@ public class UserService {
         String username = user.getUsername();
         redisRefreshTokenRepository.deleteRefreshToken(username);
     }
+
+    public void addAddress(UserRequestDto requestDto, User user) {
+        User findUser = userRepository.findUserById(user.getId()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+        Address address = new Address(requestDto, user);
+        addressRepository.save(address);
+
+    }
+
+    public UserResponseDto getUsername(UserRequestDto requestDto) {
+        User findUser = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+        return new UserResponseDto(findUser);
+
+    }
+
+
 }

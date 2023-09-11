@@ -2,7 +2,7 @@ package com.sparta.quizdemo.common.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
-import com.sparta.quizdemo.common.util.JwtUtil;
+import com.sparta.quizdemo.util.JwtUtil;
 import com.sparta.quizdemo.user.dto.LoginRequestDto;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import jakarta.servlet.FilterChain;
