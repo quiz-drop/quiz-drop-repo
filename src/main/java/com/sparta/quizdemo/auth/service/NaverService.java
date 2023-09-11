@@ -6,11 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.auth.dto.SocialUserInfoDto;
 import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.user.entity.User;
-import com.sparta.quizdemo.common.util.JwtUtil;
+import com.sparta.quizdemo.util.JwtUtil;
 import com.sparta.quizdemo.user.repository.UserRepository;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,10 @@ public class NaverService {
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
     private final RedisRefreshTokenRepository redisRefreshTokenRepository;
-
+    @Value("${naver.client.id}")
+    private String naverClientId;
+    @Value("${naver.secret.id}")
+    private String naverSecretId;
     public String naverLogin(String code) throws JsonProcessingException {
         // 여기까지는 들어옴
         // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -75,8 +79,8 @@ public class NaverService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "cGQgfh0jvo5wJ7iUQD5a");
-        body.add("client_secret", "qJ4iJOmkPC");
+        body.add("client_id", naverClientId);
+        body.add("client_secret", naverSecretId);
         body.add("redirect_uri", "http://localhost:8080/api/auth/naver/login");
         body.add("code", code);
         body.add("state", "test");
