@@ -33,10 +33,13 @@
       <button onclick="orderedPage()" class="btn btn-dark">구매 내역</button>
       <button onclick="reviewPage()" class="btn btn-dark">리뷰 내역</button>
       <button onclick="deletePage()" class="btn btn-dark">회원 탈퇴</button>
-      <h3 class="fw-bold my-5">주문 내역</h3>
-      <div id="ordered-box"></div>
+      <h3 class="fw-bold my-5">구매 내역</h3>
     </div>
   </div>
+    <div class="row" id="ordered-box">
+
+
+    </div>
 </div>
 <script>
   $(document).ready(function () {
@@ -56,6 +59,7 @@
               window.location.href = "/"
             });
   }
+  let social;
   function getUserData() {
     fetch('/api/user/info', {
       method: 'GET',
@@ -65,18 +69,78 @@
             .then(data => {
               console.log(data)
               let orderList = data.orderList;
+              social = data.social;
               console.log(orderList)
-              for (let i=0; i<orderList.lengh; i++){
+              for (let i=orderList.length-1; i>=0; i--){
+                let delivery_type = orderList[i].delivery
+                if(delivery_type){
+                  delivery_type = '배달'
+                }else{
+                  delivery_type = '포장'
+                }
+
+                let price = orderList[i].totalPrice;
+                let request = orderList[i].request;
+                if(request === ""){
+                  request = "요청사항 없음";
+                }
+                let itemList = '';
+                for(let j=0; j<orderList[i].orderItemList.length; j++){
+                  itemList += orderList[i].orderItemList[j].productName+" : "+orderList[i].orderItemList[j].quantity+"개\t"
+                }
+
+                let completeTime = orderList[i].completeTime;
+                // 서버에서 받아온 배달 완료 시간과 현재 시간을 가져오기
+                const deliveryTime = new Date(completeTime);
+                const currentTime = new Date();
+
+                // 배달 완료 시간과 현재 시간의 차이 계산 (분 단위)
+                let timeDiffInMinutes = Math.floor((deliveryTime - currentTime) / (1000 * 60));
+                if(timeDiffInMinutes <= 0){
+                  timeDiffInMinutes = '수령완료'
+                }
                 let temp_html = `
-                       <p class="fw-bold h3" > 주문 내역 : ${orderList[i]}</p>
+                               <div class="col-md-6">
+                                <div class="card mb-4">
+                                  <div class="card-body">
+                                    <h5 class="card-title">주문 종류 : ${delivery_type}</h5>
+                                    <p class="card-text">남은 시간(분): ${timeDiffInMinutes}</p>
+                                    <p class="card-text">구매 비용: ${price}</p>
+                                    <p class="card-text">요청 사항: ${request}</p>
+                                    <p class="card-text">주문 상품: <br>${itemList}</p>
+                                  </div>
+                                </div>
+                              </div>
                     `
                 $('#ordered-box').append(temp_html)
               }
-
-
             });
+  }
+  function updatePage(){
+    if(social === null){
+      window.location.href="/user/update"
+    }else{
+      alert('소셜 계정인 경우 닉네임과 주소만 변경이 가능합니다.')
+      window.location.href="/user/update"
+    }
+  }
+
+  function orderedPage(){
+    window.location.href="/user/orders"
+  }
+  function deletePage(){
+    if(social === null){
+      window.location.href="/user/delete"
+    }else{
+      alert('소셜 계정인 경우 탈퇴가 불가합니다.\n 해당 SNS에 문의해주세요')
+    }
+  }
+  function reviewPage(){
+    alert("준비중입니다.")
+    //window.location.href="/user/reivews"
   }
 
 </script>
+
 </body>
 </html>

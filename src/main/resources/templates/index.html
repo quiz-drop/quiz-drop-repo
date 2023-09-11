@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="burger-drop">
+    <meta property="og:description" content="burger-drop에서 맛있는 시간을 보내주세요.">
+    <meta property="og:image" content="images/og_burger.png">
+
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
@@ -14,10 +18,13 @@
             integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
             crossorigin="anonymous"></script>
     <link href="/css/style.css" rel="stylesheet">
+    <script src="/js/notification.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <title>BurgerDrop | 홈</title>
 </head>
 <body>
+    <h1>테스트</h1>
 <div class="category-bar d-flex flex-column justify-content-center"
      style="height: 100%; width: 60px; background-color: #FF4004;position: fixed;z-index: 999">
     <ul style="list-style: none;padding-left: 0">
@@ -85,23 +92,26 @@
                 <button type="submit" class="btn btn-warning ms-2" id="chat-btn">chatList</button>
             </a>
 
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">알림</button>
-
-            <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
-                <div class="offcanvas-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
-                </div>
-            </div>
-
+<!--            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">알림</button>-->
+<!--            <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">-->
+<!--                <div class="offcanvas-header">-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>-->
+<!--                </div>-->
+<!--                <div class="offcanvas-body">-->
+<!--                    <ul id="notification-list">-->
+<!--                        &lt;!&ndash; Notifications will be inserted here &ndash;&gt;-->
+<!--                    </ul>-->
+<!--                    <button id="delete-all-btn" class="btn btn-danger">알림 전체 삭제</button>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
     </div>
 </nav>
 <div class="container mb-5">
-    <div>
-        <input id="keyword" type="text" placeholder="검색어를 입력해주세요">
-        <button onclick="searchProduct()">검색하기</button>
+    <div class="d-flex align-items-center">
+
+        <input id="keyword" class="form-control w-25 d-inline me-2" type="text" placeholder="검색어를 입력해주세요">
+        <button class="btn btn-dark" onclick="searchProduct()"><i class="fas fa-search"></i></button>
     </div>
     <div class="col row" id="search-productlist">
         <!-- 검색 결과 목록 동적 생성 -->
@@ -109,7 +119,6 @@
     <hr class="border border-3">
 </div>
 <div class="container mb-5">
-    <h3 class="fw-bold">전체 상품 목록</h3>
     <div class="col row" id="product-list">
         <!-- 상품 목록 동적 생성 -->
     </div>
@@ -215,6 +224,14 @@
     }
 
     $(document).ready(function () {
+        var userAddress = $("#userAddress").text();
+
+        // 예시: userAddress가 '주소없음'인 경우 처리
+        if (userAddress === '주소없음') {
+            alert("이런! 주소가 등록이 안되어있군요. 주소를 등록해주세요")
+            window.location.href ='/user/address';
+        }
+
         getProduct();
     });
 
@@ -247,7 +264,15 @@
                     let productName = data[i].productName;
                     let productPrice = data[i].productPrice;
                     let category = data[i].category;
-                    let createdAt = data[i].createdAt;
+                    let createdAt_temp = data[i].createdAt; // 2023-09-07T21:02:48.852452
+                    let dateObject = new Date(createdAt_temp);
+
+                    let year = dateObject.getFullYear();
+                    let month = String(dateObject.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리 숫자로 패딩
+                    let day = String(dateObject.getDate()).padStart(2, '0'); // 일, 2자리 숫자로 패딩
+
+                    let createdAt = `${year}-${month}-${day}`;
+
 
                     let productImage;
                     if (data[i].productImage === '' || data[i].productImage == null) {
@@ -261,10 +286,10 @@
                     let temp_html = `<a href = product/${productId} class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
-                                                <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
+                                                <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px;">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
-                                                    <p class="card-text text-truncate">${productPrice}</p>
+                                                    <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
                                                 </div>
                                             </div>
@@ -287,11 +312,19 @@
         })
             .then(response => response.json())
             .then(data => {
+                $('#product-list').empty()
                 $('#search-productlist').empty()
                 for (let i = 0; i < data.length; i++) {
                     let productName = data[i].productName;
                     let productPrice = data[i].productPrice;
-                    let createdAt = data[i].createdAt;
+                    let createdAt_temp = data[i].createdAt; // 2023-09-07T21:02:48.852452
+                    let dateObject = new Date(createdAt_temp);
+
+                    let year = dateObject.getFullYear();
+                    let month = String(dateObject.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리 숫자로 패딩
+                    let day = String(dateObject.getDate()).padStart(2, '0'); // 일, 2자리 숫자로 패딩
+
+                    let createdAt = `${year}-${month}-${day}`;
 
                     let productImage;
                     if (data[i].productImage === '' || data[i].productImage == null) {
@@ -309,7 +342,7 @@
                                                 <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
-                                                    <p class="card-text text-truncate">${productPrice}</p>
+                                                    <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
                                                 </div>
                                             </div>
@@ -327,11 +360,19 @@
         })
             .then(response => response.json())
             .then(data => {
+                $('#search-productlist').empty()
                 $('#product-list').empty()
                 for (let i = 0; i < data.length; i++) {
                     let productName = data[i].productName;
                     let productPrice = data[i].productPrice;
-                    let createdAt = data[i].createdAt;
+                    let createdAt_temp = data[i].createdAt; // 2023-09-07T21:02:48.852452
+                    let dateObject = new Date(createdAt_temp);
+
+                    let year = dateObject.getFullYear();
+                    let month = String(dateObject.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리 숫자로 패딩
+                    let day = String(dateObject.getDate()).padStart(2, '0'); // 일, 2자리 숫자로 패딩
+
+                    let createdAt = `${year}-${month}-${day}`;
 
                     let productImage;
                     if (data[i].productImage === '' || data[i].productImage == null) {
@@ -348,7 +389,7 @@
                                                 <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
-                                                    <p class="card-text text-truncate">${productPrice}</p>
+                                                    <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
                                                 </div>
                                             </div>
