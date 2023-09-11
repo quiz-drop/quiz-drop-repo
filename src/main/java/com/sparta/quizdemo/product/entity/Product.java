@@ -14,6 +14,7 @@ import lombok.Setter;
 public class Product extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
 
     @Column(name = "product_name", nullable = false, unique = true)
@@ -38,6 +39,10 @@ public class Product extends TimeStamped {
     @Column(name = "category", nullable = false)
     private String category;
 
+    @Setter
+    @Column(name = "product_score")
+    private Integer productScore;
+
     public Product(ProductRequestDto productRequestDto) {
         this.productName = productRequestDto.getProductName();
         this.productPrice = productRequestDto.getProductPrice();
@@ -46,9 +51,10 @@ public class Product extends TimeStamped {
         this.cookingTime = productRequestDto.getCookingTime();
         this.orderCount = productRequestDto.getOrderCount();
         this.category = productRequestDto.getCategory();
+        this.productScore = productRequestDto.getProductScore();
     }
 
-    public void update(ProductRequestDto productRequestDto, Long tempCount) {
+    public void update(ProductRequestDto productRequestDto, Long tempCount, Integer productScore) {
         this.productName = productRequestDto.getProductName();
         this.productPrice = productRequestDto.getProductPrice();
         this.productImage = productRequestDto.getProductImage();
@@ -56,5 +62,6 @@ public class Product extends TimeStamped {
         this.cookingTime = productRequestDto.getCookingTime();
         this.orderCount = tempCount;
         this.category = productRequestDto.getCategory();
+        this.productScore = productScore;
     }
 }
