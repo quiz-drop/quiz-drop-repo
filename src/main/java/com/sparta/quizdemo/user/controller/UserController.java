@@ -63,8 +63,9 @@ public class UserController {
         return ResponseEntity.ok().body(new ApiResponseDto("정보 수정 완료", HttpStatus.OK.value()));
     }
 
-    //비밀번호 수정
-    @Operation(summary = "비밀번호 수정")
+
+    //비밀번호 찾기 후 수정
+    @Operation(summary = "비밀번호 찾기 후 수정")
     @PatchMapping("/user/info/password")
     public ResponseEntity<ApiResponseDto> updatePassword(@RequestBody UserRequestDto requestDto) {
 
@@ -110,7 +111,11 @@ public class UserController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.getUser(userDetails.getUser());
     }
-
+    @Operation(summary = "아이디 찾기")
+    @PostMapping("/user/info/username")
+    public UserResponseDto getUsername(@RequestBody UserRequestDto requestDto) {
+        return userService.getUsername(requestDto);
+    }
     // 주소 조회
     @Operation(summary = "주소 여부 판별")
     @GetMapping("/user/info/address")
