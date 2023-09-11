@@ -128,11 +128,18 @@ public class UserService {
                 throw new IllegalArgumentException("비밀번호가 틀립니다.");
             }
 
-            String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+            //새로운 비밀번호 까지 변경
+            if(requestDto.getNewPassword()!=null){
+                String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
 
+                updateUser.update(requestDto, newPassword);
+                updateAddress.update(requestDto);
 
-            updateUser.update(requestDto, newPassword);
-            updateAddress.update(requestDto);
+            }else{
+                //일반 정보 수정
+                updateUser.updateUser(requestDto);
+                updateAddress.update(requestDto);
+            }
         }
     }
 
@@ -187,4 +194,14 @@ public class UserService {
         addressRepository.save(address);
 
     }
+
+    public UserResponseDto getUsername(UserRequestDto requestDto) {
+        User findUser = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+        return new UserResponseDto(findUser);
+
+    }
+
+
 }
