@@ -18,44 +18,53 @@
             integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
             crossorigin="anonymous"></script>
     <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/btn-custom.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <style>
+        .btn_custom {
+            border-radius: 50%;
+        }
+    </style>
     <title>BurgerDrop | 홈</title>
+
 </head>
 <body>
-    <h1>테스트</h1>
 <div class="category-bar d-flex flex-column justify-content-center"
      style="height: 100%; width: 60px; background-color: #FF4004;position: fixed;z-index: 999">
     <ul style="list-style: none;padding-left: 0">
-        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('burger')"><img alt=""
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite infinite"><a type="button" onclick="getCategoryProduct('burger')"><img alt=""
                                                                                                   src="/images/burger.png"
                                                                                                   width="40px"
                                                                                                   height="40px"
-                                                                                                  style="background-color: white"></a>
+                                                                                                  ></a>
         </li>
-        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('side')"><img alt=""
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button" onclick="getCategoryProduct('side')"><img alt=""
                                                                                                 src="/images/fries.png"
                                                                                                 width="40px"
                                                                                                 height="40px"
-                                                                                                style="background-color: white"></a>
+                                                                                                ></a>
         </li>
-        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('drink')"><img alt=""
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button" onclick="getCategoryProduct('drink')"><img alt=""
                                                                                                  src="/images/drink.png"
                                                                                                  width="40px"
                                                                                                  height="40px"
-                                                                                                 style="background-color: white"></a>
+                                                                                                 ></a>
         </li>
-        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('dessert')"><img alt=""
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button" onclick="getCategoryProduct('dessert')"><img alt=""
                                                                                                    src="/images/dessert.png"
                                                                                                    width="40px"
                                                                                                    height="40px"
-                                                                                                   style="background-color: white"></a>
+                                                                                                   ></a>
         </li>
-        <li class="mb-5 text-center"><a type="button" onclick="getCategoryProduct('likes')"><img alt=""
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button" onclick="getCategoryProduct('likes')"><img alt=""
                                                                                                  src="/images/likes.png"
                                                                                                  width="40px"
                                                                                                  height="40px"
-                                                                                                 style="background-color: white"></a>
+                                                                                                 ></a>
         </li>
     </ul>
 </div>
@@ -63,7 +72,7 @@
 <nav class="navbar mb-5" style="background-color: #ff921d">
     <div class="container-fluid d-flex mx-3">
         <a class="navbar-brand" href="/">
-            <div class="ms-5 fs-4 fw-bold">BurgerDrop</div>
+            <div class="ms-5 fs-4 fw-bold animate__animated animate__zoomIn">BurgerDrop</div>
         </a>
         <div class="" id="welcome">
             <span id="userRole" th:text="${userRole}"></span>
@@ -72,23 +81,23 @@
         </div>
         <div class="d-flex justify-content-end">
             <a href="/mypage">
-                <button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button>
+                <button type="submit" class="btn btn-dark btn_custom ms-2" id="myPage-btn">My page</button>
             </a>
             <a href="/login">
-                <button type="submit" class="btn btn-dark ms-2" id="login-btn">Login</button>
+                <button type="submit" class="btn btn-dark btn_custom ms-2" id="login-btn">Login</button>
             </a>
-            <button type="button" onclick="logout()" class="btn btn-dark ms-2" id="logout-btn">Logout</button>
+            <button type="button" onclick="logout()" class="btn btn-dark btn_custom ms-2" id="logout-btn">Logout</button>
             <a href="/signup">
-                <button type="submit" class="btn btn-dark ms-2" id="signup-btn">SignUp</button>
+                <button type="submit" class="btn btn-dark btn_custom ms-2" id="signup-btn">SignUp</button>
             </a>
             <a href="/cart">
-                <button type="submit" class="btn btn-primary ms-2" id="cart-btn">장바구니</button>
+                <button type="submit" class="btn btn-dark btn_custom ms-2" id="cart-btn">장바구니</button>
             </a>
             <a href="/admin">
-                <button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button>
+                <button type="submit" class="btn btn-warning btn_custom ms-2" id="admin-btn">Admin</button>
             </a>
             <a href="/chatList">
-                <button type="submit" class="btn btn-warning ms-2" id="chat-btn">chatList</button>
+                <button type="submit" class="btn btn-warning btn_custom ms-2" id="chat-btn">chatList</button>
             </a>
         </div>
     </div>
@@ -97,7 +106,7 @@
     <div class="d-flex align-items-center">
 
         <input id="keyword" class="form-control w-25 d-inline me-2" type="text" placeholder="검색어를 입력해주세요">
-        <button class="btn btn-dark" onclick="searchProduct()"><i class="fas fa-search"></i></button>
+        <button class="btn btn-dark btn_custom" onclick="searchProduct()"><i class="fas fa-search"></i></button>
     </div>
     <div class="col row" id="search-productlist">
         <!-- 검색 결과 목록 동적 생성 -->
@@ -331,7 +340,7 @@
                     let temp_html = `<a href = product/${productId} class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
-                                                <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
+                                                <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px;">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
                                                     <p class="card-text text-truncate">${productPrice}원</p>
@@ -378,7 +387,7 @@
                     let temp_html = `<a href = product/${productId} class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0">
-                                                <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px; width: 305px">
+                                                <img src="${productImage}" class="card-img-top" alt="sampleImage" style="height: 250px;">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
                                                     <p class="card-text text-truncate">${productPrice}원</p>
