@@ -31,38 +31,38 @@ public class NotificationController {
 
         return notificationService.subscribe(userDetails.getUser().getId(), lastEventId);
     }
-
-    /* 알림조회 */
-    @GetMapping("/notifications")
-    public List<NotificationResponseDto> findAllNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return notificationService.findAllNotifications(userDetails.getUser().getId());
-    }
-
-    /* 전체목록 알림 조회에서 해당 목록 클릭 시 읽음처리 */
-    @PostMapping("/notification/read/{notificationId}")
-    public void readNotification(@PathVariable Long notificationId) {
-        notificationService.readNotification(notificationId);
-    }
-
-    /* 알림 조회 - 구독자가 현재 읽지않은 알림 갯수 */
-    @GetMapping("/notifications/count")
-    public NotificationCountDto countUnReadNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return notificationService.countUnReadNotifications(userDetails.getUser().getId());
-    }
-
-    /* 알림 전체 삭제 */
-    @DeleteMapping("/notifications/delete")
-    public ResponseEntity<ApiResponseDto> deleteNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        notificationService.deleteAllByNotifications(userDetails);
-        return ResponseEntity.ok().body(new ApiResponseDto("알림 목록 전체삭제 성공", HttpStatus.OK.value()));
-    }
-
-    /* 단일 알림 삭제 */
-    @DeleteMapping("/notifications/delete/{notificationId}")
-    public ResponseEntity<ApiResponseDto> deleteNotification(@PathVariable Long notificationId) {
-
-        notificationService.deleteByNotifications(notificationId);
-        return ResponseEntity.ok().body(new ApiResponseDto("알림 목록 삭제 성공", HttpStatus.OK.value()));
-    }
+//
+//    /* 알림조회 */
+//    @GetMapping("/notifications")
+//    public List<NotificationResponseDto> findAllNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return notificationService.findAllNotifications(userDetails.getUser());
+//    }
+//
+//    /* 전체목록 알림 조회에서 해당 목록 클릭 시 읽음처리 */
+//    @PostMapping("/notification/read/{notificationId}")
+//    public void readNotification(@PathVariable Long notificationId) {
+//        notificationService.readNotification(notificationId);
+//    }
+//
+//    /* 알림 조회 - 구독자가 현재 읽지않은 알림 갯수 */
+//    @GetMapping("/notifications/count")
+//    public NotificationCountDto countUnReadNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return notificationService.countUnReadNotifications(userDetails.getUser().getId());
+//    }
+//
+//    /* 알림 전체 삭제 */
+//    @DeleteMapping("/notifications/delete")
+//    public ResponseEntity<ApiResponseDto> deleteNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//
+//        notificationService.deleteAllByNotifications(userDetails);
+//        return ResponseEntity.ok().body(new ApiResponseDto("알림 목록 전체삭제 성공", HttpStatus.OK.value()));
+//    }
+//
+//    /* 단일 알림 삭제 */
+//    @DeleteMapping("/notifications/delete/{notificationId}")
+//    public ResponseEntity<ApiResponseDto> deleteNotification(@PathVariable Long notificationId) {
+//
+//        notificationService.deleteByNotifications(notificationId);
+//        return ResponseEntity.ok().body(new ApiResponseDto("알림 목록 삭제 성공", HttpStatus.OK.value()));
+//    }
 }

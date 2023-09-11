@@ -20,10 +20,6 @@ public class Notification extends TimeStamped {
     @Column
     private String content;
 
-    /* 클릭 시 이동해야할 링크 */
-    @Column
-    private String url;
-
     /* 읽음 여부 */
     @Column(nullable = false)
     private Boolean isRead;
@@ -38,11 +34,10 @@ public class Notification extends TimeStamped {
     private User receiver;
 
     @Builder
-    public Notification(User receiver, NotificationType notificationType, String content, String url, Boolean isRead) {
+    public Notification(User receiver, NotificationType notificationType, String content, Boolean isRead) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.content = content;
-        this.url = url;
         this.isRead = isRead;
     }
 
