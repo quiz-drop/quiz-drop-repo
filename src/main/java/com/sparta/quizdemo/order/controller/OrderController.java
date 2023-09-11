@@ -4,6 +4,7 @@ import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
+import com.sparta.quizdemo.order.dto.ScoreRequestDto;
 import com.sparta.quizdemo.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -62,9 +63,16 @@ public class OrderController {
         return orderService.cancelOrder(orderNo, userDetails.getUser());
     }
 
+    @Operation(summary = "주문 상품 평가")
+    @Transactional
+    @PostMapping("/order/{orderNo}/orderitem/{orderItemNo}")
+    public ResponseEntity<ApiResponseDto> scoreOrderItem(@PathVariable Long orderNo, @PathVariable Long orderItemNo, @RequestBody ScoreRequestDto scoreRequestDto) {
+        return orderService.scoreOrderItem(orderNo, orderItemNo, scoreRequestDto.getScore());
+    }
+
     // 완료된 주문 처리
     @Transactional
-    @Scheduled(cron = "0 */5 * * * *") // 5분마다 업데이트
+    @Scheduled(cron = "0 * * * * *") // 1분마다 업데이트
     public void completeOrder() {
         orderService.completeOrder();
     }

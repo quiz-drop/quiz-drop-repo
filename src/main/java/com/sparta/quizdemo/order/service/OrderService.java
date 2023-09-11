@@ -10,6 +10,8 @@ import com.sparta.quizdemo.cart.service.CartServiceImpl;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.option.entity.Option;
+import com.sparta.quizdemo.product.entity.Product;
+import com.sparta.quizdemo.product.repository.ProductRepository;
 import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
@@ -23,6 +25,7 @@ import com.sparta.quizdemo.sse.service.NotificationService;
 import com.sparta.quizdemo.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +46,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final CartRepository cartRepository;
@@ -50,6 +54,8 @@ public class OrderService {
     private final CartServiceImpl cartService;
     private final NotificationService notificationService;
 
+    @Value("${kakao.apiKey}")
+    private String kakaoApiKey;
     public ResponseEntity<ApiResponseDto> createOrder(OrderRequestDto orderRequestDto, User user) {
         if (cartRepository.findByUserId(user.getId()).isEmpty()) {
             cartService.createCart(user);
@@ -126,11 +132,11 @@ public class OrderService {
 
         if (orderRequestDto.getPayment().equals(totalPrice)) {
             // 현재 유저의 order 생성
-            Order order = new Order(user, totalPrice, completeTime, orderRequestDto.getDelivery(), orderRequestDto.getRequest(), orderRequestDto.getOrderComplete());
+            Order order = new Order(user, totalPrice, completeTime, orderRequestDto);
             orderRepository.save(order);
 
             List<Order> userOrderList = orderRepository.findAllByUserIdOrderByCreatedAtAsc(user.getId());
-            if (userOrderList.size() > 10) {
+            if (userOrderList.size() > 100) {
                 orderRepository.delete(userOrderList.remove(0));
             }
 
@@ -143,7 +149,7 @@ public class OrderService {
             }
 
             String content = user.getUsername() + "님! 주문이 완료되었습니다!";
-            notificationService.sendNotification(user, NotificationType.ORDER, content);
+//            notificationService.sendNotification(user, NotificationType.ORDER, content);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto("결제가 완료 되었습니다.", HttpStatus.CREATED.value()));
         } else {
@@ -220,6 +226,31 @@ public class OrderService {
         }
     }
 
+    public ResponseEntity<ApiResponseDto> scoreOrderItem(Long orderNo, Long orderItemNo, Integer score) {
+        Order order = orderRepository.findById(orderNo).orElseThrow(() -> new NullPointerException("해당 번호의 주문이 존재하지 않습니다."));
+        OrderItem orderItem = orderItemRepository.findById(orderItemNo).orElseThrow(() -> new NullPointerException("해당 번호의 주문상품이 존재하지 않습니다."));
+
+        if (order.getOrderComplete() && orderItem.getScoreComplete().equals(false)) {
+            Product product = productRepository.findByProductName(orderItem.getProduct().getProductName()).orElseThrow();
+            List<OrderItem> orderItemList = orderItemRepository.findAllByProductId(product.getId());
+
+            Integer i = 0;
+            for (OrderItem orderItem2 : orderItemList) {
+                if (orderItem2.getScoreComplete()) {
+                    i++;
+                }
+            }
+
+            Integer temp = product.getProductScore();
+            product.setProductScore(Math.round((float) (temp * i + score) /(i+1)));
+            orderItem.setScoreComplete(true);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto("해당 상품에 대한 평점을 등록하였습니다.", HttpStatus.CREATED.value()));
+        } else {
+            throw new IllegalArgumentException("해당 주문이 아직 완료되지 않았거나, 이미 리뷰를 마친 상태입니다.");
+        }
+    }
+
     public void completeOrder() {
         List<Order> orderList = orderRepository.findAll();
         if (!orderList.isEmpty()) {
@@ -240,21 +271,20 @@ public class OrderService {
                     for (Order order2 : totalOrderList) {
                         if (order2.getOrderComplete()) {
                             completedOrderList.add(order2);
-                            if (completedOrderList.size() > 100) {
+                            if (completedOrderList.size() > 10000) {
                                 orderRepository.delete(completedOrderList.remove(0));
                             }
                         }
                     }
 
                     String content = order.getUser().getUsername() + "님! 수령시간이 되었습니다!";
-                    notificationService.sendNotification(order.getUser(), NotificationType.DELIVERY, content);
+//                    notificationService.sendNotification(order.getUser(), NotificationType.DELIVERY, content);
                 }
             }
         }
     }
-
     public String getKakaoApiFromAddress(String roadFullAddr) {
-        String apiKey = "cd1ccf91994a50633a55d68e5f85d9a2";
+        String apiKey = kakaoApiKey;
         String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json";
         String jsonString = null;
 
