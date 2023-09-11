@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.common.util;
+package com.sparta.quizdemo.util;
 
 
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
