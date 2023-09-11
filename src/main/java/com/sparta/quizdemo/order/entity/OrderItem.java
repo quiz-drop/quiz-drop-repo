@@ -6,6 +6,7 @@ import com.sparta.quizdemo.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,10 @@ public class OrderItem {
     @Column(nullable = false)
     private Integer quantity;
 
+    @Setter
+    @Column
+    private Boolean scoreComplete;
+
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -35,6 +40,7 @@ public class OrderItem {
 
     public OrderItem(CartItem cartItem, Order order, List<Option> options) {
         this.quantity = cartItem.getQuantity();
+        this.scoreComplete = false;
         this.order = order;
         this.product = cartItem.getProduct();
         this.optionList = options;

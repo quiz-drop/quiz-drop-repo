@@ -115,7 +115,7 @@ public class ProductServiceImpl implements ProductService{
         String fileName = awsS3Service.uploadImage(multipartFile);
         productRequestDto.setFileName(fileName);
 
-        product.update(productRequestDto, product.getOrderCount());
+        product.update(productRequestDto, product.getOrderCount(), product.getProductScore());
         productRepository.save(product);
         return new ProductResponseDto(product);
     }

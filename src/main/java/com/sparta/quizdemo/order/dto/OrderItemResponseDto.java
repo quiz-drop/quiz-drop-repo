@@ -11,11 +11,13 @@ import java.util.stream.Collectors;
 public class OrderItemResponseDto {
     private String productName;
     private Integer quantity;
+    private Boolean scoreComplete;
     private List<OptionResponseDto> optionList;
 
     public OrderItemResponseDto(OrderItem orderItem) {
         this.productName = orderItem.getProduct().getProductName();
         this.quantity = orderItem.getQuantity();
+        this.scoreComplete = orderItem.getScoreComplete();
         this.optionList = orderItem.getOptionList().stream().map(OptionResponseDto::new).collect(Collectors.toList());
     }
 }

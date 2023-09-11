@@ -23,6 +23,7 @@ public class ProductResponseDto {
     private Long cookingTime;
     private Long orderCount;
     private String category;
+    private Integer productScore;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -41,6 +42,7 @@ public class ProductResponseDto {
         this.cookingTime = product.getCookingTime();
         this.orderCount = product.getOrderCount();
         this.category = product.getCategory();
+        this.productScore = product.getProductScore();
         this.createdAt = product.getCreatedAt();
         this.modifiedAt = product.getModifiedAt();
     }

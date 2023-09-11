@@ -4,6 +4,7 @@ import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
+import com.sparta.quizdemo.order.dto.ScoreRequestDto;
 import com.sparta.quizdemo.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +61,13 @@ public class OrderController {
     @DeleteMapping("/order/{orderNo}")
     public ResponseEntity<ApiResponseDto> cancelOrder(@PathVariable Long orderNo, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.cancelOrder(orderNo, userDetails.getUser());
+    }
+
+    @Operation(summary = "주문 상품 평가")
+    @Transactional
+    @PostMapping("/order/{orderNo}/orderitem/{orderItemNo}")
+    public ResponseEntity<ApiResponseDto> scoreOrderItem(@PathVariable Long orderNo, @PathVariable Long orderItemNo, @RequestBody ScoreRequestDto scoreRequestDto) {
+        return orderService.scoreOrderItem(orderNo, orderItemNo, scoreRequestDto.getScore());
     }
 
     // 완료된 주문 처리
