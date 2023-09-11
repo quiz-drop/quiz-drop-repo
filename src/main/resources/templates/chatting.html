@@ -378,37 +378,47 @@
     });
 
     // 메시지 브로커로 메시지 전송
+    // 메시지 전송 버튼 클릭 시 사용자 메시지 전송
+    $('#send-button').click(function () {
+        const userMessage = $('#msg').val();
+        if (userMessage.trim() !== '') {
+            showUserMessage(userMessage); // 사용자 메시지를 화면에 표시
+            send(); // 메시지 전송 함수 호출
+            $("#msg").val(''); // 입력 필드 초기화
+        }
+    });
+
+    // 메시지 브로커로 메시지 전송
     function send() {
-        data = {
+        const data = {
             'username': username,
             'message': $("#msg").val(),
             'roomId': roomId
         };
 
         stompClient.send("/app/chat/send", {}, JSON.stringify(data));
-
-        //보낼때 채팅 저장
-        $.ajax({
-            url: `/api/chat/saveMessages/${roomId}`,
-            method: 'POST',
-            contentType: "application/json",
-            data: JSON.stringify({
-                'roomId': roomId,
-                'username': username,
-                'message': $("#msg").val()
-            }),
-            success: function (response) {
-                console.log(roomId)
-                console.log(username)
-                $("#msg").val('');
-            },
-            error: function (xhr, status, error) {
-                alert("저장 실패")
-                console.log(xhr);
-            }
-        });
     }
 
+    //보낼 때 채팅 저장
+    $.ajax({
+        url: `/api/chat/saveMessages/${roomId}`,
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({
+            'roomId': roomId,
+            'username': username,
+            'message': $("#msg").val()
+        }),
+        success: function (response) {
+            console.log(roomId);
+            console.log(username);
+            $("#msg").val(''); // AJAX 요청이 성공했을 때 입력 필드 초기화
+        },
+        error: function (xhr, status, error) {
+            alert("저장 실패");
+            console.log(xhr);
+        }
+    });
 </script>
 </body>
 </html>
