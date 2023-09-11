@@ -60,9 +60,6 @@ public class User extends TimeStamped {
     @OneToMany(mappedBy = "user")
     private List<Order> orderList;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private ChatRoom chatRoom;
-
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
     private List<Notification> notifications = new ArrayList<>();
 
