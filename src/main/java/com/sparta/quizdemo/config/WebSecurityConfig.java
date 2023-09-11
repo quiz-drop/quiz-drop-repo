@@ -71,7 +71,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers("/api/user/info/password","/user/info/password").permitAll()
                         .requestMatchers("/api/user/info/username","/user/info/username").permitAll()
                         .requestMatchers("/app/chat/**").permitAll()
-                        .requestMatchers("/chatRoom", "/chatting", "/notification/**").permitAll()
+                        .requestMatchers("/api/chat/saveMessages/**", "/api/chat/getMessages/**", "/api/notifications/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/product").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/product/**").permitAll()

@@ -18,6 +18,7 @@
             integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
             crossorigin="anonymous"></script>
     <link href="/css/style.css" rel="stylesheet">
+    <script src="/js/notification.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <title>BurgerDrop | 홈</title>
@@ -90,6 +91,19 @@
             <a href="/chatList">
                 <button type="submit" class="btn btn-warning ms-2" id="chat-btn">chatList</button>
             </a>
+
+<!--            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">알림</button>-->
+<!--            <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">-->
+<!--                <div class="offcanvas-header">-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>-->
+<!--                </div>-->
+<!--                <div class="offcanvas-body">-->
+<!--                    <ul id="notification-list">-->
+<!--                        &lt;!&ndash; Notifications will be inserted here &ndash;&gt;-->
+<!--                    </ul>-->
+<!--                    <button id="delete-all-btn" class="btn btn-danger">알림 전체 삭제</button>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
     </div>
 </nav>
@@ -110,47 +124,41 @@
     </div>
 </div>
 <div class="inquiry-icon" id="chat-icon">
-    <i class="fas fa-question-circle"></i>
+    <img src="https://cdn-icons-png.flaticon.com/128/2840/2840215.png" alt="Chat Icon" width="80" height="80">
 </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#chat-icon').click(function () {
-            // JWT 토큰을 쿠키에서 가져와서 사용자 정보를 추출합니다.
-            const token = Cookies.get('Authorization'); // 쿠키에서 토큰을 가져옵니다.
-            const payloads = JSON.parse(atob(token.split(".")[1])); // 토큰을 디코딩하고 페이로드를 가져옵니다.
+        $('#chat-icon').off('click').on('click', function () {
+            const token = Cookies.get('Authorization');
+
+            if (!token) {
+                alert('로그인이 필요한 서비스 입니다.');
+                return;
+            }
+
+            const payloads = JSON.parse(atob(token.split(".")[1]));
             const username = payloads.sub;
             let roomId;
 
             // 채팅 룸 생성 요청을 보냅니다.
-            $('#chat-icon').click(function () {
-                // 이미 채팅 룸 아이디가 생성된 경우에는 해당 아이디로 채팅방에 입장
-                if (roomId) {
+            $.ajax({
+                url: '/api/chat/createAndEnterChatRoom',
+                method: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    roomId = response.roomId;
                     var chatUrl = '/chatting?roomId=' + roomId;
                     window.location.href = chatUrl;
-                    return;
+                },
+                error: function (xhr, status, error) {
+                    alert("채팅 룸 생성 실패");
+                    console.log(xhr);
                 }
-                // 채팅 룸 생성 요청을 보냅니다.
-                $.ajax({
-                    url: '/api/chat/createAndEnter',
-                    method: 'POST',
-                    dataType: 'json',
-                    success: function (response) {
-                        roomId = response.roomId; // 생성된 채팅 룸 아이디를 저장
-                        alert("성공!!, 방 아이디 = " + roomId);
-
-                        // 방 아이디를 사용하여 채팅방에 입장합니다.
-                        var chatUrl = '/chatting?roomId=' + roomId;
-                        window.location.href = chatUrl;
-                    },
-                    error: function (xhr, status, error) {
-                        alert("채팅 룸 생성 실패");
-                        console.log(xhr);
-                    }
-                });
             });
         });
     });

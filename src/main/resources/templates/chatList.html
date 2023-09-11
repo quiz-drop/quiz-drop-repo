@@ -6,64 +6,63 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <title>Chat Rooms</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-
+    /* 채팅 리스트 컨테이너 스타일 */
     .chat-rooms {
-      width: 30%;
-      background-color: #f0f0f0;
+      background-color: #f4f4f4;
       padding: 20px;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-      overflow-y: auto;
+      text-align: center;
+      font-family: Arial, sans-serif;
     }
 
-    .chat-container {
-      width: 70%;
-      padding: 20px;
-    }
-
-    h1 {
+    /* 채팅 리스트 제목 스타일 */
+    .chat-rooms h1 {
       font-size: 24px;
       margin-bottom: 20px;
     }
 
-    ul {
-      list-style-type: none;
+    /* 채팅 리스트 항목 스타일 */
+    #room-list {
+      list-style: none;
       padding: 0;
     }
 
-    li {
-      cursor: pointer;
-      margin-bottom: 10px;
+    /* 채팅 리스트 항목 아이템 스타일 */
+    #room-list li {
+      margin: 10px 0;
       padding: 10px;
       background-color: #fff;
-      border: 1px solid #ddd;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
       border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       transition: background-color 0.3s ease;
     }
 
-    li:hover {
+    /* 채팅 리스트 항목 호버 효과 */
+    #room-list li:hover {
       background-color: #f0f0f0;
     }
+
   </style>
 </head>
 <body>
 <div class="chat-rooms">
   <h1>Chat Rooms</h1>
   <ul id="room-list">
+    <!-- 예시 채팅방 항목 -->
   </ul>
 </div>
+<button id="home-button">HOME</button>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
+  const homeButton = document.getElementById("home-button");
+  homeButton.addEventListener("click", () => {
+    window.location.href = "/";
+  });
   document.addEventListener("DOMContentLoaded", function () {
     const token = Cookies.get('Authorization');
     const payload = JSON.parse(atob(token.split(".")[1]));
@@ -72,14 +71,13 @@
     const urlSearchParams = new URLSearchParams(window.location.search);
     let roomId = urlSearchParams.get("roomId");
 
-    console.log("JWT Token:", token);
     console.log("Decoded Payload:", payload);
     console.log("Extracted Username:", username);
-    console.log(roomId)
 
     fetch("/api/chat/rooms")
             .then((response) => response.json())
             .then((data) => {
+              console.log(data)
               const roomList = document.getElementById("room-list");
               data.forEach((room) => {
                 const listItem = document.createElement("li");
