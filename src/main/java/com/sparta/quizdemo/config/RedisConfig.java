@@ -54,15 +54,6 @@ public class RedisConfig {
         return container;
     }
 
-    /*
-     * RedisMessageListenerContainer 로부터 메시지를 dispatch 받고,
-     * 실제 메시지를 처리하는 비즈니스 로직이 담긴 Subscriber Bean 추가
-     */
-//    @Bean
-//    public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-//        return new MessageListenerAdapter(subscriber, "onMessage");
-//    }
-
     /* 어플리케이션에서 사용할 redisTemplate 설정 */
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {

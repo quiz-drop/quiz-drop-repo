@@ -1,197 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Title</title>-->
-<!--    <style>-->
-<!--        * {-->
-<!--            margin: 0;-->
-<!--            padding: 0;-->
-<!--        }-->
-
-<!--        .container {-->
-<!--            width: 500px;-->
-<!--            margin: 0 auto;-->
-<!--            padding: 25px-->
-<!--        }-->
-
-<!--        .container h1 {-->
-<!--            text-align: left;-->
-<!--            padding: 5px 5px 5px 5px;-->
-<!--            color: black;-->
-<!--            margin-bottom: 20px;-->
-<!--        }-->
-
-<!--        .chatting {-->
-<!--            border: 1px solid gray;-->
-<!--            width: 700px;-->
-<!--            height: 700px;-->
-<!--            overflow: auto;-->
-<!--        }-->
-
-<!--        .chatting p {-->
-<!--            text-align: left;-->
-<!--        }-->
-
-<!--        input {-->
-<!--            width: 450px;-->
-<!--            height: 50px;-->
-<!--        }-->
-
-<!--        th {-->
-<!--            width: 100px;-->
-<!--        }-->
-
-<!--        #yourMsg {-->
-<!--            width: 700px;-->
-<!--        }-->
-
-<!--        .me {-->
-<!--            color: blue;-->
-<!--        }-->
-
-<!--        .other {-->
-<!--            color: red;-->
-<!--        }-->
-<!--    </style>-->
-
-<!--    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>-->
-<!--</head>-->
-<!--<body>-->
-<!--<div class="container" id="container">-->
-<!--    <h1 id="title_room">채팅방제목</h1>-->
-<!--    <div id="chatting" class="chatting">-->
-<!--    </div>-->
-<!--    <div id="yourMsg">-->
-<!--        <table class="inputTable">-->
-<!--            <tr>-->
-<!--                <th>메시지</th>-->
-<!--                <th><input id="msg" placeholder="보내실 메시지를 입력하세요."></th>-->
-<!--                <th>-->
-<!--                    <button onclick="send()" id="sendBtn">보내기</button>-->
-<!--                    <button onclick="disconnect()" id="disconnectBtn">끊기</button>-->
-<!--                </th>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--    </div>-->
-<!--</div>-->
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>-->
-<!--<script>-->
-<!--    const token = Cookies.get('Authorization'); // 쿠키에서 토큰을 가져옵니다.-->
-<!--    const payloads = JSON.parse(atob(token.split(".")[1])); // 토큰을 디코딩하고 페이로드를 가져옵니다.-->
-<!--    const username = payloads.sub;-->
-
-<!--    const urlSearch = new URLSearchParams(location.search);-->
-<!--    const roomId = urlSearch.get('roomId');-->
-<!--    $(document).ready(function () {-->
-<!--        // 채팅방에 저장된 채팅내용 조회-->
-<!--        $.ajax({-->
-<!--            url: `/api/chat/chatRoom/${roomId}`,-->
-<!--            method: 'GET',-->
-<!--            headers: {-->
-<!--                'Authorization': token // 토큰을 요청 헤더에 추가-->
-<!--            },-->
-<!--            success: function (response) {-->
-<!--                response.forEach(function (chatMessage) {-->
-<!--                    const chatContent = $('<div>', {-->
-<!--                        class: 'testChat',-->
-<!--                        text: chatMessage.message // 필드명을 message로 변경-->
-<!--                    });-->
-<!--                    const chatContentTime = $('<div>', {-->
-<!--                        class: 'chatContentTime',-->
-<!--                        text: chatMessage.createAt // 필드명을 createAt으로 변경-->
-<!--                    });-->
-
-<!--                    $('#chatting').append(chatContent, chatContentTime);-->
-<!--                });-->
-<!--            },-->
-<!--            error: function (xhr, status, error) {-->
-<!--                alert("채팅 내용 불러오기 실패");-->
-<!--                console.log(xhr);-->
-<!--            }-->
-<!--        });-->
-<!--    });-->
-
-<!--    var socket = new SockJS("/chat");-->
-<!--    stompClient = Stomp.over(socket);-->
-
-<!--    function connect() {-->
-<!--        console.log("socket", socket);-->
-<!--        console.log("stompClient", stompClient);-->
-
-<!--        // 이 채팅룸을 클릭했을때 해당하는 roomId을 가지고 온다.-->
-<!--        stompClient.connect({}, function () {-->
-<!--                sub = stompClient.subscribe('/topic/' + roomId, function (e) {-->
-
-<!--                    console.log("e : ", e);-->
-<!--                    showMessage(JSON.parse(e.body));-->
-<!--                });-->
-
-<!--            },-->
-<!--            function (e) {-->
-<!--                alert('통신끊김');-->
-<!--            }-->
-<!--        );-->
-
-<!--    }-->
-
-<!--    connect();-->
-
-<!--    function disconnect() {-->
-<!--        stompClient.disconnect();-->
-<!--    }-->
-
-<!--    //엔터 눌렀을때 전송-->
-<!--    $('#msg').keypress(function (e) {-->
-<!--        if (e.keyCode === 13) send();-->
-<!--    });-->
-
-<!--    //화면에 메시지를 표시하는 함수-->
-<!--    function showMessage(data) {-->
-<!--        if (data.sender === username) {-->
-<!--            $('#chatting').append("<p class='me'>" + data.sender + " : " + data.message + "</p>");-->
-<!--        } else {-->
-<!--            $('#chatting').append("<p class='other'>" + data.sender + " : " + data.message + "</p>");-->
-<!--        }-->
-<!--    }-->
-
-<!--    //메시지 브로커로 메시지 전송-->
-<!--    function send() {-->
-<!--        data = {-->
-<!--            'sender': username,-->
-<!--            'message': $("#msg").val(),-->
-<!--            'roomId': roomId-->
-<!--        };-->
-
-<!--        stompClient.send("/app/chat/send", {}, JSON.stringify(data));-->
-
-<!--        //보낼때 채팅 저장-->
-<!--        $.ajax({-->
-<!--            url: `/api/chat/save`,-->
-<!--            method: 'POST',-->
-<!--            contentType: "application/json",-->
-<!--            data: JSON.stringify({-->
-<!--                'roomId': roomId,-->
-<!--                'username': username,-->
-<!--                'message': $("#msg").val()-->
-<!--            }),-->
-<!--            success: function (response) {-->
-<!--                alert("저장완료");-->
-<!--                $("#msg").val('');-->
-<!--            },-->
-<!--            error: function (xhr, status, error) {-->
-<!--                alert("저장 실패")-->
-<!--                console.log(xhr);-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
-<!--</script>-->
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -208,16 +14,20 @@
         }
 
         .chat-container {
-            max-width: 600px; /* 원하는 너비로 변경 */
+            /*max-width: 600px; !* 원하는 너비로 변경 *!*/
+            width: 80%;
+            height: 80vh;
             margin: 20px auto;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .chat-header {
-            background-color: #0099ff;
+            background-color: #FF834E;
             color: #fff;
             padding: 10px;
             display: flex;
@@ -237,27 +47,13 @@
         }
 
         .chat-messages {
-            padding: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .chat-messages .message {
-            margin: 10px 0;
+            display: flex;
+            /*flex-direction: column;*/
+            flex: 1;
+            /*align-items: flex-start;*/
             padding: 10px;
-            border-radius: 10px;
-            max-width: 70%;
-        }
-
-        .chat-messages .message.sender {
-            background-color: #0099ff;
-            color: #fff;
-            float: right;
-        }
-
-        .chat-messages .message.receiver {
-            background-color: #e5e5e5;
-            float: left;
+            overflow-y: auto; /* 스크롤 가능한 영역으로 설정 */
+            /*max-height: 100px; !* 채팅창의 최대 높이를 지정합니다. *!*/
         }
 
         .chat-input {
@@ -290,7 +86,7 @@
             padding: 10px 20px;
             margin: 10px;
             border: none;
-            background-color: #ff0000; /* 원하는 배경색으로 설정하세요 */
+            background-color: #FF4004; /* 원하는 배경색으로 설정하세요 */
             color: #fff; /* 텍스트 색상 설정 */
             border-radius: 20px;
             cursor: pointer;
@@ -302,7 +98,6 @@
             background-color: #cc0000; /* 마우스 호버 시 배경색 변경 */
         }
 
-        /* 모달 스타일 */
         .modal {
             display: none;
             position: fixed;
@@ -350,22 +145,6 @@
             background-color: #0077cc;
         }
 
-        /* 수정된 CSS 코드 */
-        .chat-messages .message.me {
-            background-color: #0099ff;
-            color: #fff;
-            float: right;
-            clear: both; /* 우측 정렬 후 레이아웃 클리어 */
-        }
-
-        .chat-messages .message.other {
-            background-color: #e5e5e5;
-            color: #000; /* 상대방 메시지의 텍스트 색상 변경 (선택 사항) */
-            float: left;
-            clear: both; /* 좌측 정렬 후 레이아웃 클리어 */
-        }
-
-
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -385,24 +164,25 @@
         }
 
         button#home-btn:hover {
-            background-color: #0056b3;
+            background-color: #ff9e37;
             transform: scale(1.05);
         }
-
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="chat-container">
     <div class="chat-header">
-        <div class="chat-avatar">
-            <img src="user-avatar.jpg" alt="사용자 프로필 사진">
-        </div>
         <div class="chat-username">
-            BD user
+            Burger Drop (보통 1시간 내 응답)
         </div>
     </div>
     <div class="chat-messages" id="chatting">
-        <!-- 채팅 메시지가 여기에 추가됩니다. -->
     </div>
     <div class="chat-input">
         <input type="text" id="msg" placeholder="메시지를 입력하세요">
@@ -414,8 +194,8 @@
 <!-- 모달 다이얼로그 -->
 <div id="exit-modal" class="modal">
     <div class="modal-content">
-        <h2>채팅방 나가기</h2>
-        <p>채팅방에서 나가시겠습니까?</p>
+        <h2>채팅 종료</h2>
+        <p>채팅 종료 하게 되면, 대화 내용이 사라지게 됩니다. 채팅을 종료하시겠습니까?</p>
         <button id="confirm-exit">예</button>
         <button id="cancel-exit">취소</button>
     </div>
@@ -426,6 +206,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
+
+    window.onload = function () {
+        const exit_btn = document.getElementById("exit-button");
+
+        if (checkAuthorizationCookie()) {
+            if (role === "ADMIN") {
+                exit_btn.style.display = "none";
+
+            } else {
+                exit_btn.style.display = "block";
+            }
+        }
+
+        function checkAuthorizationCookie() {
+            var cookies = document.cookie.split(";");
+
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+
+                // "Authorization" 쿠키가 존재하는 경우 true 반환
+                if (cookie.startsWith("Authorization")) {
+                    return true;
+                }
+            }
+            // "Authorization" 쿠키가 존재하지 않는 경우 false 반환
+            return false;
+        }
+    }
+
     // 홈 버튼 클릭 시 이동할 경로 설정
     document.getElementById("home-btn").addEventListener("click", function() {
         window.location.href = "/";
@@ -433,26 +242,24 @@
     const token = Cookies.get('Authorization'); // 쿠키에서 토큰을 가져옵니다.
     const payloads = JSON.parse(atob(token.split(".")[1])); // 토큰을 디코딩하고 페이로드를 가져옵니다.
     const username = payloads.sub;
+    const role = payloads.AUTHORIZATION_KEY;
 
     const urlSearch = new URLSearchParams(location.search);
     const roomId = urlSearch.get('roomId');
     $(document).ready(function () {
         // 채팅방에 저장된 채팅내용 조회
         $.ajax({
-            url: `/api/chat/chatRoom/${roomId}`,
+            url: `/api/chat/getMessages/${roomId}`,
             method: 'GET',
-            headers: {
-                'Authorization': token // 토큰을 요청 헤더에 추가
-            },
             success: function (response) {
                 response.forEach(function (chatMessage) {
                     const chatContent = $('<div>', {
                         class: 'testChat',
-                        text: chatMessage.message // 필드명을 message로 변경
+                        text: chatMessage.username + ': ' + chatMessage.message
                     });
                     const chatContentTime = $('<div>', {
                         class: 'chatContentTime',
-                        text: chatMessage.createAt // 필드명을 createAt으로 변경
+                        text: chatMessage.timestamp // 필드명을 createdAt으로 변경
                     });
 
                     $('#chatting').append(chatContent, chatContentTime);
@@ -475,14 +282,14 @@
             // 여기에 채팅방 삭제와 메인 페이지로 이동하는 코드를 추가
             // 채팅방 삭제 요청을 서버로 보냅니다.
             $.ajax({
-                url: `/api/chat/deleteRoom/${roomId}`, // roomId를 적절하게 가져와야 합니다.
+                url: `/api/chat/deleteRoom/${roomId}`,
                 method: 'DELETE',
                 headers: {
                     'Authorization': token
                 },
                 success: function (response) {
-                    // 채팅방 삭제 성공 시 메인 페이지로 이동
-                    window.location.href = '/'; // 적절한 메인 페이지 URL로 수정하세요.
+                    alert(roomId);
+                    window.location.href = '/';
                 },
                 error: function (xhr, status, error) {
                     alert("채팅방 삭제 실패");
@@ -524,10 +331,8 @@
 
             },
             function (e) {
-                alert('통신끊김');
             }
         );
-
     }
 
     connect();
@@ -536,19 +341,11 @@
         stompClient.disconnect();
     }
 
-    //화면에 메시지를 표시하는 함수
-    // function showMessage(data) {
-    //     if (data.sender === username) {
-    //         $('#chatting').append("<p class='me'>" + data.sender + " : " + data.message + "</p>");
-    //     } else {
-    //         $('#chatting').append("<p class='other'>" + data.sender + " : " + data.message + "</p>");
-    //     }
-    // }
     function showMessage(data) {
         const chatMessages = document.getElementById('chatting');
         const messageDiv = document.createElement('div');
-        messageDiv.textContent = data.sender + ' : ' + data.message;
-        messageDiv.classList.add(data.sender === username ? 'me' : 'other');
+        messageDiv.textContent = data.username + ' : ' + data.message;
+        messageDiv.classList.add(data.username === username ? 'me' : 'other');
         chatMessages.appendChild(messageDiv);
 
         // 스크롤을 아래로 이동하여 최신 메시지를 보여줍니다.
@@ -560,10 +357,30 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    //메시지 브로커로 메시지 전송
+    function showUserMessage(message) {
+        const chatMessages = document.getElementById('chatting');
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = 'You: ' + message;
+        messageDiv.classList.add('user');
+        chatMessages.appendChild(messageDiv);
+
+        // 스크롤을 아래로 이동하여 최신 메시지를 보여줍니다.
+        scrollToBottom();
+    }
+
+    // 메시지 전송 버튼 클릭 시 사용자 메시지 전송
+    $('#send-button').click(function () {
+        const userMessage = $('#msg').val();
+        if (userMessage.trim() !== '') {
+            showUserMessage(userMessage); // 사용자 메시지를 화면에 표시
+            send(); // 메시지 전송 함수 호출
+        }
+    });
+
+    // 메시지 브로커로 메시지 전송
     function send() {
         data = {
-            'sender': username,
+            'username': username,
             'message': $("#msg").val(),
             'roomId': roomId
         };
@@ -572,7 +389,7 @@
 
         //보낼때 채팅 저장
         $.ajax({
-            url: `/api/chat/save`,
+            url: `/api/chat/saveMessages/${roomId}`,
             method: 'POST',
             contentType: "application/json",
             data: JSON.stringify({
@@ -581,7 +398,8 @@
                 'message': $("#msg").val()
             }),
             success: function (response) {
-                alert("저장완료");
+                console.log(roomId)
+                console.log(username)
                 $("#msg").val('');
             },
             error: function (xhr, status, error) {
@@ -591,22 +409,6 @@
         });
     }
 
-    function logout() {
-        //리프레시 토큰 삭제 요청
-
-        fetch('/api/user/logout', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'}
-        }).then(response => response.json())
-            .then(data => {
-                alert(data.msg)
-                // 쿠키 삭제
-                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                window.location.href = "/"
-            });
-
-
-    }
 </script>
 </body>
 </html>
