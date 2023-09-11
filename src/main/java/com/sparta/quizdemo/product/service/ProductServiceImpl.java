@@ -125,14 +125,10 @@ public class ProductServiceImpl implements ProductService{
     public ApiResponseDto deleteProduct(Long productNo) {
         Product product = productRepository.findById(productNo).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
         List<CartItem> cartItemList = cartItemRepository.findAllByProductId(productNo);
-        for (CartItem cartItem : cartItemList) {
-            cartItemRepository.delete(cartItem);
-        }
+        cartItemRepository.deleteAll(cartItemList);
 
         List<OrderItem> orderItemList = orderItemRepository.findAllByProductId(productNo);
-        for (OrderItem orderItem : orderItemList) {
-            orderItemRepository.delete(orderItem);
-        }
+        orderItemRepository.deleteAll(orderItemList);
 
         if (product.getProductImage() != null) {
             awsS3Service.deleteImage(product.getProductImage());

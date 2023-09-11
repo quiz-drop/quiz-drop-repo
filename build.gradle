@@ -52,6 +52,9 @@ dependencies {
 
 	// Docker MySQL
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+
+	// Spring Vault
+//	implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 }
 
 tasks.named('test') {

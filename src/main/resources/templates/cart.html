@@ -201,7 +201,7 @@
             error: function(xhr, status, error) {
                 Swal.fire({
                     icon: 'error',                         // Alert 타입
-                    title: '상세한 주소를 입력해 주세요'// Alert 제목
+                    title: '장바구니에 상품이 없거나 잘못된 주소입니다.'// Alert 제목
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.reload();

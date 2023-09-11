@@ -64,6 +64,10 @@ public class OrderService {
         Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new NullPointerException("장바구니가 없습니다."));
         List<CartItem> cartItemList = cartItemRepository.findAllByCartId(cart.getId());
 
+        if (cartItemList.isEmpty()) {
+            throw new NullPointerException("장바구니에 담긴 상품이 없습니다.");
+        }
+
         long totalPrice = 0L;
         long totalCookingTime = 0L;
         long optionPrice = 0L;
