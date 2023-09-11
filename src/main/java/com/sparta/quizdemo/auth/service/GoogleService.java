@@ -6,11 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.auth.dto.SocialUserInfoDto;
 import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.user.entity.User;
-import com.sparta.quizdemo.common.util.JwtUtil;
+import com.sparta.quizdemo.util.JwtUtil;
 import com.sparta.quizdemo.user.repository.UserRepository;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,10 @@ public class GoogleService {
     private final RestTemplate restTemplate; // 수동 등록한 Bean
     private final JwtUtil jwtUtil;
     private final RedisRefreshTokenRepository redisRefreshTokenRepository;
+    @Value("${google.client.id}")
+    private String googleClientId;
+    @Value("${google.secret.id}")
+    private String googleSecretId;
 
 
     public String googleLogin(String code) throws JsonProcessingException {
@@ -77,8 +82,8 @@ public class GoogleService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "1048741760252-41qatbor2qcqf4se37mcp0hitqnjd4sh.apps.googleusercontent.com");
-        body.add("client_secret", "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");
+        body.add("client_id", googleClientId );
+        body.add("client_secret", googleSecretId);
         body.add("redirect_uri", "http://localhost:8080/api/auth/google/login"); // 애플리케이션 등록시 설정한 redirect_uri
         body.add("code", code);
 
