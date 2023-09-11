@@ -173,60 +173,6 @@
             align-items: flex-start;
             padding: 10px;
         }
-
-        .message {
-            margin-bottom: 10px;
-            max-width: 70%;
-            word-wrap: break-word;
-            padding: 10px;
-            border-radius: 15px;
-            position: relative;
-        }
-
-        .chat-messages .message.me {
-            background-color: #0099ff;
-            color: #fff;
-            float: right;
-            clear: both; /* 우측 정렬 후 레이아웃 클리어 */
-        }
-
-
-        .chat-messages .message.other {
-            background-color: #e5e5e5;
-            color: #000;
-            float: left;
-            clear: both;
-        }
-
-        .chat-messages .message.user {
-            background-color: #0099ff;
-            color: #fff;
-            float: right;
-            clear: both;
-        }
-
-        .chat-messages .message.me {
-            background-color: #0099ff;
-            color: #fff;
-            float: right;
-            clear: both; /* 우측 정렬 후 레이아웃 클리어 */
-            border-radius: 15px; /* 박스의 모서리를 둥글게 만듭니다. */
-            padding: 10px; /* 박스 내부 패딩을 추가합니다. */
-            max-width: 70%; /* 최대 너비를 지정합니다. */
-            word-wrap: break-word; /* 긴 텍스트가 넘치지 않도록 설정합니다. */
-        }
-
-        .chat-messages .message.other {
-            background-color: #e5e5e5;
-            color: #000;
-            float: left;
-            clear: both;
-            border-radius: 15px;
-            padding: 10px;
-            max-width: 70%;
-            word-wrap: break-word;
-        }
-
     </style>
 </head>
 <body>
@@ -237,13 +183,6 @@
         </div>
     </div>
     <div class="chat-messages" id="chatting">
-        <!--        &lt;!&ndash; 상대방이 보낸 메시지 &ndash;&gt;-->
-        <!--        <div class="message other">-->
-        <!--        </div>-->
-
-        <!--        &lt;!&ndash; 사용자가 입력한 메시지 &ndash;&gt;-->
-        <!--        <div class="message me">-->
-        <!--        </div>-->
     </div>
     <div class="chat-input">
         <input type="text" id="msg" placeholder="메시지를 입력하세요">
@@ -316,7 +255,7 @@
                 response.forEach(function (chatMessage) {
                     const chatContent = $('<div>', {
                         class: 'testChat',
-                        text: chatMessage.username + ': ' + chatMessage.message // sender를 사용하여 사용자 이름 표시
+                        text: chatMessage.username + ': ' + chatMessage.message
                     });
                     const chatContentTime = $('<div>', {
                         class: 'chatContentTime',
@@ -405,8 +344,8 @@
     function showMessage(data) {
         const chatMessages = document.getElementById('chatting');
         const messageDiv = document.createElement('div');
-        messageDiv.textContent = data.sender + ' : ' + data.message;
-        messageDiv.classList.add(data.sender === username ? 'me' : 'other');
+        messageDiv.textContent = data.username + ' : ' + data.message;
+        messageDiv.classList.add(data.username === username ? 'me' : 'other');
         chatMessages.appendChild(messageDiv);
 
         // 스크롤을 아래로 이동하여 최신 메시지를 보여줍니다.
@@ -441,7 +380,7 @@
     // 메시지 브로커로 메시지 전송
     function send() {
         data = {
-            'sender': username,
+            'username': username,
             'message': $("#msg").val(),
             'roomId': roomId
         };
@@ -469,44 +408,6 @@
             }
         });
     }
-    // 메시지를 화면에 추가하는 함수
-    // function addMessage(sender, message) {
-    //     var messageDiv = $("<div></div>");
-    //
-    //     // 사용자와 상대방에 따라 클래스를 지정하여 스타일을 다르게 설정
-    //     if (sender === username) {
-    //         messageDiv.addClass("message user");
-    //     } else {
-    //         messageDiv.addClass("message other");
-    //     }
-    //
-    //     messageDiv.text(message);
-    //
-    //     // 메시지를 채팅 창에 추가
-    //     $("#chatting").append(messageDiv);
-    // }
-    //
-    // // send() 함수에서 호출하여 메시지를 추가
-    // function send() {
-    //     var message = $("#msg").val();
-    //
-    //     // 메시지가 비어있지 않은 경우에만 전송하고 화면에 추가
-    //     if (message.trim() !== "") {
-    //         data = {
-    //             'sender': username,
-    //             'message': message,
-    //             'roomId': roomId
-    //         };
-    //
-    //         stompClient.send("/app/chat/send", {}, JSON.stringify(data));
-    //
-    //         // 메시지를 화면에 추가
-    //         addMessage(username, message);
-    //
-    //         // 보낸 후 입력 필드 초기화
-    //         $("#msg").val('');
-    //     }
-    // }
 
 </script>
 </body>
