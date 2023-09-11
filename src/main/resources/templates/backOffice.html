@@ -12,7 +12,7 @@
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet"><link href="/css/btn-custom.css" rel="stylesheet">
     <title>BurgerDrop | BackOffice</title>
 </head>
 <body>
@@ -27,10 +27,10 @@
             <span class="fw-bold" id="username" th:text="${username}"></span> 님 접속을 환영합니다.
         </div>
         <div class="d-flex justify-content-end">
-            <a href="/new-product"><button type="submit" class="btn btn-dark ms-2" id="newproduct-btn">상품 생성</button></a>
-            <a href="/optionList-page"><button type="submit" class="btn btn-dark ms-2" id="newoption-btn">옵션 목록</button></a>
-            <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
-            <button type="button" onclick="logout()"class="btn btn-dark ms-2" id="logout-btn">Logout</button>
+            <a href="/new-product"><button type="submit" class="btn btn-dark btn_custom ms-2" id="newproduct-btn">상품 생성</button></a>
+            <a href="/optionList-page"><button type="submit" class="btn btn-dark btn_custom ms-2" id="newoption-btn">옵션 목록</button></a>
+            <a href="/mypage"><button type="submit" class="btn btn-dark btn_custom ms-2" id="myPage-btn">My page</button></a>
+            <button type="button" onclick="logout()"class="btn btn-dark btn_custom ms-2" id="logout-btn">Logout</button>
         </div>
     </div>
 </nav>
