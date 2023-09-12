@@ -20,17 +20,6 @@ public class CommentResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public CommentResponseDto(Product product, Comment comment) {
-        this.id = comment.getId();
-        this.commentProductName = comment.getProduct().getProductName();
-        this.nickname = comment.getUser().getNickname();
-        this.content = comment.getContent();
-        this.createdAt = comment.getCreatedAt();
-        this.modifiedAt = comment.getModifiedAt();
-        this.commentProductImage = product.getProductImage();
-        this.commentProductScore = product.getProductScore();
-    }
-
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
         this.commentProductName = comment.getProduct().getProductName();
