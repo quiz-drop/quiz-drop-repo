@@ -26,6 +26,14 @@ public class Comment extends TimeStamped {
     @Column(nullable = false, name = "comment_content")
     private String content;
 
+    @Column(name = "comment_product_image")
+    private String commentProductImage;
+
+    @Column(name = "comment_product_name")
+    private String commentProductName;
+
+    @Column(name = "comment_product_score")
+    private int commentProductScore;
     //기본값 0으로 설정
     @ColumnDefault("0")
     @Column(nullable = false, name = "comment_likeCnt")
