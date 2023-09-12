@@ -1,11 +1,15 @@
 package com.sparta.quizdemo.product.entity;
 
+import com.sparta.quizdemo.comment.entity.Comment;
 import com.sparta.quizdemo.common.entity.TimeStamped;
 import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -42,6 +46,9 @@ public class Product extends TimeStamped {
     @Setter
     @Column(name = "product_score")
     private Integer productScore;
+
+    @OneToMany(mappedBy = "product")
+    List<Comment> commentList = new ArrayList<>();
 
     public Product(ProductRequestDto productRequestDto) {
         this.productName = productRequestDto.getProductName();

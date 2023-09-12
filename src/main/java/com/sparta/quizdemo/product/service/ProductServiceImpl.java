@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.backoffice.dto.KeywordRequestDto;
 import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.cart.repository.CartItemRepository;
+import com.sparta.quizdemo.comment.entity.Comment;
+import com.sparta.quizdemo.comment.repository.CommentRepository;
 import com.sparta.quizdemo.common.aws.AwsS3Service;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.order.entity.OrderItem;
@@ -32,6 +34,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final CartItemRepository cartItemRepository;
     private final OrderItemRepository orderItemRepository;
+    private final CommentRepository commentRepository;
     private final AwsS3Service awsS3Service;
 
     @Override
@@ -129,6 +132,9 @@ public class ProductServiceImpl implements ProductService{
 
         List<OrderItem> orderItemList = orderItemRepository.findAllByProductId(productNo);
         orderItemRepository.deleteAll(orderItemList);
+
+        List<Comment> commentList = commentRepository.findAllByProductId(productNo);
+        commentRepository.deleteAll(commentList);
 
         if (product.getProductImage() != null) {
             awsS3Service.deleteImage(product.getProductImage());
