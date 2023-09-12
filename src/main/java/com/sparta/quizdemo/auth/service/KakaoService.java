@@ -56,7 +56,7 @@ public class KakaoService {
                 .ifPresent(redisRefreshTokenRepository::deleteRefreshToken);
 
         // 6.레디스에 리프레시 토큰 저장
-        String refreshTokenKey = "refresh_"+tokens[1];
+        String refreshTokenKey = tokens[1]+":refresh";
         redisRefreshTokenRepository.generateRefreshTokenInSocial(refreshTokenKey, kakaoUser.getUsername());
 
         return createToken;

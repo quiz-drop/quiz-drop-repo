@@ -57,7 +57,7 @@ public class NaverService {
                 .ifPresent(redisRefreshTokenRepository::deleteRefreshToken);
 
         // 6.리프레시 토큰 저장
-        String refreshTokenKey = "refresh_"+tokens[1];
+        String refreshTokenKey = tokens[1]+":refresh";
         String createRefresh = redisRefreshTokenRepository.generateRefreshTokenInSocial(refreshTokenKey, naverUser.getUsername());
 
         return createToken;
