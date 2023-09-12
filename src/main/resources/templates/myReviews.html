@@ -3,8 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <title>리뷰 내역</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <link href="/css/btn-custom.css" rel="stylesheet">
 </head>
 <body>
+<nav class="navbar mb-5" style="background-color: #ff921d">
+    <div class="container-fluid d-flex mx-3">
+        <a class="navbar-brand" href="/">
+            <div class="ms-5 fs-4 fw-bold">BurgerDrop</div>
+        </a>
+        <div class="" id="welcome">
+            <span id="userRole" th:text="${userRole}"></span>
+            <span class="fw-bold" id="username" th:text="${username}"></span> 님 방문을 환영합니다.
+        </div>
+        <div class="d-flex justify-content-end">
+            <a href="/mypage"><button type="submit" class="btn btn-dark btn_custom ms-2" id="myPage-btn">My page</button></a>
+            <button type="button" onclick="logout()"class="btn btn-dark btn_custom ms-2" id="logout-btn">Logout</button>
+            <a href="/cart"><button type="submit" class="btn btn-dark btn_custom ms-2" id="cart-btn">장바구니</button></a>
+        </div>
+    </div>
+</nav>
 
+<div class="container">
+    <div class="row" id="info-box">
+        <div class="col">
+            <button onclick="updatePage()" class="btn btn-dark">정보 수정</button>
+            <button onclick="orderedPage()" class="btn btn-dark">구매 내역</button>
+            <button onclick="reviewPage()" class="btn btn-dark">리뷰 내역</button>
+            <button onclick="deletePage()" class="btn btn-dark">회원 탈퇴</button>
+        </div>
+        <h3 class="fw-bold my-5">리뷰 내역</h3>
+    </div>
+</div>
 </body>
+<script>
+    getUserData();
+    function getUserData() {
+        fetch('/api/user/info', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                let reviewList = data.commentList;
+                console.log(reviewList)
+                for (let i=reviewList.length-1; i>=0; i--){
+                    let content = reviewList[i].content;
+                    let nickname = reviewList[i].nickname;
+                    let productImage = reviewList[i].commentProductImage;
+                    let productName = reviewList[i].commentProductName;
+                    let productScore = reviewList[i].commentProductScore;
+                    console.log(productScore)
+
+                    let scoreStar;
+                    if (productScore === 1) {
+                        scoreStar = "⭐"
+                    } else if (productScore === 2) {
+                        scoreStar = "⭐⭐"
+                    } else if (productScore === 3) {
+                        scoreStar = "⭐⭐⭐"
+                    } else if (productScore === 4) {
+                        scoreStar = "⭐⭐⭐⭐"
+                    } else if (productScore === 5) {
+                        scoreStar = "⭐⭐⭐⭐⭐"
+                    }else {
+                        scoreStar = ""
+                    }
+
+                    console.log(scoreStar)
+
+                    let temp_html = `
+                                <div class="col-md-6 mt-3">
+                                  <div class="border rounded" style="background-color: rgb(248,246,246)">
+                                  <div class="review-box d-flex flex-row mt-3 ms-3">
+                                    <img src="${productImage}" class="border rounded-circle me-2" alt="" width="45px" height="45px">
+                                    <div class="review-info d-flex flex-column w-100">
+                                    <div class="d-flex flex-row justify-content-between">
+                                            <p class="mb-0 ms-1">${productName}</p>
+                                            <p class="mb-0 me-3">${nickname}</p>
+                                     </div>
+                                      <p class="">${scoreStar}</p>
+                                     </div>
+                                  </div>
+                                  <p class="review-msg ms-4">${content}</p>
+                                  </div>
+                                </div>`
+                    $('#info-box').append(temp_html)
+                }
+            });
+    }
+    function logout() {
+        //리프레시 토큰 삭제 요청
+
+        fetch('/api/user/logout', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.msg)
+                // 쿠키 삭제
+                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/"
+            });
+    }
+    function updatePage(){
+        if(social === null){
+            window.location.href="/user/update"
+        }else{
+            alert('소셜 계정인 경우 닉네임과 주소만 변경이 가능합니다.')
+            window.location.href="/user/update"
+        }
+
+    }
+    function orderedPage(){
+        window.location.href="/user/orders"
+    }
+    function deletePage(){
+        if(social === null){
+            window.location.href="/user/delete"
+        }else{
+            alert('소셜 계정인 경우 탈퇴가 불가합니다.\n 해당 SNS에 문의해주세요')
+        }
+    }
+    function reviewPage(){
+        window.location.href="/user/reviews"
+    }
+</script>
 </html>
