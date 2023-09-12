@@ -11,6 +11,9 @@ public class CommentResponseDto {
     private Long id;
     private String nickname;
     private String content;
+    private String commentProductImage;
+    private String commentProductName;
+    private int commentProductScore;
     private int likeCnt;
     private boolean bool;
     private LocalDateTime createdAt;
@@ -24,5 +27,8 @@ public class CommentResponseDto {
         this.bool = comment.isBool();
         this.createdAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
+        this.commentProductImage = comment.getCommentProductImage();
+        this.commentProductName = comment.getCommentProductName();
+        this.commentProductScore = comment.getCommentProductScore();
     }
 }

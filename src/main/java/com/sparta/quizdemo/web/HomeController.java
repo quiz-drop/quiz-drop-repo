@@ -104,6 +104,14 @@ public class HomeController {
         return "orderDetail";
     }
 
+    @GetMapping("/user/orders/{orderId}")
+    public String ordersDetail(Model model, @PathVariable Long orderId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        model.addAttribute("orderId", orderId);
+        model.addAttribute("username", userDetails.getUsername());
+        model.addAttribute("userRole", userDetails.getUser().getRole());
+        return "ordersUserDetail";
+    }
+
     @Secured("ROLE_ADMIN")
     @GetMapping("/admin")
     public String backOffice(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -135,6 +143,7 @@ public class HomeController {
     public String updateOneUserInfoPage(Model model, @PathVariable String userName) {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new NullPointerException("해당 아이디의 유저가 존재하지 않습니다."));
 
+        model.addAttribute("role", user.getRole());
         model.addAttribute("username", user.getUsername());
         model.addAttribute("nickname", user.getNickname());
         model.addAttribute("zipCode", user.getAddress().getZip_code());
