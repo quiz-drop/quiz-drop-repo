@@ -337,10 +337,6 @@
 
     connect();
 
-    function disconnect() {
-        stompClient.disconnect();
-    }
-
     function showMessage(data) {
         const chatMessages = document.getElementById('chatting');
         const messageDiv = document.createElement('div');
@@ -367,15 +363,6 @@
         // 스크롤을 아래로 이동하여 최신 메시지를 보여줍니다.
         scrollToBottom();
     }
-
-    // 메시지 전송 버튼 클릭 시 사용자 메시지 전송
-    $('#send-button').click(function () {
-        const userMessage = $('#msg').val();
-        if (userMessage.trim() !== '') {
-            showUserMessage(userMessage); // 사용자 메시지를 화면에 표시
-            send(); // 메시지 전송 함수 호출
-        }
-    });
 
     // 메시지 브로커로 메시지 전송
     function send() {

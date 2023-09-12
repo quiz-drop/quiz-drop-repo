@@ -44,7 +44,7 @@ public class Comment extends TimeStamped {
     @Column(name = "commentlike_bool")
     private boolean bool;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
