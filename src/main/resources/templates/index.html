@@ -32,35 +32,45 @@
 <div class="category-bar d-flex flex-column justify-content-center"
      style="height: 100%; width: 60px; background-color: #FF4004;position: fixed;z-index: 999">
     <ul style="list-style: none;padding-left: 0">
-        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite infinite"><a type="button" onclick="getCategoryProduct('burger')"><img alt=""
-                                                                                                  src="/images/burger.png"
-                                                                                                  width="50px"
-                                                                                                  height="50px"
-                                                                                                  style="background-color: white; border-radius: 50%"></a>
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite infinite"><a type="button"
+                                                                                                    onclick="getCategoryProduct('burger')"><img
+                alt=""
+                src="/images/burger.png"
+                width="50px"
+                height="50px"
+                style="background-color: white; border-radius: 50%"></a>
         </li>
-        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button" onclick="getCategoryProduct('side')"><img alt=""
-                                                                                                src="/images/fries.png"
-                                                                                                width="50px"
-                                                                                                height="50px" style="background-color: white; border-radius: 50%"
-                                                                                                ></a>
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button"
+                                                                                                       onclick="getCategoryProduct('side')"><img
+                alt=""
+                src="/images/fries.png"
+                width="50px"
+                height="50px" style="background-color: white; border-radius: 50%"
+        ></a>
         </li>
-        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button" onclick="getCategoryProduct('drink')"><img alt=""
-                                                                                                 src="/images/drink.png"
-                                                                                                 width="50px"
-                                                                                                 height="50px" style="background-color: white; border-radius: 50%"
-                                                                                                 ></a>
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button"
+                                                                                                       onclick="getCategoryProduct('drink')"><img
+                alt=""
+                src="/images/drink.png"
+                width="50px"
+                height="50px" style="background-color: white; border-radius: 50%"
+        ></a>
         </li>
-        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button" onclick="getCategoryProduct('dessert')"><img alt=""
-                                                                                                   src="/images/dessert.png"
-                                                                                                   width="50px"
-                                                                                                   height="50px" style="background-color: white; border-radius: 50%"
-                                                                                                   ></a>
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button"
+                                                                                                       onclick="getCategoryProduct('dessert')"><img
+                alt=""
+                src="/images/dessert.png"
+                width="50px"
+                height="50px" style="background-color: white; border-radius: 50%"
+        ></a>
         </li>
-        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button" onclick="getCategoryProduct('likes')"><img alt=""
-                                                                                                 src="/images/likes.png"
-                                                                                                 width="50px"
-                                                                                                 height="50px" style="background-color: white; border-radius: 50%"
-                                                                                                 ></a>
+        <li class="mb-5 text-center animate__animated animate__pulse animate__infinite	infinite"><a type="button"
+                                                                                                       onclick="getCategoryProduct('likes')"><img
+                alt=""
+                src="/images/likes.png"
+                width="50px"
+                height="50px" style="background-color: white; border-radius: 50%"
+        ></a>
         </li>
     </ul>
 </div>
@@ -82,21 +92,25 @@
             <a href="/login">
                 <button type="submit" class="btn btn-dark btn_custom ms-2" id="login-btn">Login</button>
             </a>
-            <button type="button" onclick="logout()" class="btn btn-dark btn_custom ms-2" id="logout-btn">Logout</button>
+            <button type="button" onclick="logout()" class="btn btn-dark btn_custom ms-2" id="logout-btn">Logout
+            </button>
             <a href="/signup">
                 <button type="submit" class="btn btn-dark btn_custom ms-2" id="signup-btn">SignUp</button>
             </a>
             <a href="/cart">
                 <button type="submit" class="btn btn-dark btn_custom ms-2" id="cart-btn">장바구니</button>
             </a>
-            <button class="btn btn_custom btn-dark ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">알림</button>
+            <button class="btn btn_custom btn-dark ms-2" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">알림
+            </button>
             <a href="/admin">
                 <button type="submit" class="btn btn-warning btn_custom ms-2" id="admin-btn">Admin</button>
             </a>
             <a href="/chatList">
                 <button type="submit" class="btn btn-warning btn_custom ms-2" id="chat-btn">chatList</button>
             </a>
-            <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+            <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+                 aria-labelledby="offcanvasWithBothOptionsLabel">
                 <div class="offcanvas-header">
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
@@ -141,7 +155,7 @@
 
             if (!token) {
                 alert('로그인이 필요한 서비스 입니다.');
-                window.location.href="/login";
+                window.location.href = "/login";
                 return;
             }
 
@@ -233,7 +247,7 @@
         // 예시: userAddress가 '주소없음'인 경우 처리
         if (userAddress === '주소없음') {
             alert("이런! 주소가 등록이 안되어있군요. 주소를 등록해주세요")
-            window.location.href ='/user/address';
+            window.location.href = '/user/address';
         }
 
         getProduct();
@@ -300,7 +314,7 @@
                         scoreStar = "⭐⭐⭐⭐"
                     } else if (productScore === 5) {
                         scoreStar = "⭐⭐⭐⭐⭐"
-                    }else {
+                    } else {
                         scoreStar = ""
                     }
 
@@ -370,7 +384,7 @@
                         scoreStar = "⭐⭐⭐⭐"
                     } else if (productScore === 5) {
                         scoreStar = "⭐⭐⭐⭐⭐"
-                    }else {
+                    } else {
                         scoreStar = ""
                     }
 
@@ -393,7 +407,7 @@
     }
 
     function getCategoryProduct(category) {
-        if(category !== 'likes'){
+        if (category !== 'likes') {
             fetch('/api/products/' + category, {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'}
@@ -435,7 +449,7 @@
                             scoreStar = "⭐⭐⭐⭐"
                         } else if (productScore === 5) {
                             scoreStar = "⭐⭐⭐⭐⭐"
-                        }else {
+                        } else {
                             scoreStar = ""
                         }
 
@@ -448,6 +462,7 @@
                                                     <p class="card-text text-truncate">${productPrice}원</p>
                                                     <p class="card-text text-muted">${createdAt}</p>
                                                     <p class="card-text text-muted">평점 : ${scoreStar}</p>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -455,7 +470,7 @@
                         $('#product-list').append(temp_html)
                     }
                 })
-        }else {
+        } else {
             //리뷰 목록 조회
             fetch('/api/comment/', {
                 method: 'GET',
@@ -469,12 +484,20 @@
                     console.log(data)
                     let reviewList = data;
                     console.log(reviewList)
-                    for (let i=data.length-1; i>=0; i--){
+                    for (let i = data.length - 1; i >= 0; i--) {
                         let content = reviewList[i].content;
                         let nickname = reviewList[i].nickname;
                         let productImage = reviewList[i].commentProductImage;
                         let productName = reviewList[i].commentProductName;
                         let productScore = reviewList[i].commentProductScore;
+                        let createdAt_temp = data[i].createdAt; // 2023-09-07T21:02:48.852452
+                        let dateObject = new Date(createdAt_temp);
+
+                        let year = dateObject.getFullYear();
+                        let month = String(dateObject.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리 숫자로 패딩
+                        let day = String(dateObject.getDate()).padStart(2, '0'); // 일, 2자리 숫자로 패딩
+
+                        let createdAt = `${year}-${month}-${day}`;
                         console.log(productScore)
 
                         let scoreStar;
@@ -488,28 +511,30 @@
                             scoreStar = "⭐⭐⭐⭐"
                         } else if (productScore === 5) {
                             scoreStar = "⭐⭐⭐⭐⭐"
-                        }else {
+                        } else {
                             scoreStar = ""
                         }
 
                         console.log(scoreStar)
 
-                        let temp_html = `
-                                <div class="col-md-6 mt-3">
-                                  <div class="border rounded" style="background-color: rgb(248,246,246)">
-                                  <div class="review-box d-flex flex-row mt-3 ms-3">
-                                    <img src="${productImage}" class="border rounded-circle me-2" alt="" width="45px" height="45px">
-                                    <div class="review-info d-flex flex-column w-100">
-                                    <div class="d-flex flex-row justify-content-between">
-                                            <p class="mb-0 ms-1">${productName}</p>
-                                            <p class="mb-0 me-3">${nickname}</p>
-                                     </div>
-                                      <p class="">${scoreStar}</p>
-                                     </div>
-                                  </div>
-                                  <p class="review-msg ms-4">${content}</p>
-                                  </div>
-                                </div>`
+                        let temp_html =
+                            `<div class="col-md-6 mt-3">
+                                <div class="border rounded" style="background-color: rgb(248,246,246)">
+                                    <div class="review-box d-flex flex-row mt-3 ms-3">
+                                        <img src="${productImage}" class="border rounded-circle me-2" alt=""
+                                             width="45px" height="45px">
+                                            <div class="review-info d-flex flex-column w-100">
+                                                <div class="d-flex flex-row justify-content-between">
+                                                    <p class="mb-0 ms-1">${productName}</p>
+                                                    <p class="mb-0 me-3">${nickname}</p>
+                                                </div>
+                                                <p class="">${scoreStar}</p>
+                                            </div>
+                                    </div>
+                                    <p class="review-msg ms-4">${content}</p>
+                                    <p class="review-msg ms-4">${createdAt}</p>
+                                </div>
+                            </div>`
                         $('#product-list').append(temp_html)
                     }
                 });
