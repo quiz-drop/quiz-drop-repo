@@ -65,7 +65,6 @@ function deleteAllNotifications() {
     });
 }
 
-reloadPage();
 function reloadPage() {
     location.reload();
 }
