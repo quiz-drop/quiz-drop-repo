@@ -151,9 +151,8 @@ public class OrderService {
                     cartItemRepository.delete(cartItem);
                 }
             }
-
-            String content = user.getUsername() + "님! 주문이 완료되었습니다!";
-//            notificationService.sendNotification(user, NotificationType.ORDER, content);
+            LocalDateTime createdAt = LocalDateTime.now();
+            notificationService.send(user, NotificationType.ORDER_COMPLETED, NotificationType.ORDER_COMPLETED.getMessage(), createdAt);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto("결제가 완료 되었습니다.", HttpStatus.CREATED.value()));
         } else {
@@ -223,6 +222,8 @@ public class OrderService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto("이미 완료된 주문입니다.", HttpStatus.BAD_REQUEST.value()));
             } else {
                 orderRepository.delete(order);
+                LocalDateTime createdAt = LocalDateTime.now();
+                notificationService.send(user, NotificationType.ORDER_CANCELLED, NotificationType.ORDER_CANCELLED.getMessage(), createdAt);
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("주문이 취소 되었습니다.", HttpStatus.OK.value()));
             }
         } else {
@@ -280,9 +281,6 @@ public class OrderService {
                             }
                         }
                     }
-
-                    String content = order.getUser().getUsername() + "님! 수령시간이 되었습니다!";
-//                    notificationService.sendNotification(order.getUser(), NotificationType.DELIVERY, content);
                 }
             }
         }
