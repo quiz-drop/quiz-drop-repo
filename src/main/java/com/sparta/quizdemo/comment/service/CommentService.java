@@ -49,8 +49,7 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAll();
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
         for (Comment comment : comments) {
-            Product product = productRepository.findById(comment.getProduct().getId()).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
-            commentResponseDtoList.add(new CommentResponseDto(product, comment));
+            commentResponseDtoList.add(new CommentResponseDto(comment));
         }
         return ResponseEntity.status(HttpStatus.OK).body(commentResponseDtoList);
     }
