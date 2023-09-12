@@ -6,4 +6,5 @@ import lombok.Getter;
 public class CommentRequestDto {
 
     private String content;
+    private int score;
 }

@@ -26,6 +26,8 @@ public class Comment extends TimeStamped {
     @Column(nullable = false, name = "comment_content")
     private String content;
 
+    @Column(nullable = false, name = "comment_score")
+    private int score;
     //기본값 0으로 설정
     @ColumnDefault("0")
     @Column(nullable = false, name = "comment_likeCnt")
@@ -51,4 +53,5 @@ public class Comment extends TimeStamped {
         this.content = commentRequestDto.getContent();
         this.user = user;
     }
+
 }
