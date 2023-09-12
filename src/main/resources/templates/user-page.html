@@ -16,7 +16,9 @@
       <div class="ms-5 fs-4 fw-bold">BurgerDrop</div>
     </a>
     <div class="" id="welcome">
-      <span class="fw-bold" id="username" th:text="${username}"></span> 님의 Info
+      <span class="" id="role" th:text="${role}"></span>
+      <span class="fw-bold" id="username" th:text="${username}"></span> 님의 접속을 환영합니다.
+
     </div>
     <div class="d-flex justify-content-end">
       <a href="/admin"><button type="submit" class="btn btn-warning btn_custom ms-2" id="admin-btn">Admin</button></a>
@@ -29,19 +31,46 @@
     <div class="col">
       <button onclick="updateUserInfo()" class="btn btn-dark">정보 수정</button>
 <!--      <button onclick="orderedPage()" class="btn btn-dark">구매 내역</button>-->
-      <button onclick="deleteUserInfo()" class="btn btn-warning">회원 삭제</button>
+      <button onclick="deleteUserInfo()" class="btn btn-warning">회원 차단</button>
       <h3 class="fw-bold my-5">회원 정보</h3>
-      <div id="info-box">
-        <p class="fw-bold h3"> 아이디 : <span id="normal-userName" th:text="${username}"></span></p>
-        <p class="fw-bold h3">닉네임 : <span th:text="${nickname}"></span></p>
-        <p class="fw-bold h3">등급 : <span id="normal-userRole" th:text="${role}"></span></p>
-        <p class="fw-bold h3">우편번호 : <span th:text="${zipCode}"></span></p>
-        <p class="fw-bold h3">주소 : <span th:text="${address1}"></span></p>
-        <p class="fw-bold h3">상세주소 : <span th:text="${address2}"></span></p>
       </div>
+      <div id="info-box">
+        <div class="col-md-6 offset-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title text-center">User Information</h3>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <span class="fw-bold">아이디:</span>
+                  <span id="normal-userName" th:text="${username}"></span>
+                </li>
+                <li class="list-group-item">
+                  <span class="fw-bold">닉네임:</span>
+                  <span th:text="${nickname}"></span>
+                </li>
+                <li class="list-group-item">
+                  <span class="fw-bold">등급:</span>
+                  <span id="normal-userRole" th:text="${role}"></span>
+                </li>
+                <li class="list-group-item">
+                  <span class="fw-bold">우편번호:</span>
+                  <span th:text="${zipCode}"></span>
+                </li>
+                <li class="list-group-item">
+                  <span class="fw-bold">주소:</span>
+                  <span th:text="${address1}"></span>
+                </li>
+                <li class="list-group-item">
+                  <span class="fw-bold">상세주소:</span>
+                  <span th:text="${address2}"></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          </div>
     </div>
   </div>
-</div>
+  </div>
 <script>
   function updateUserInfo(){
     let user_name = document.getElementById("normal-userName").innerText;
@@ -49,18 +78,21 @@
   }
 
   function deleteUserInfo(){
-    let user_name = document.getElementById("normal-userName").innerText;
-    $.ajax({
-      type: "DELETE",
-      url:'/api/admin/user/' + user_name,
-      dataType:"json"
-    }).done(function(res){
-      alert("성공적으로 유저를 탈퇴시켰습니다.")
-      location.href = '/'
-    }).fail(function (request, status, error){
-      console.log(error)
-      alert("관리자 정보는 삭제할 수 없습니다.");
-    });
+    if(confirm('회원정보가 삭제됩니다. 그래도 진행하시겠습니까?')){
+      let user_name = document.getElementById("normal-userName").innerText;
+      $.ajax({
+        type: "DELETE",
+        url:'/api/admin/user/' + user_name,
+        dataType:"json"
+      }).done(function(res){
+        alert("성공적으로 유저를 탈퇴 시켰습니다.")
+        location.href = '/'
+      }).fail(function (request, status, error){
+        console.log(error)
+        alert("관리자 정보는 삭제할 수 없습니다.");
+      });
+    }
+
   }
   function logout() {
     //리프레시 토큰 삭제 요청
