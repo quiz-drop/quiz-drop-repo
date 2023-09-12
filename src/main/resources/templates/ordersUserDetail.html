@@ -42,7 +42,7 @@
 
 <hr class="border border-3">
 <div class="container mb-5">
-  <h5>주문 상품 목록</h5>
+  <h5>리뷰를 남겨보세요!</h5>
   <div class="col row" id="order-detail">
     <!-- product 동적 데이터 삽입 -->
   </div>
@@ -115,13 +115,14 @@
                   orderOptionArray.push(data.orderItemList[i].optionList[j].optionName);
                 }
 
-                let temp_html = `<a class= "col-3">
+                let temp_html = `<a href="#" class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
                                             <div class="card h-100 feed border-0 ">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
                                                      <p class="card-text text-mute">수량 : ${quantity}</p>
                                                      <p class="card-text text-mute">선택한 옵션 : ${orderOptionArray}</p>
+
                                                 </div>
                                             </div>
                                         </div>

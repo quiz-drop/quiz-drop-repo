@@ -8,6 +8,7 @@
 
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"
           integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <link href="/css/btn-custom.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar mb-5" style="background-color: #ff921d">
@@ -20,9 +21,9 @@
       <span class="fw-bold" id="username" th:text="${username}"></span> 님 방문을 환영합니다.
     </div>
     <div class="d-flex justify-content-end">
-      <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
-      <button type="button" onclick="logout()"class="btn btn-dark ms-2" id="logout-btn">Logout</button>
-      <a href="/cart"><button type="submit" class="btn btn-primary ms-2" id="cart-btn">장바구니</button></a>
+      <a href="/mypage"><button type="submit" class="btn btn-dark btn_custom ms-2" id="myPage-btn">My page</button></a>
+      <button type="button" onclick="logout()"class="btn btn-dark btn_custom ms-2" id="logout-btn">Logout</button>
+      <a href="/cart"><button type="submit" class="btn btn-dark btn_custom ms-2" id="cart-btn">장바구니</button></a>
     </div>
   </div>
 </nav>
@@ -88,7 +89,7 @@
                 for(let j=0; j<orderList[i].orderItemList.length; j++){
                   itemList += orderList[i].orderItemList[j].productName+" : "+orderList[i].orderItemList[j].quantity+"개\t"
                 }
-
+                let orderid = orderList[i].orderid;
                 let completeTime = orderList[i].completeTime;
                 // 서버에서 받아온 배달 완료 시간과 현재 시간을 가져오기
                 const deliveryTime = new Date(completeTime);
@@ -97,17 +98,19 @@
                 // 배달 완료 시간과 현재 시간의 차이 계산 (분 단위)
                 let timeDiffInMinutes = Math.floor((deliveryTime - currentTime) / (1000 * 60));
                 if(timeDiffInMinutes <= 0){
-                  timeDiffInMinutes = '수령완료'
+                  timeDiffInMinutes = '배달완료'
                 }
                 let temp_html = `
                                <div class="col-md-6">
                                 <div class="card mb-4">
                                   <div class="card-body">
+                                  <a href = /user/orders/${orderid} class= "col-3" style=" text-decoration-line: none; color:black">
                                     <h5 class="card-title">주문 종류 : ${delivery_type}</h5>
                                     <p class="card-text">남은 시간(분): ${timeDiffInMinutes}</p>
                                     <p class="card-text">구매 비용: ${price}</p>
                                     <p class="card-text">요청 사항: ${request}</p>
                                     <p class="card-text">주문 상품: <br>${itemList}</p>
+                                   </a>
                                   </div>
                                 </div>
                               </div>
@@ -136,8 +139,7 @@
     }
   }
   function reviewPage(){
-    alert("준비중입니다.")
-    //window.location.href="/user/reivews"
+    window.location.href="/user/reviews"
   }
 
 </script>
