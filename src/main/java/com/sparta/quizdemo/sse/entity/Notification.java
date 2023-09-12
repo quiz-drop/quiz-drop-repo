@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -20,10 +22,6 @@ public class Notification extends TimeStamped {
     @Column
     private String content;
 
-    /* 읽음 여부 */
-    @Column(nullable = false)
-    private Boolean isRead;
-
     /* 알림 종류 */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -34,14 +32,10 @@ public class Notification extends TimeStamped {
     private User user;
 
     @Builder
-    public Notification(User user, NotificationType notificationType, String content, Boolean isRead) {
+    public Notification(User user, NotificationType notificationType) {
         this.user = user;
         this.notificationType = notificationType;
-        this.content = content;
-        this.isRead = isRead;
-    }
-
-    public void read() {
-        isRead = true;
+        this.content = notificationType.getMessage();
+        this.createdAt = LocalDateTime.now();
     }
 }
