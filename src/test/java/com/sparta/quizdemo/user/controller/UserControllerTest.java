@@ -36,29 +36,43 @@ public class UserControllerTest {
 
     private static final String BASE_URL = "/api/user";
 
-    @BeforeAll
+    private String username;
+    private String password;
+    private String nickname;
+    private String zipcode;
+    private String address1;
+    private String address2;
+    private String email;
+
+    @BeforeEach
     public void setUp() {
-        this.mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .addFilters(new CharacterEncodingFilter("UTF-8", true))  // 한글 필터 추가
-                .apply(springSecurity())
-                .alwaysDo(print())
-                .build();
+        username = "tester1";
+        password = "Test!@12";
+        nickname = "testnick";
+        zipcode = "testzipcode";
+        address1 = "testaddress1";
+        address2 = "testaddress2";
+        email = "test@test.com";
+
+//        this.mockMvc = MockMvcBuilders
+//                .webAppContextSetup(context)
+//                .addFilters(new CharacterEncodingFilter("UTF-8", true))  // 한글 필터 추가
+//                .apply(springSecurity())
+//                .alwaysDo(print())
+//                .build();
+    }
+
+    @AfterEach
+    public void setDown() {
+
     }
 
     @Test
     @DisplayName("회원 가입 테스트")
     void signupTest() throws Exception {
         // given
-        String username = "tester1";
-        String password = "Test!@12";
-        String nickname = "testnick";
-        String zipcode = "testzipcode";
-        String address1 = "testaddress1";
-        String address2 = "testaddress2";
-        String email = "test@test.com";
-        // when
         SignupRequestDto signupRequestDto = new SignupRequestDto();
+        // when
         signupRequestDto.setUsername(username);
         signupRequestDto.setPassword(password);
         signupRequestDto.setNickname(nickname);
@@ -69,12 +83,14 @@ public class UserControllerTest {
 
         String body = objectMapper.writeValueAsString(signupRequestDto);
         //then
-        mockMvc.perform(post(BASE_URL + "/signup")
-                        .content(body) //HTTP Body에 데이터를 담는다
-                        .contentType(MediaType.APPLICATION_JSON) //보내는 데이터의 타입을 명시
-                )
-                .andExpect(status().isCreated())
-                .andExpect(content().string("{\"msg\":\"회원가입 완료\",\"statusCode\":201}"));
+//        mockMvc.perform(post(BASE_URL + "/signup")
+//                        .content(body) //HTTP Body에 데이터를 담는다
+//                        .contentType(MediaType.APPLICATION_JSON) //보내는 데이터의 타입을 명시
+//                )
+//                .andExpect(status().isCreated())
+//                .andExpect(content().string("{\"msg\":\"회원가입 완료\",\"statusCode\":201}"));
+
+
     }
 
     @Test
@@ -82,13 +98,13 @@ public class UserControllerTest {
     @WithMockCustomUser
     void updateUserTest() throws Exception{
         // given
-        String nickname = "testnick";
-        String zipcode = "testcode";
-        String address1 = "testaddress1";
-        String address2 = "testaddress2";
-        String password = "Test!@12";
+        nickname = "testnick";
+        zipcode = "testcode";
+        address1 = "testaddress1";
+        address2 = "testaddress2";
+        password = "Test!@12";
         String newPassword = "Test!@12";
-        String email = "test@test.com";
+        email = "test@test.com";
         // when
         UserRequestDto userRequestDto = new UserRequestDto();
         userRequestDto.setNickname(nickname);

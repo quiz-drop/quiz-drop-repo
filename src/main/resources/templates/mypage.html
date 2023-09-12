@@ -9,6 +9,7 @@
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<link href="/css/btn-custom.css" rel="stylesheet">
 <body>
 <nav class="navbar mb-5" style="background-color: #ff921d">
     <div class="container-fluid d-flex mx-3">
@@ -20,9 +21,9 @@
             <span class="fw-bold" id="username" th:text="${username}"></span> 님 방문을 환영합니다.
         </div>
         <div class="d-flex justify-content-end">
-            <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
-            <button type="button" onclick="logout()"class="btn btn-dark ms-2" id="logout-btn">Logout</button>
-            <a href="/cart"><button type="submit" class="btn btn-primary ms-2" id="cart-btn">장바구니</button></a>
+            <a href="/mypage"><button type="submit" class="btn btn-dark btn_custom ms-2" id="myPage-btn">My page</button></a>
+            <button type="button" onclick="logout()"class="btn btn-dark btn_custom ms-2" id="logout-btn">Logout</button>
+            <a href="/cart"><button type="submit" class="btn btn-dark btn_custom ms-2" id="cart-btn">장바구니</button></a>
         </div>
     </div>
 </nav>
@@ -34,16 +35,13 @@
             <button onclick="orderedPage()" class="btn btn-dark">구매 내역</button>
             <button onclick="reviewPage()" class="btn btn-dark">리뷰 내역</button>
             <button onclick="deletePage()" class="btn btn-dark">회원 탈퇴</button>
-            <h3 class="fw-bold my-5">회원 정보</h3>
-            <div id="info-box"></div>
         </div>
+        <h3 class="fw-bold my-5">회원 정보</h3>
+        <div id="info-box"></div>
     </div>
 </div>
 <script>
-
-    $(document).ready(function () {
-        getUserData();
-    });
+    getUserData();
 
     function logout() {
         //리프레시 토큰 삭제 요청
@@ -67,7 +65,6 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                     let username = data.username;
                     let nickname = data.nickname;
                     let role = data.role;
@@ -79,12 +76,32 @@
                     let address2 = data.address2;
                     social = data.social;
                     let temp_html = `
-                       <p class="fw-bold h3" > 아이디 : ${username}</p>
-                        <p class="fw-bold h3">닉네임 : ${nickname}</p>
-                        <p class="fw-bold h3">등급 : ${role}</p>
-                        <p class="fw-bold h3">우편번호 : ${zipCode}</p>
-                        <p class="fw-bold h3">주소 : ${address1}</p>
-                        <p class="fw-bold h3">상세주소 : ${address2}</p>
+                       <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">User Information</h3>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <span class="fw-bold">아이디:</span> ${username}
+                            </li>
+                            <li class="list-group-item">
+                                <span class="fw-bold">닉네임:</span> ${nickname}
+                            </li>
+                            <li class="list-group-item">
+                                <span class="fw-bold">등급:</span> ${role}
+                            </li>
+                            <li class="list-group-item">
+                                <span class="fw-bold">우편번호:</span> ${zipCode}
+                            </li>
+                            <li class="list-group-item">
+                                <span class="fw-bold">주소:</span> ${address1}
+                            </li>
+                            <li class="list-group-item">
+                                <span class="fw-bold">상세주소:</span> ${address2}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                     `
                     $('#info-box').append(temp_html)
 
@@ -110,10 +127,10 @@
         }
     }
     function reviewPage(){
-        alert("준비중입니다.")
-        //window.location.href="/user/reivews"
+        window.location.href="/user/reviews"
     }
 
     </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

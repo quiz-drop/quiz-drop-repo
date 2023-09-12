@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.user.dto;
 
+import com.sparta.quizdemo.comment.dto.CommentResponseDto;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.order.dto.OrderResponseDto;
 import com.sparta.quizdemo.user.entity.User;
@@ -19,6 +20,7 @@ public class UserResponseDto {
     private String email;
     private Long orderCount;
     private List<OrderResponseDto> orderList;
+    private List<CommentResponseDto> commentList;
     private String social;
     //댓글 내역 조회
 
@@ -32,6 +34,7 @@ public class UserResponseDto {
         this.email = user.getEmail();
         this.orderCount = user.getOrderCount();
         this.orderList = user.getOrderList().stream().map(OrderResponseDto::new).collect(Collectors.toList());
+        this.commentList = user.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
         this.social = user.getSocial();
     }
 }

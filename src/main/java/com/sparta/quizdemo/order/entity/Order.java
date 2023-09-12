@@ -1,6 +1,7 @@
 package com.sparta.quizdemo.order.entity;
 
 import com.sparta.quizdemo.common.entity.TimeStamped;
+import com.sparta.quizdemo.order.dto.OrderRequestDto;
 import com.sparta.quizdemo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -43,12 +44,12 @@ public class Order extends TimeStamped {
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     private List<OrderItem> orderItemList = new ArrayList<>();
 
-    public Order(User user, Long totalPrice, LocalDateTime completeTime, Boolean delivery, String request, Boolean orderComplete) {
+    public Order(User user, Long totalPrice, LocalDateTime completeTime, OrderRequestDto orderRequestDto) {
         this.user = user;
         this.totalPrice = totalPrice;
         this.completeTime = completeTime;
-        this.request = request;
-        this.delivery = delivery;
-        this.orderComplete = orderComplete;
+        this.request = orderRequestDto.getRequest();
+        this.delivery = orderRequestDto.getDelivery();
+        this.orderComplete = orderRequestDto.getOrderComplete();
     }
 }

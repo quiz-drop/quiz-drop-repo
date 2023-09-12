@@ -71,10 +71,7 @@ public class User extends TimeStamped {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Order> orderList;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private ChatRoom chatRoom;
-
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Notification> notifications = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -101,6 +98,7 @@ public class User extends TimeStamped {
         this.social = social;
     }
 
+    //새로운 비밀번호까지 변경
     public void update(UserRequestDto requestDto, String newPassword) {
         this.nickname = requestDto.getNickname();
         this.email = requestDto.getEmail();
@@ -112,6 +110,7 @@ public class User extends TimeStamped {
         this.nickname = requestDto.getNickname();
     }
 
+    //유저 비밀번호변경
     public void update(String password) {
         this.password = password;
     }
@@ -125,5 +124,10 @@ public class User extends TimeStamped {
     public void oneUserUpdate(OneUserRequestDto userRequestDto) {
         this.username = userRequestDto.getUsername();
         this.nickname = userRequestDto.getNickname();
+    }
+
+    public void updateUser(UserRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+        this.email = requestDto.getEmail();
     }
 }

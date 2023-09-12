@@ -1,45 +1,32 @@
 package com.sparta.quizdemo.chat.entity;
 
 import com.sparta.quizdemo.chat.dto.ChatMessageRequestDto;
-import com.sparta.quizdemo.common.entity.TimeStamped;
-import com.sparta.quizdemo.user.entity.User;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
-@Table(name = "chatMessage")
-public class ChatMessage extends TimeStamped {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "message_id")
-    private Long id;
+@Setter
+@NoArgsConstructor
+public class ChatMessage {
 
-    @Column
     private String roomId;
-
-    @Column
     private String username;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "chatRoom_id")
-    private ChatRoom chatRoom;
-
-    @Column
     private String message;
+    private Long timestamp;
+    private String formattedTimestamp;
 
-    public ChatMessage(ChatMessageRequestDto requestDto, ChatRoom chatRoom, User user) {
-        this.chatRoom = chatRoom;
-        this.roomId = chatRoom.getRoomId();
+    public ChatMessage(ChatMessageRequestDto requestDto) {
+        this.roomId = requestDto.getRoomId();
         this.username = requestDto.getUsername();
-        this.user = user;
         this.message = requestDto.getMessage();
+        this.timestamp = System.currentTimeMillis();
+
+        // 타임스탬프를 날짜와 시간으로 변환
+        Instant instant = Instant.ofEpochMilli(this.timestamp);
+        this.formattedTimestamp = DateTimeFormatter.ISO_INSTANT.format(instant);
     }
 }

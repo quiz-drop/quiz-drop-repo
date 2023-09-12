@@ -8,6 +8,7 @@
 
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"
           integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <link href="/css/btn-custom.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar mb-5" style="background-color: #ff921d">
@@ -20,9 +21,9 @@
       <span class="fw-bold" id="username" th:text="${username}"></span> 님 방문을 환영합니다.
     </div>
     <div class="d-flex justify-content-end">
-      <a href="/mypage"><button type="submit" class="btn btn-dark ms-2" id="myPage-btn">My page</button></a>
-      <button type="button" onclick="logout()"class="btn btn-dark ms-2" id="logout-btn">Logout</button>
-      <a href="/cart"><button type="submit" class="btn btn-primary ms-2" id="cart-btn">장바구니</button></a>
+      <a href="/mypage"><button type="submit" class="btn btn-dark btn_custom ms-2" id="myPage-btn">My page</button></a>
+      <button type="button" onclick="logout()"class="btn btn-dark btn_custom ms-2" id="logout-btn">Logout</button>
+      <a href="/cart"><button type="submit" class="btn btn-dark btn_custom ms-2" id="cart-btn">장바구니</button></a>
     </div>
   </div>
 </nav>
@@ -47,7 +48,7 @@
   function deleteUser() {
     if (confirm("정말 탈퇴하시겠습니까?")) {
       var password = $("#password").val();
-      console.log(password)
+
 
       fetch('/api/user/info', {
         method: 'DELETE',
@@ -61,8 +62,10 @@
               .then(response => response.json())
               .then(data => {
                 alert(data.msg);
-                logout();
+                document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/"
               });
+
     }
   }
   function logout() {
@@ -108,8 +111,7 @@
     }
   }
   function reviewPage(){
-    alert("준비중입니다.")
-    //window.location.href="/user/reivews"
+    window.location.href="/user/reviews"
   }
 
 

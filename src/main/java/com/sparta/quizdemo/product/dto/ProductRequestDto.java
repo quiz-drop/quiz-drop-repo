@@ -27,6 +27,9 @@ public class ProductRequestDto {
     @NotBlank(message = "필수 입력 값입니다.")
     private String category;
 
+    @JsonIgnore
+    private Integer productScore = 5;
+
     public void setFileName(String filename) {
         this.productImage = filename;
     }

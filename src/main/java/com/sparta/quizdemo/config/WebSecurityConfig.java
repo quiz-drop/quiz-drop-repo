@@ -68,13 +68,15 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers("/api/user/info/password","/user/info/password").permitAll()
+                        .requestMatchers("/api/user/info/username","/user/info/username").permitAll()
                         .requestMatchers("/app/chat/**").permitAll()
-                        .requestMatchers("/chatRoom", "/chatting", "/notification/**").permitAll()
+                        .requestMatchers("/api/chat/saveMessages/**", "/api/chat/getMessages/**", "/api/notifications/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/product").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/product/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
-                        .requestMatchers("/", "/login","/password","/signup","/api/mail","/api/auth/**","/api/user/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/", "/login","/signup","/api/mail","/api/auth/**","/api/user/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );

@@ -57,7 +57,7 @@ public class NotificationService {
         return userId + "_" + System.currentTimeMillis();
     }
 
-    // 유효시간이 다 지난다면 503 에러가 발생하기 때문에 더미데이터를 발행
+    // 더미데이터를 발행
     private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
         try {
             emitter.send(SseEmitter.event()
@@ -81,35 +81,52 @@ public class NotificationService {
                 .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
     }
 
-    @Async
-    public void send(User receiver, NotificationType notificationType, String content, String url) {
+//    @Async
+//    public void send(User receiver, NotificationType notificationType, String content) {
+//        Notification notification = notificationRepository.save(createNotification(receiver, notificationType, content));
+//
+//        String receiverId = String.valueOf(receiver.getId());
+//        String eventId = receiverId + "_" + System.currentTimeMillis();
+//        Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
+//        emitters.forEach(
+//                (key, emitter) -> {
+//                    emitterRepository.saveEventCache(key, notification);
+//                    sendNotification(emitter, eventId, key, NotificationResponseDto.create(notification));
+//                }
+//        );
+//    }
 
-        Notification notification = notificationRepository.save(createNotification(receiver, notificationType, content, url));
+//    @Async
+//    public void sendNotification(User user, NotificationType notificationType, String content) {
+//        Notification notification = notificationRepository.save(createNotification(user, notificationType, content));
+//        String userId = String.valueOf(user.getId());
+//
+//        Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(userId);
+//
+//        emitters.forEach((key, emitter) -> {
+//            emitterRepository.saveEventCache(key, notification);
+//            sendNotification(emitter, NotificationResponseDto.create(notification));
+//        });
+//    }
 
-        String receiverId = String.valueOf(receiver.getId());
-        String eventId = receiverId + "_" + System.currentTimeMillis();
-        Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
-        emitters.forEach(
-                (key, emitter) -> {
-                    emitterRepository.saveEventCache(key, notification);
-                    sendNotification(emitter, eventId, key, NotificationResponseDto.create(notification));
-                }
-        );
+    private void sendNotification(SseEmitter emitter, NotificationResponseDto notification) {
+        try {
+            emitter.send(notification);
+        } catch (IOException e) {
+        }
     }
 
-    private Notification createNotification(User receiver, NotificationType notificationType, String content, String url) {
+    private Notification createNotification(User receiver, NotificationType notificationType, String content) {
         return Notification.builder()
-                .receiver(receiver)
+                .user(receiver)
                 .notificationType(notificationType)
                 .content(content)
-                .url(url)
                 .isRead(false) // 현재 읽음상태
                 .build();
     }
 
-    @Transactional
-    public List<NotificationResponseDto> findAllNotifications(Long userId) {
-        List<Notification> notifications = notificationRepository.findAllByUserId(userId);
+    public List<NotificationResponseDto> findAllNotifications(User user) {
+        List<Notification> notifications = notificationRepository.findAllByUserId(user.getId());
         return notifications.stream()
                 .map(NotificationResponseDto::create)
                 .collect(Collectors.toList());
@@ -122,7 +139,6 @@ public class NotificationService {
         return NotificationCountDto.builder()
                 .count(count)
                 .build();
-
     }
 
     @Transactional
@@ -136,7 +152,7 @@ public class NotificationService {
     @Transactional
     public void deleteAllByNotifications(UserDetailsImpl userDetails) {
         Long receiverId = userDetails.getUser().getId();
-        notificationRepository.deleteAllByReceiverId(receiverId);
+        notificationRepository.deleteAllByUserId(receiverId);
 
     }
 
