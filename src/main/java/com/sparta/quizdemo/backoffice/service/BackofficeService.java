@@ -1,5 +1,6 @@
 package com.sparta.quizdemo.backoffice.service;
 
+import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.backoffice.dto.OneUserRequestDto;
 import com.sparta.quizdemo.backoffice.entity.BlackEmail;
 import com.sparta.quizdemo.backoffice.entity.Visitor;
@@ -42,6 +43,7 @@ public class BackofficeService implements HandlerInterceptor {
     private final BlackEmailRepository blackEmailRepository;
     private final OrderRepository orderRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
 
     public ResponseEntity<List<Visitor>> getVisitors() {
         List<Visitor> visitorList = backofficeRepository.findAll();
@@ -143,6 +145,7 @@ public class BackofficeService implements HandlerInterceptor {
         } else {
             BlackEmail blackEmail = new BlackEmail(user.getEmail());
             userRepository.delete(user);
+            redisRefreshTokenRepository.deleteRefreshToken(user.getUsername());
             blackEmailRepository.save(blackEmail);
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("해당 ID의 유저를 탈퇴시켰습니다.", HttpStatus.OK.value()));
         }
@@ -154,7 +157,7 @@ public class BackofficeService implements HandlerInterceptor {
         String visitorIP = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
         String today = LocalDate.now().toString();
-        String key = visitorIP + "_" + today;
+        String key = visitorIP + "_" + today+"_:visitor";
 
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
@@ -199,34 +202,38 @@ public class BackofficeService implements HandlerInterceptor {
 //        Set<String> keys = redisTemplate.keys("*_*");
 
         // 성능 향상을 위해 keys 명령어가 아닌 scan 명령어 사용
-        ScanOptions scanOptions = ScanOptions.scanOptions().match("*_*").count(100).build();
+        ScanOptions scanOptions = ScanOptions.scanOptions().match("*:visitor").count(100).build();
         Cursor<byte[]> keys = redisTemplate.getConnectionFactory().getConnection().scan(scanOptions);
 
         while (keys.hasNext()) {
+
             byte[] next = keys.next();
             String key = new String(next, Charsets.UTF_8);
-            String[] parts = key.split("_");
-            String visitorIP = parts[0];
-            LocalDate date = LocalDate.parse(parts[1]);
+            System.out.println(key);
 
-            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-            String userAgent = valueOperations.get(key);
+                String[] parts = key.split("_");
+                String visitorIP = parts[0];
+                LocalDate date = LocalDate.parse(parts[1]);
 
-            if(!backofficeRepository.existsByVisitorIPAndDate(visitorIP, date)){
-                Visitor visitor = Visitor.builder()
-                        .userAgent(userAgent)
-                        .visitorIP(visitorIP)
-                        .date(date)
-                        .build();
+                ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+                String userAgent = valueOperations.get(key);
 
-                backofficeRepository.save(visitor);
-            }
+                if(!backofficeRepository.existsByVisitorIPAndDate(visitorIP, date)){
+                    Visitor visitor = Visitor.builder()
+                            .userAgent(userAgent)
+                            .visitorIP(visitorIP)
+                            .date(date)
+                            .build();
 
-            if (visitorList.size() > 1000) {
-                backofficeRepository.delete(visitorList.remove(0));
-            }
+                    backofficeRepository.save(visitor);
+                }
 
-            redisTemplate.delete(key);
+                if (visitorList.size() > 1000) {
+                    backofficeRepository.delete(visitorList.remove(0));
+                }
+
+                redisTemplate.delete(key);
+
         }
     }
 }
