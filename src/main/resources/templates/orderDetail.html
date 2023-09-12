@@ -33,12 +33,14 @@
 </nav>
 <div class="container my-3">
   <hr class="border border-3">
-  <div class="d-flex justify-content-end">
+  <div class="d-flex justify-content-center">
     <div id="orderDetail-list">
       <!--        주문 상세 정보 표시-->
     </div>
   </div>
 </div>
+
+<hr class="border border-3">
 <div class="container mb-5">
   <h5>주문 상품 목록</h5>
   <div class="col row" id="order-detail">
@@ -47,9 +49,9 @@
 </div>
 <div class="container my-3">
   <hr class="border border-3">
-  <div class="d-flex justify-content-end">
-    <h5>총 가격</h5>
-    <div id="totalOrderPrice">
+  <div class="d-flex justify-content-end align-items-center">
+    <h5>총 구매 가격 : </h5>
+    <div class="ms-2" id="totalOrderPrice">
       <!--        totalOrderPrice 표시-->
     </div>
   </div>
@@ -95,6 +97,8 @@
               }
 
               let temp2_html = `
+              <div class=""
+              <div class="fw-bold h3">해당 주문 정보</div>
               <div>주문번호 : ${orderid}</div>
               <div>주문자 : ${username}</div>
               <div>요구사항 : ${request}</div>
@@ -113,7 +117,7 @@
 
                 let temp_html = `<a class= "col-3">
                                          <div class= "col" style="margin-top: 30px">
-                                            <div class="card h-100 feed border-0">
+                                            <div class="card h-100 feed border-0 ">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold">${productName}</h5>
                                                      <p class="card-text text-mute">수량 : ${quantity}</p>
@@ -125,7 +129,7 @@
                 $('#order-detail').append(temp_html)
               }
               $('#orderDetail-list').append(temp2_html)
-              $('#totalOrderPrice').append(totalPrice)
+              $('#totalOrderPrice').append(totalPrice+'원')
             })
   }
 
