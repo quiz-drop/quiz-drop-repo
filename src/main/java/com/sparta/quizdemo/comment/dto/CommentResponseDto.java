@@ -2,32 +2,43 @@ package com.sparta.quizdemo.comment.dto;
 
 
 import com.sparta.quizdemo.comment.entity.Comment;
+import com.sparta.quizdemo.product.entity.Product;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
 public class CommentResponseDto {
     private Long id;
-    private String productName;
+    private String commentProductName;
     private String nickname;
     private String content;
     private String commentProductImage;
-    private int commentProductScore;
-    private int likeCnt;
-    private boolean bool;
+    private Integer commentProductScore;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public CommentResponseDto(Comment comment) {
+    public CommentResponseDto(Product product, Comment comment) {
         this.id = comment.getId();
-        this.productName = comment.getProduct().getProductName();
+        this.commentProductName = comment.getProduct().getProductName();
         this.nickname = comment.getUser().getNickname();
         this.content = comment.getContent();
         this.createdAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
-        this.commentProductImage = comment.getCommentProductImage();
-        this.commentProductName = comment.getCommentProductName();
-        this.commentProductScore = comment.getCommentProductScore();
+        this.commentProductImage = product.getProductImage();
+        this.commentProductScore = product.getProductScore();
+    }
+
+    public CommentResponseDto(Comment comment) {
+        this.id = comment.getId();
+        this.commentProductName = comment.getProduct().getProductName();
+        this.nickname = comment.getUser().getNickname();
+        this.content = comment.getContent();
+        this.commentProductImage = comment.getProduct().getProductImage();
+        this.commentProductScore = comment.getProduct().getProductScore();
+        this.createdAt = comment.getCreatedAt();
+        this.modifiedAt = comment.getModifiedAt();
     }
 }
