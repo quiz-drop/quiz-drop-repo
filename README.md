@@ -46,6 +46,7 @@
 
 <div style="display: flex; justify-content: center;">
   <img src="https://www.axonstech.com/img/tech-logo-redis-color@3x.png" style="margin-right: 10px;">
+  <img src="https://logos-world.net/wp-content/uploads/2021/02/Docker-Symbol.png" style="margin-right: 10px;">
 </div>
 
 <h2>서비스 아키텍처</h2>
