@@ -1,4 +1,5 @@
 ![header](https://capsule-render.vercel.app/api?type=egg&color=FF834E)
+![image](https://github.com/burger-drop/burger-drop-repo/assets/106299370/e36ca441-a704-4503-8276-7f0e792a486c)
 
 <p align="center">
   <h1>Burger Drop</h1>
