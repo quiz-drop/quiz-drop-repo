@@ -44,6 +44,10 @@
   <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white" style="margin-right: 10px;">
 </div>
 
+<div style="display: flex; justify-content: center;">
+  <img src="https://files.slack.com/files-pri/T043597JK8V-F05S4JPPUN6/redis-logo-full-color-rgb.png" style="margin-right: 10px;">
+</div>
+
 <h2>서비스 아키텍처</h2>
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/d00db562-2625-4cce-9cbc-a0f0008aa8e5/bf82cfac-f728-4807-9207-b8f2631fb509/Untitled.png)
 
