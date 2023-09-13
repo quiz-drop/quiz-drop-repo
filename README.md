@@ -45,7 +45,7 @@
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="https://files.slack.com/files-pri/T043597JK8V-F05S4JPPUN6/redis-logo-full-color-rgb.png" style="margin-right: 10px;">
+  <img src="https://www.axonstech.com/img/tech-logo-redis-color@3x.png" style="margin-right: 10px;">
 </div>
 
 <h2>서비스 아키텍처</h2>
