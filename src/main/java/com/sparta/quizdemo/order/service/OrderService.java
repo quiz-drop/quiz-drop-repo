@@ -10,6 +10,8 @@ import com.sparta.quizdemo.cart.service.CartServiceImpl;
 import com.sparta.quizdemo.common.dto.ApiResponseDto;
 import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.option.entity.Option;
+import com.sparta.quizdemo.product.entity.Product;
+import com.sparta.quizdemo.product.repository.ProductRepository;
 import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.order.dto.OrderRequestDto;
@@ -44,6 +46,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final CartRepository cartRepository;
@@ -60,6 +63,10 @@ public class OrderService {
 
         Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new NullPointerException("장바구니가 없습니다."));
         List<CartItem> cartItemList = cartItemRepository.findAllByCartId(cart.getId());
+
+        if (cartItemList.isEmpty()) {
+            throw new NullPointerException("장바구니에 담긴 상품이 없습니다.");
+        }
 
         long totalPrice = 0L;
         long totalCookingTime = 0L;
@@ -129,7 +136,7 @@ public class OrderService {
 
         if (orderRequestDto.getPayment().equals(totalPrice)) {
             // 현재 유저의 order 생성
-            Order order = new Order(user, totalPrice, completeTime, orderRequestDto.getDelivery(), orderRequestDto.getRequest(), orderRequestDto.getOrderComplete());
+            Order order = new Order(user, totalPrice, completeTime, orderRequestDto);
             orderRepository.save(order);
 
             List<Order> userOrderList = orderRepository.findAllByUserIdOrderByCreatedAtAsc(user.getId());
@@ -144,10 +151,8 @@ public class OrderService {
                     cartItemRepository.delete(cartItem);
                 }
             }
-
-            String url = "";
-            String content = user.getUsername() + "님! 주문이 완료되었습니다!";
-            notificationService.send(user, NotificationType.ORDER, content, url);
+            LocalDateTime createdAt = LocalDateTime.now();
+            notificationService.send(user, NotificationType.ORDER_COMPLETED, NotificationType.ORDER_COMPLETED.getMessage(), createdAt);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto("결제가 완료 되었습니다.", HttpStatus.CREATED.value()));
         } else {
@@ -217,10 +222,37 @@ public class OrderService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto("이미 완료된 주문입니다.", HttpStatus.BAD_REQUEST.value()));
             } else {
                 orderRepository.delete(order);
+                LocalDateTime createdAt = LocalDateTime.now();
+                notificationService.send(user, NotificationType.ORDER_CANCELLED, NotificationType.ORDER_CANCELLED.getMessage(), createdAt);
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("주문이 취소 되었습니다.", HttpStatus.OK.value()));
             }
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto("해당 주문에 대한 권한이 없습니다.", HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
+    public ResponseEntity<ApiResponseDto> scoreOrderItem(Long orderNo, Long orderItemNo, Integer score) {
+        Order order = orderRepository.findById(orderNo).orElseThrow(() -> new NullPointerException("해당 번호의 주문이 존재하지 않습니다."));
+        OrderItem orderItem = orderItemRepository.findById(orderItemNo).orElseThrow(() -> new NullPointerException("해당 번호의 주문상품이 존재하지 않습니다."));
+
+        if (order.getOrderComplete() && orderItem.getScoreComplete().equals(false)) {
+            Product product = productRepository.findByProductName(orderItem.getProduct().getProductName()).orElseThrow();
+            List<OrderItem> orderItemList = orderItemRepository.findAllByProductId(product.getId());
+
+            Integer i = 0;
+            for (OrderItem orderItem2 : orderItemList) {
+                if (orderItem2.getScoreComplete()) {
+                    i++;
+                }
+            }
+
+            Integer temp = product.getProductScore();
+            product.setProductScore(Math.round((float) (temp * i + score) /(i+1)));
+            orderItem.setScoreComplete(true);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto("해당 상품에 대한 평점을 등록하였습니다.", HttpStatus.CREATED.value()));
+        } else {
+            throw new IllegalArgumentException("해당 주문이 아직 완료되지 않았거나, 이미 리뷰를 마친 상태입니다.");
         }
     }
 
@@ -249,10 +281,6 @@ public class OrderService {
                             }
                         }
                     }
-
-                    String url = "";
-                    String content = order.getUser().getUsername() + "님! 수령시간이 되었습니다!";
-                    notificationService.send(order.getUser(), NotificationType.DELIVERY, content, url);
                 }
             }
         }

@@ -4,6 +4,8 @@ import com.sparta.quizdemo.auth.repository.RedisRefreshTokenRepository;
 import com.sparta.quizdemo.backoffice.entity.BlackEmail;
 import com.sparta.quizdemo.backoffice.repository.BlackEmailRepository;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
+import com.sparta.quizdemo.sse.entity.NotificationType;
+import com.sparta.quizdemo.sse.service.NotificationService;
 import com.sparta.quizdemo.user.dto.SignupRequestDto;
 import com.sparta.quizdemo.user.dto.UserRequestDto;
 import com.sparta.quizdemo.user.dto.UserResponseDto;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,15 +32,17 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RedisRefreshTokenRepository redisRefreshTokenRepository;
+    private final NotificationService notificationService;
 
 
-    public UserService(UserRepository userRepository, AddressRepository addressRepository, BlackEmailRepository blackEmailRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository) {
+    public UserService(UserRepository userRepository, AddressRepository addressRepository, BlackEmailRepository blackEmailRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RedisRefreshTokenRepository redisRefreshTokenRepository, NotificationService notificationService) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.blackEmailRepository = blackEmailRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.redisRefreshTokenRepository = redisRefreshTokenRepository;
+        this.notificationService = notificationService;
     }
 
     // ADMIN_TOKEN
@@ -118,21 +123,35 @@ public class UserService {
         Address updateAddress = addressRepository.findByUser_id(user.getId()).orElseThrow(
                 () -> new NullPointerException("주소가 존재하지 않습니다.")
         );
+
+        LocalDateTime createdAt = LocalDateTime.now();
+
         //소셜 유저인 경우
         if(updateUser.getSocial() != null){
             updateUser.update(requestDto);
             updateAddress.update(requestDto);
 
+            notificationService.send(user, NotificationType.USER_UPDATE, NotificationType.USER_UPDATE.getMessage(), createdAt);
         } else {
             if (!passwordEncoder.matches(requestDto.getPassword(), updateUser.getPassword())) {
                 throw new IllegalArgumentException("비밀번호가 틀립니다.");
             }
 
-            String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
+            //새로운 비밀번호 까지 변경
+            if(requestDto.getNewPassword()!=null){
+                String newPassword = passwordEncoder.encode(requestDto.getNewPassword());
 
+                updateUser.update(requestDto, newPassword);
+                updateAddress.update(requestDto);
 
-            updateUser.update(requestDto, newPassword);
-            updateAddress.update(requestDto);
+                notificationService.send(user, NotificationType.USER_UPDATE, NotificationType.USER_UPDATE.getMessage(), createdAt);
+
+            }else{
+                //일반 정보 수정
+                updateUser.updateUser(requestDto);
+                updateAddress.update(requestDto);
+                notificationService.send(user, NotificationType.USER_UPDATE, NotificationType.USER_UPDATE.getMessage(), createdAt);
+            }
         }
     }
 
@@ -187,4 +206,14 @@ public class UserService {
         addressRepository.save(address);
 
     }
+
+    public UserResponseDto getUsername(UserRequestDto requestDto) {
+        User findUser = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다.")
+        );
+        return new UserResponseDto(findUser);
+
+    }
+
+
 }

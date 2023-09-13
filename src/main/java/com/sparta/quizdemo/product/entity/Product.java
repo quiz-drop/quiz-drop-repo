@@ -1,11 +1,15 @@
 package com.sparta.quizdemo.product.entity;
 
+import com.sparta.quizdemo.comment.entity.Comment;
 import com.sparta.quizdemo.common.entity.TimeStamped;
 import com.sparta.quizdemo.product.dto.ProductRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,6 +43,13 @@ public class Product extends TimeStamped {
     @Column(name = "category", nullable = false)
     private String category;
 
+    @Setter
+    @Column(name = "product_score")
+    private Integer productScore;
+
+    @OneToMany(mappedBy = "product")
+    List<Comment> commentList = new ArrayList<>();
+
     public Product(ProductRequestDto productRequestDto) {
         this.productName = productRequestDto.getProductName();
         this.productPrice = productRequestDto.getProductPrice();
@@ -47,9 +58,10 @@ public class Product extends TimeStamped {
         this.cookingTime = productRequestDto.getCookingTime();
         this.orderCount = productRequestDto.getOrderCount();
         this.category = productRequestDto.getCategory();
+        this.productScore = productRequestDto.getProductScore();
     }
 
-    public void update(ProductRequestDto productRequestDto, Long tempCount) {
+    public void update(ProductRequestDto productRequestDto, Long tempCount, Integer productScore) {
         this.productName = productRequestDto.getProductName();
         this.productPrice = productRequestDto.getProductPrice();
         this.productImage = productRequestDto.getProductImage();
@@ -57,5 +69,6 @@ public class Product extends TimeStamped {
         this.cookingTime = productRequestDto.getCookingTime();
         this.orderCount = tempCount;
         this.category = productRequestDto.getCategory();
+        this.productScore = productScore;
     }
 }

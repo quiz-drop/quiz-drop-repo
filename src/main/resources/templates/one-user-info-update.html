@@ -18,7 +18,9 @@
       <div class="ms-5 fs-4 fw-bold">BurgerDrop</div>
     </a>
     <div class="" id="welcome">
-      <span class="fw-bold" id="username" th:text="${username}"></span> 님의 Info
+      <span class="" id="role" th:text="${role}"></span>
+      <span class="fw-bold" id="username" th:text="${username}"></span> 님의 접속을 환영합니다.
+
     </div>
     <div class="d-flex justify-content-end">
       <a href="/admin"><button type="submit" class="btn btn-warning ms-2" id="admin-btn">Admin</button></a>
@@ -103,7 +105,7 @@
       },
       error: function (request, status, error) {
         // 오류 처리
-        alert("정보 수정 실패\n"+request.responseText);
+        alert("정보 수정 실패");
       }
     });
   }

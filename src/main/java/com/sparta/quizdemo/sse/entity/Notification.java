@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -20,14 +22,6 @@ public class Notification extends TimeStamped {
     @Column
     private String content;
 
-    /* 클릭 시 이동해야할 링크 */
-    @Column
-    private String url;
-
-    /* 읽음 여부 */
-    @Column(nullable = false)
-    private Boolean isRead;
-
     /* 알림 종류 */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,18 +29,13 @@ public class Notification extends TimeStamped {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User receiver;
+    private User user;
 
     @Builder
-    public Notification(User receiver, NotificationType notificationType, String content, String url, Boolean isRead) {
-        this.receiver = receiver;
+    public Notification(User user, NotificationType notificationType) {
+        this.user = user;
         this.notificationType = notificationType;
-        this.content = content;
-        this.url = url;
-        this.isRead = isRead;
-    }
-
-    public void read() {
-        isRead = true;
+        this.content = notificationType.getMessage();
+        this.createdAt = LocalDateTime.now();
     }
 }

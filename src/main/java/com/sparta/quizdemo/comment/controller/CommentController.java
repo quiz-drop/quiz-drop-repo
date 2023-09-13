@@ -16,42 +16,22 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping("/api")
 public class CommentController {
     private final CommentService commentService;
 
-    @PostMapping("/")   //댓글 작성
-    public ResponseEntity<ApiResponseDto> createComment(@RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.createComment(commentRequestDto, userDetails.getUser());
+    @PostMapping("/product/{productNo}/comment")   //댓글 작성
+    public ResponseEntity<ApiResponseDto> createComment(@PathVariable Long productNo, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.createComment(productNo, commentRequestDto, userDetails.getUser());
     }
 
-    @GetMapping("/")   //댓글 전체 조회
+    @GetMapping("/comments")   //댓글 전체 조회
     public ResponseEntity<List<CommentResponseDto>> getComments() {
         return commentService.getComments();
     }
 
-    @PutMapping("/{comment_id}")    //댓글 수정
-    public ResponseEntity<ApiResponseDto> updateComment(@PathVariable Long comment_id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.updateComment(comment_id, commentRequestDto, userDetails.getUser());
-    }
-
-    @DeleteMapping("/{comment_id}") //댓글 삭제
-    public ResponseEntity<ApiResponseDto> deleteComment(@PathVariable long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.delete_Comment(comment_id, userDetails.getUser());
-    }
-
-
-    // 댓글 좋아요
-    @PostMapping("/likes/{comment_id}/user/{user_id}")
-    public ResponseEntity<ApiResponseDto> likeComment(@PathVariable Long user_id, @PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
-        return commentService.create_CommentLike(user_id, comment_id, user);
-    }
-
-    // 댓글 좋아요 삭제
-    @DeleteMapping("/likes/{comment_id}/user/{user_id}")
-    public ResponseEntity<ApiResponseDto> deleteLikeComment(@PathVariable Long user_id, @PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
-        return commentService.delete_CommentLike(user_id, comment_id, user);
+    @DeleteMapping("/{commentNo}") //댓글 삭제
+    public ResponseEntity<ApiResponseDto> deleteComment(@PathVariable Long commentNo, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.delete_Comment(commentNo, userDetails.getUser());
     }
 }

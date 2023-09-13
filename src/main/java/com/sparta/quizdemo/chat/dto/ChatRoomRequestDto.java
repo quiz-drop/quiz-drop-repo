@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class ChatRoomRequestDto {
-    private String username;
+    private String roomId;
 }
