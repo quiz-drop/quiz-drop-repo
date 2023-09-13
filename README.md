@@ -45,8 +45,8 @@
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="[https://www.axonstech.com/img/tech-logo-redis-color@3x.png](https://w7.pngwing.com/pngs/428/940/png-transparent-logo-redis-redis-icon-thumbnail.png)" style="margin-right: 10px;">
-  <img src="https://w7.pngwing.com/pngs/34/543/png-transparent-docker-plain-wordmark-logo-icon-thumbnail.png" style="margin-right: 10px;">
+  <img src="https://w7.pngwing.com/pngs/428/940/png-transparent-logo-redis-redis-icon-thumbnail.png" style="margin-right: 10px;">
+  <img src="https://assets.stickpng.com/images/62a9c7c08ff6441a2952dad3.png" style="margin-right: 10px;">
 </div>
 
 <h2>서비스 아키텍처</h2>
