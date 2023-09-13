@@ -46,6 +46,7 @@
 </div>
 
 <div style="display: flex; justify-content: center;">
+
   <img src="https://img.shields.io/badge/Redis-DC382D?style=flat&logo=Redis&logoColor=white" style="margin-right: 10px;">
   <img src="https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=Bootstrap&logoColor=white" style="margin-right: 10px;">
   <img src="https://img.shields.io/badge/Slack-4A154B?style=flat&logo=Slack&logoColor=white" style="margin-right: 10px;">
