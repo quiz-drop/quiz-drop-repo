@@ -405,6 +405,7 @@
 
 ## API 명세서
 [API 명세](https://www.notion.so/API-ca5b9b8b15bd447d938655eeba8844e6?pvs=21)
+<img width="821" alt="Untitled" src="https://github.com/burger-drop/burger-drop-repo/assets/133616029/af030567-78ea-41fa-a8b2-82bb99521950">
 
 <br>
 
