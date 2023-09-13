@@ -65,7 +65,8 @@
 <div style="display: flex; justify-content: center;">
   <img src="https://img.shields.io/badge/WebSocket-F56640?style=flat&logo=WebSocket&logoColor=white" style="margin-right: 10px;">
   <img src="https://img.shields.io/badge/Amazon S3-569A31?style=flat&logo=Amazon S3&logoColor=white" style="margin-right: 10px;">
-  <img src="https://img.shields.io/badge/ApachetTomcat-F8DC75?style=flat&logo=apachetomcat&logoColor=white"/>
+  <img src="https://img.shields.io/badge/ApachetTomcat-F8DC75?style=flat&logo=apachetomcat&logoColor=white" style="margin-right: 10px;"/>
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=Docker&logoColor=white" style="margin-right: 10px;"/>
 </div>
 
 <br>
