@@ -45,8 +45,8 @@
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="https://w7.pngwing.com/pngs/428/940/png-transparent-logo-redis-redis-icon-thumbnail.png" style="margin-right: 10px;">
-  <img src="https://assets.stickpng.com/images/62a9c7c08ff6441a2952dad3.png" style="margin-right: 10px;">
+  <img src="![redis-logo-full-color-rgb](https://github.com/burger-drop/burger-drop-repo/assets/133616029/e031df72-a0ec-415d-af54-fe0e0d377e6b)" style="margin-right: 10px;">
+  <img src="![01-primary-blue-docker-logo](https://github.com/burger-drop/burger-drop-repo/assets/133616029/9d67190f-119e-496c-9f5b-8407c1f617e7)" style="margin-right: 10px;">
 </div>
 
 <h2>서비스 아키텍처</h2>
