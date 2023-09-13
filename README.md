@@ -45,7 +45,7 @@
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="https://github.com/burger-drop/burger-drop-repo/assets/133616029/e031df72-a0ec-415d-af54-fe0e0d377e6b" style="margin-right: 10px; width: 110px; height: 25px;">
+  <img src="https://github.com/burger-drop/burger-drop-repo/assets/133616029/e031df72-a0ec-415d-af54-fe0e0d377e6b" style="margin-right: 10px; width: 90px; height: 25px;">
   <img src="https://github.com/burger-drop/burger-drop-repo/assets/133616029/9d67190f-119e-496c-9f5b-8407c1f617e7" style="margin-right: 10px; width: 170px; height: 25px;">
 </div>
 
