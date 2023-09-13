@@ -45,8 +45,8 @@
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="https://github.com/burger-drop/burger-drop-repo/assets/133616029/e031df72-a0ec-415d-af54-fe0e0d377e6b" style="margin-right: 10px; width: 200px; height: 30px;">
-  <img src="https://github.com/burger-drop/burger-drop-repo/assets/133616029/9d67190f-119e-496c-9f5b-8407c1f617e7" style="margin-right: 10px; width: 200px; height: 30px;">
+  <img src="https://github.com/burger-drop/burger-drop-repo/assets/133616029/e031df72-a0ec-415d-af54-fe0e0d377e6b" style="margin-right: 10px; width: 150px; height: 25px;">
+  <img src="https://github.com/burger-drop/burger-drop-repo/assets/133616029/9d67190f-119e-496c-9f5b-8407c1f617e7" style="margin-right: 10px; width: 180px; height: 25px;">
 </div>
 
 <h2>서비스 아키텍처</h2>
