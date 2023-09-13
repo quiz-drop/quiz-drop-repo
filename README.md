@@ -268,7 +268,7 @@
 <br>
 - ubuntu 원격으로 돌리면서 Redis를 redis-erver 명령어로 실행하고 git bash를 종료하면 Redis 서버가 실행되는 상태이지만 기능을 사용할 수 없는 현상이 발생했다.<br><br>
 
-      먼저 ubuntu@ubuntu:~$ sudo passwd root 명령어로 아래와 같이 비밀번호를 설정하고<br><br>
+먼저 ubuntu@ubuntu:~$ sudo passwd root 명령어로 아래와 같이 비밀번호를 설정하고<br><br>
 
        [sudo] password for ubuntu: 현재 접속중인 계정의 비밀번호 입력<br><br>
 
@@ -278,7 +278,7 @@
 
        password updated successfully <br><br>
 
-       su - 명령어로 설정한 비밀번호로 root 권한으로 접속한 다음 <br><br>
+su - 명령어로 설정한 비밀번호로 root 권한으로 접속한 다음 <br><br>
 
  service redis stop 명령어로실행중이던 Redis 서버를 중지 시킨다.<br><br>
 
