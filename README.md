@@ -29,6 +29,7 @@
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=HTML5&logoColor=white" style="margin-right: 10px;"/>
 	<img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=CSS3&logoColor=white" style="margin-right: 10px;" />
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=white" />
+![redis-logo-full-color-rgb](https://github.com/burger-drop/burger-drop-repo/assets/133616029/92c89df2-2911-4741-bc4a-2f3bbf4e1e2e)
 </div>
 
 <div style="display: flex; justify-content: center;">
