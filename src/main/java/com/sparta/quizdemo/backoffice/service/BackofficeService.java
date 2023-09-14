@@ -96,7 +96,13 @@ public class BackofficeService implements HandlerInterceptor {
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
 
         for (User user : userList) {
-            userResponseDtoList.add(new UserResponseDto(user));
+            if (user.getAddress() == null) {
+                user.getAddress().setZip_code("");
+                user.getAddress().setAddress1("");
+                user.getAddress().setAddress2("");
+            } else {
+                userResponseDtoList.add(new UserResponseDto(user));
+            }
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDtoList);
