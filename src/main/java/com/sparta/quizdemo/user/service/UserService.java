@@ -123,6 +123,11 @@ public class UserService {
         Address updateAddress = addressRepository.findByUser_id(user.getId()).orElseThrow(
                 () -> new NullPointerException("주소가 존재하지 않습니다.")
         );
+        String nickname = requestDto.getNickname();
+        Optional<User> checkNickname = userRepository.findByNickname(nickname);
+        if (checkNickname.isPresent()) {
+            throw new IllegalArgumentException("중복된 닉네임 입니다.");
+        }
 
         LocalDateTime createdAt = LocalDateTime.now();
 
