@@ -98,7 +98,11 @@
                 // 배달 완료 시간과 현재 시간의 차이 계산 (분 단위)
                 let timeDiffInMinutes = Math.floor((deliveryTime - currentTime) / (1000 * 60));
                 if(timeDiffInMinutes <= 0){
-                  timeDiffInMinutes = '수령완료'
+                  if (delivery_type === '배달') {
+                    timeDiffInMinutes = '배달완료'
+                  } else {
+                    timeDiffInMinutes = '포장완료'
+                  }
                 }
                 let temp_html = `
                                <div class="col-md-6">
