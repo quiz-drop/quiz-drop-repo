@@ -1,4 +1,4 @@
-package com.sparta.quizdemo.sse;
+package com.sparta.quizdemo.sse.service;
 
 import com.sparta.quizdemo.sse.dto.NotificationRequestDto;
 import com.sparta.quizdemo.sse.service.NotificationService;
