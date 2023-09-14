@@ -10,7 +10,6 @@ import com.sparta.quizdemo.common.entity.UserRoleEnum;
 import com.sparta.quizdemo.product.entity.Product;
 import com.sparta.quizdemo.product.repository.ProductRepository;
 import com.sparta.quizdemo.user.entity.User;
-import com.sparta.quizdemo.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
