@@ -1,13 +1,13 @@
 package com.sparta.quizdemo.chat.dto;
 
 import com.sparta.quizdemo.chat.entity.ChatMessage;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ChatMessageResponseDto {
     private String roomId;
     private String username;
