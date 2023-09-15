@@ -167,6 +167,7 @@
             background-color: #ff9e37;
             transform: scale(1.05);
         }
+
         .chat-messages {
             display: flex;
             flex-direction: column;
@@ -236,7 +237,7 @@
     }
 
     // 홈 버튼 클릭 시 이동할 경로 설정
-    document.getElementById("home-btn").addEventListener("click", function() {
+    document.getElementById("home-btn").addEventListener("click", function () {
         window.location.href = "/";
     });
     const token = Cookies.get('Authorization'); // 쿠키에서 토큰을 가져옵니다.
@@ -259,7 +260,7 @@
                     });
                     const chatContentTime = $('<div>', {
                         class: 'chatContentTime',
-                        text: chatMessage.timestamp // 필드명을 createdAt으로 변경
+                        text: chatMessage.timestamp
                     });
 
                     $('#chatting').append(chatContent, chatContentTime);
@@ -288,7 +289,7 @@
                     'Authorization': token
                 },
                 success: function (response) {
-                    alert(roomId);
+                    alert("채팅방 삭제 완료");
                     window.location.href = '/';
                 },
                 error: function (xhr, status, error) {
@@ -351,17 +352,6 @@
     function scrollToBottom() {
         var chatMessages = document.getElementById('chatting');
         chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    function showUserMessage(message) {
-        const chatMessages = document.getElementById('chatting');
-        const messageDiv = document.createElement('div');
-        messageDiv.textContent = 'You: ' + message;
-        messageDiv.classList.add('user');
-        chatMessages.appendChild(messageDiv);
-
-        // 스크롤을 아래로 이동하여 최신 메시지를 보여줍니다.
-        scrollToBottom();
     }
 
     // 메시지 브로커로 메시지 전송

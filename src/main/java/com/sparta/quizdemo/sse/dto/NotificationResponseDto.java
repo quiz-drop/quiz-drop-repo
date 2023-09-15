@@ -15,7 +15,13 @@ import java.time.LocalDateTime;
 public class NotificationResponseDto {
     private Long id;
     private String content;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
+
+    public NotificationResponseDto(Notification notification) {
+        this.id = notification.getId();
+        this.content = notification.getContent();
+        this.createdAt = notification.getCreatedAt();
+    }
 
     public static NotificationResponseDto create(Notification notification) {
         return new NotificationResponseDto(

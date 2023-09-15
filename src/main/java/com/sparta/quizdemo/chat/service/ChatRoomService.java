@@ -2,7 +2,11 @@ package com.sparta.quizdemo.chat.service;
 
 import com.sparta.quizdemo.chat.dto.ChatRoomResponseDto;
 import com.sparta.quizdemo.chat.entity.ChatRoom;
+import com.sparta.quizdemo.common.entity.UserRoleEnum;
+import com.sparta.quizdemo.common.exception.CustomException;
+import com.sparta.quizdemo.common.exception.ErrorCode;
 import com.sparta.quizdemo.user.entity.User;
+import com.sparta.quizdemo.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -18,18 +22,25 @@ import java.util.*;
 public class ChatRoomService {
 
     private final RedisTemplate<String, String> redisTemplate;
+    private final UserRepository userRepository;
 
     /* 채팅 생성 */
     public ChatRoom createAndEnterChatRoom(User user) {
-        String roomId = "user_" + user.getId();
-        Boolean existingChatRoom = doesChatRoomExist(roomId);
+        if (!checkRole(user.getRole())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        User findUser = findByUser(user.getId());
+
+        String roomId = "user_" + findUser.getId();
+        Boolean existingChatRoom = hasChatRoom(roomId);
 
         if (existingChatRoom) {
             log.info("채팅방 입장");
-            return new ChatRoom(roomId, user.getUsername());
+            return new ChatRoom(roomId, findUser.getUsername());
         } else {
             // 채팅방이 존재하지 않는 경우
-            ChatRoom chatRoom = ChatRoom.create(user);
+            ChatRoom chatRoom = ChatRoom.create(findUser);
 
             Map<String, String> roomInfo = new HashMap<>();
             roomInfo.put("username", chatRoom.getUsername());
@@ -47,6 +58,10 @@ public class ChatRoomService {
 
     /* 채팅방 전체 조회 */
     public List<ChatRoomResponseDto> getAllChatRooms(User user) {
+        if (checkRole(user.getRole())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
         List<ChatRoomResponseDto> chatRooms = new ArrayList<>();
 
         // Redis에서 채팅방 목록을 가져옵니다
@@ -68,13 +83,23 @@ public class ChatRoomService {
         return chatRooms;
     }
 
-
     /* 채팅방 삭제 */
     public void deleteRoom(User user, String roomId) {
+        if (!checkRole(user.getRole())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        User findUser = findByUser(user.getId());
+
+        if (!hasChatRoom(roomId)) {
+            throw new IllegalArgumentException("존재하지 않는 채팅방입니다.");
+        }
+
         try {
             redisTemplate.delete(roomId);
             String redisKey = roomId + ":messages";
             redisTemplate.delete(redisKey);
+            redisTemplate.opsForList().remove("chatRooms", 0, roomId);
         } catch (DataAccessException ex) {
             Throwable targetException = ex.getCause();
             if (targetException instanceof NoSuchElementException) {
@@ -90,7 +115,19 @@ public class ChatRoomService {
     }
 
     /* 채팅방 존재 여부 */
-    public Boolean doesChatRoomExist(String roomId) {
+    public Boolean hasChatRoom(String roomId) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(roomId));
+    }
+
+    /* 로그인 여부 */
+    public User findByUser(Long userId) {
+        return userRepository.findUserById(userId).orElseThrow(
+                () -> new CustomException(ErrorCode.UNAUTHORIZED)
+        );
+    }
+
+    /* 권한 확인 */
+    public Boolean checkRole(UserRoleEnum role) {
+        return role.equals(UserRoleEnum.USER);
     }
 }
