@@ -152,6 +152,7 @@ public class OrderService {
                 }
             }
             notificationService.send(user, NotificationType.ORDER_COMPLETED, NotificationType.ORDER_COMPLETED.getMessage());
+            log.info("content: " + NotificationType.ORDER_COMPLETED.getMessage());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto("결제가 완료 되었습니다.", HttpStatus.CREATED.value()));
         } else {
@@ -268,6 +269,8 @@ public class OrderService {
                     Long tempUserOrderCount = order.getUser().getOrderCount();
                     order.getUser().setOrderCount(tempUserOrderCount + 1);
                     order.setOrderComplete(true);
+
+                    notificationService.send(order.getUser(), NotificationType.DELIVERY, NotificationType.DELIVERY.getMessage());
 
                     List<Order> totalOrderList = orderRepository.findAllByOrderByCreatedAtAsc();
                     List<Order> completedOrderList = new ArrayList<>();

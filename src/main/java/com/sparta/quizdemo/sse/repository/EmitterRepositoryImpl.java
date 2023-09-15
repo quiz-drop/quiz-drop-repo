@@ -1,6 +1,9 @@
 package com.sparta.quizdemo.sse.repository;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -14,15 +17,19 @@ public class EmitterRepositoryImpl implements EmitterRepository{
     private final Map<String, SseEmitter> emitterMap = new ConcurrentHashMap<>(); /* SSE 연결 정보 저장 */
     private final Map<String, Object> eventCache = new ConcurrentHashMap<>(); /* 이벤트 데이터 캐싱 */
 
+    private static final Logger logger = LoggerFactory.getLogger(EmitterRepository.class);
+
     @Override
     public SseEmitter save(String emitterId, SseEmitter sseEmitter) {
         emitterMap.put(emitterId, sseEmitter);
+        logger.info("새로운 Emitter 추가 - emitterId: {}, sseEmitter: {}", emitterId, sseEmitter);
         return sseEmitter;
     }
 
     @Override
     public void saveEventCache(String eventCacheId, Object event) {
         eventCache.put(eventCacheId, event);
+        logger.info("수신한 이벤트 캐시에 저장 - eventCacheId: {}, event: {}", eventCacheId, event);
     }
 
     /* 특정 사용자의 연결을 추적 */

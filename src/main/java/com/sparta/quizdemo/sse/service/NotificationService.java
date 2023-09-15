@@ -74,7 +74,7 @@ public class NotificationService {
     }
 
     @Async
-    public void send(User user, NotificationType notificationType, String message) {
+    public void send(User user, NotificationType notificationType, String content) {
         Notification notification = notificationRepository.save(createNotification(user, notificationType));
 
         String userId = String.valueOf(user.getId());
@@ -92,6 +92,7 @@ public class NotificationService {
         return Notification.builder()
                 .user(user)
                 .notificationType(notificationType)
+                .content(notificationType.getMessage())
                 .build();
     }
 
