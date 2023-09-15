@@ -209,36 +209,32 @@ public class BackofficeService implements HandlerInterceptor {
 
         // 성능 향상을 위해 keys 명령어가 아닌 scan 명령어 사용
         ScanOptions scanOptions = ScanOptions.scanOptions().match("*:visitor").count(100).build();
-        Cursor<byte[]> keys = redisTemplate.getConnectionFactory().getConnection().scan(scanOptions);
+        Cursor<String> keys = redisTemplate.scan(scanOptions);
 
         while (keys.hasNext()) {
+            String key = keys.next();
+            String[] parts = key.split("_");
+            String visitorIP = parts[0];
+            LocalDate date = LocalDate.parse(parts[1]);
 
-            byte[] next = keys.next();
-            String key = new String(next, Charsets.UTF_8);
-            System.out.println(key);
+            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+            String userAgent = valueOperations.get(key);
 
-                String[] parts = key.split("_");
-                String visitorIP = parts[0];
-                LocalDate date = LocalDate.parse(parts[1]);
+            if(!backofficeRepository.existsByVisitorIPAndDate(visitorIP, date)){
+                Visitor visitor = Visitor.builder()
+                        .userAgent(userAgent)
+                        .visitorIP(visitorIP)
+                        .date(date)
+                        .build();
 
-                ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-                String userAgent = valueOperations.get(key);
+                backofficeRepository.save(visitor);
+            }
 
-                if(!backofficeRepository.existsByVisitorIPAndDate(visitorIP, date)){
-                    Visitor visitor = Visitor.builder()
-                            .userAgent(userAgent)
-                            .visitorIP(visitorIP)
-                            .date(date)
-                            .build();
+            if (visitorList.size() > 1000) {
+                backofficeRepository.delete(visitorList.remove(0));
+            }
 
-                    backofficeRepository.save(visitor);
-                }
-
-                if (visitorList.size() > 1000) {
-                    backofficeRepository.delete(visitorList.remove(0));
-                }
-
-                redisTemplate.delete(key);
+            redisTemplate.delete(key);
 
         }
     }
