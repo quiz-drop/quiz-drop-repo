@@ -100,7 +100,7 @@
                 <div class="offcanvas-header">
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
-                <div class="offcanvas-body">
+                <div class="offcanvas-body" id="notification-btn">
                     <ul id="notification-list">
                     </ul>
                     <button id="delete-all-btn" class="btn btn-danger" onclick="deleteAllNotifications()">알림 전체 삭제</button>
@@ -177,6 +177,7 @@
         var userRole = document.getElementById("userRole")
         var chatList = document.getElementById("chat-btn");
         var chatRoom = document.getElementById("chat-icon");
+        var notification = document.getElementById("notification-btn");
 
         // "Authorization" 쿠키가 존재하는 경우 로그인 상태
         if (checkAuthorizationCookie()) {
@@ -190,10 +191,12 @@
                 admin_btn.style.display = "block";
                 chatList.style.display = "block";
                 chatRoom.style.display = "none";
+                notification.style.display = "none";
             } else {
                 admin_btn.style.display = "none";
                 chatList.style.display = "none";
                 chatRoom.style.display = "block";
+                notification.style.display = "block";
             }
 
             login_btn.style.display = "none";
@@ -205,24 +208,10 @@
             cart_btn.style.display = "none";
             admin_btn.style.display = "none";
             chatList.style.display = "none";
+            notification.style.display = "none";
 
             login_btn.style.display = "block";
             signup_btn.style.display = "block";
-        }
-
-        function checkAuthorizationCookie() {
-            var cookies = document.cookie.split(";");
-
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-
-                // "Authorization" 쿠키가 존재하는 경우 true 반환
-                if (cookie.startsWith("Authorization")) {
-                    return true;
-                }
-            }
-            // "Authorization" 쿠키가 존재하지 않는 경우 false 반환
-            return false;
         }
     }
 

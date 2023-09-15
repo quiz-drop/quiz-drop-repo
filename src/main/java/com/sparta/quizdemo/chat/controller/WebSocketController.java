@@ -2,7 +2,6 @@ package com.sparta.quizdemo.chat.controller;
 
 import com.sparta.quizdemo.chat.entity.ChatMessage;
 import com.sparta.quizdemo.chat.service.ChatRoomService;
-import com.sparta.quizdemo.user.entity.User;
 import com.sparta.quizdemo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,8 +30,5 @@ public class WebSocketController {
     public void sendMsg(@Payload Map<String, Object> data, ChatMessage message) {
         simpMessagingTemplate.convertAndSend("/topic/" + data.get("roomId"), data);
         System.out.println("data = " + data);
-
-        String username = message.getUsername();
-        Optional<User> user = userService.findByUsername(username);
     }
 }
