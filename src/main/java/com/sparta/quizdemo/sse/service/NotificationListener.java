@@ -1,7 +1,6 @@
 package com.sparta.quizdemo.sse.service;
 
 import com.sparta.quizdemo.sse.dto.NotificationRequestDto;
-import com.sparta.quizdemo.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
