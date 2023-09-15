@@ -1,3 +1,31 @@
+// document.addEventListener("DOMContentLoaded", function() {
+//     let eventSource = new EventSource("/api/notifications/subscribe");
+//
+//     // SSE 이벤트 핸들러
+//     eventSource.onmessage = function (event) {
+//         const notification = JSON.parse(event.data);
+//
+//         // 알림을 notification-list에 추가
+//         const notificationList = document.getElementById("notification-list");
+//         if (notificationList) {
+//             const listItem = document.createElement("li");
+//             listItem.textContent = notification.content;
+//             notificationList.appendChild(listItem);
+//         } else {
+//             console.error("Element with ID 'notification-list' not found.");
+//         }
+//     };
+//
+//     // 서버에서 연결이 닫히는 이벤트를 받으면 EventSource를 닫습니다.
+//     eventSource.addEventListener("server-close", function() {
+//         eventSource.close();
+//         eventSource = null;
+//     });
+// });
+
+const maxReconnectTries = 3;
+let reconnectAttempts = 0;
+
 document.addEventListener("DOMContentLoaded", function() {
     let eventSource = new EventSource("/api/notifications/subscribe");
 
@@ -16,12 +44,15 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
-    // 서버에서 연결이 닫히는 이벤트를 받으면 EventSource를 닫습니다.
-    eventSource.addEventListener("server-close", function() {
-        eventSource.close();
-        eventSource = null;
-    });
+    eventSource.onerror = () => {
+        if (reconnectAttempts > maxReconnectTries) {
+            eventSource.close();
+        } else {
+            reconnectAttempts++;
+        }
+    };
 });
+
 
 function checkAuthorizationCookie() {
     var cookies = document.cookie.split(";");
