@@ -30,6 +30,7 @@ public class ChatMessageService {
 
         // Redis에서 해당 방의 채팅 메시지를 저장
         String redisKey = roomId + ":messages";
+
         // 최신 메시지를 가장 마지막에 불러오기 위해 rightPush 사용
         redisTemplate.opsForList().rightPush(redisKey, messageJson);
     }
@@ -46,14 +47,11 @@ public class ChatMessageService {
 
         for (String messageEntry : messageEntries) {
             ChatMessage chatMessage = objectMapper.readValue(messageEntry, ChatMessage.class);
-            ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto();
-            chatMessageResponseDto.setMessage(chatMessage.getMessage());
-            chatMessageResponseDto.setUsername(chatMessage.getUsername());
+            ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto(chatMessage);
 
             chatMessages.add(chatMessageResponseDto);
         }
         return chatMessages;
     }
-
 
 }

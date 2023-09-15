@@ -98,6 +98,10 @@ public class User extends TimeStamped {
         this.social = social;
     }
 
+    public User(long userId) {
+        this.id = userId;
+    }
+
     //새로운 비밀번호까지 변경
     public void update(UserRequestDto requestDto, String newPassword) {
         this.nickname = requestDto.getNickname();
