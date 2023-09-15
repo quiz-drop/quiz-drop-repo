@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,6 +30,17 @@ public class NotificationController {
     public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "")
                                 String lastEventId) throws JsonProcessingException {
+        SseEmitter sseEmitter = new SseEmitter();
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(15000);
+                sseEmitter.send(SseEmitter.event().name("server-close").data("Server is closing."));
+                sseEmitter.complete();
+            } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
 
         return notificationService.subscribe(userDetails.getUser().getId(), lastEventId);
     }

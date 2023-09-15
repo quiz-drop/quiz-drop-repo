@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -23,9 +22,9 @@ public class ChatRoomController {
 
     /* chatRoom 생성 */
     @PostMapping("/createAndEnterChatRoom")
-    public ResponseEntity<ChatRoomResponseDto> createAndEnterChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseEntity<ChatRoomResponseDto> createAndEnterChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         ChatRoom chatRoom = chatRoomService.createAndEnterChatRoom(userDetails.getUser());
-        ChatRoomResponseDto responseDto = new ChatRoomResponseDto(chatRoom.getRoomId());
+        ChatRoomResponseDto responseDto = new ChatRoomResponseDto(chatRoom.getRoomId(), chatRoom.getUsername());
 
         return ResponseEntity.ok().body(responseDto);
     }

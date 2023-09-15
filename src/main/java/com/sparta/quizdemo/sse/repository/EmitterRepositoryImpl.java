@@ -1,10 +1,11 @@
 package com.sparta.quizdemo.sse.repository;
 
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 public class EmitterRepositoryImpl implements EmitterRepository{
     private final Map<String, SseEmitter> emitterMap = new ConcurrentHashMap<>(); /* SSE 연결 정보 저장 */
     private final Map<String, Object> eventCache = new ConcurrentHashMap<>(); /* 이벤트 데이터 캐싱 */
+
+    private static final Logger logger = LoggerFactory.getLogger(EmitterRepository.class);
 
     @Override
     public SseEmitter save(String emitterId, SseEmitter sseEmitter) {

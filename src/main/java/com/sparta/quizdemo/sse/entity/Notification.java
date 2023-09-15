@@ -3,6 +3,7 @@ package com.sparta.quizdemo.sse.entity;
 import com.sparta.quizdemo.common.entity.TimeStamped;
 import com.sparta.quizdemo.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Table(name = "notification")
+@Builder
+@AllArgsConstructor
 public class Notification extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +34,6 @@ public class Notification extends TimeStamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Builder
     public Notification(User user, NotificationType notificationType) {
         this.user = user;
         this.notificationType = notificationType;

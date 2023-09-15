@@ -129,14 +129,12 @@ public class UserService {
             throw new IllegalArgumentException("중복된 닉네임 입니다.");
         }
 
-        LocalDateTime createdAt = LocalDateTime.now();
-
         //소셜 유저인 경우
         if(updateUser.getSocial() != null){
             updateUser.update(requestDto);
             updateAddress.update(requestDto);
 
-            notificationService.send(user, NotificationType.USER_UPDATE, NotificationType.USER_UPDATE.getMessage(), createdAt);
+            notificationService.send(user, NotificationType.USER_UPDATE, NotificationType.USER_UPDATE.getMessage());
         } else {
             if (!passwordEncoder.matches(requestDto.getPassword(), updateUser.getPassword())) {
                 throw new IllegalArgumentException("비밀번호가 틀립니다.");
@@ -149,13 +147,13 @@ public class UserService {
                 updateUser.update(requestDto, newPassword);
                 updateAddress.update(requestDto);
 
-                notificationService.send(user, NotificationType.USER_UPDATE, NotificationType.USER_UPDATE.getMessage(), createdAt);
+                notificationService.send(user, NotificationType.USER_UPDATE, NotificationType.USER_UPDATE.getMessage());
 
             }else{
                 //일반 정보 수정
                 updateUser.updateUser(requestDto);
                 updateAddress.update(requestDto);
-                notificationService.send(user, NotificationType.USER_UPDATE, NotificationType.USER_UPDATE.getMessage(), createdAt);
+                notificationService.send(user, NotificationType.USER_UPDATE, NotificationType.USER_UPDATE.getMessage());
             }
         }
     }
