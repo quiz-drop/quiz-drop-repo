@@ -22,7 +22,7 @@ class NotificationServiceTest {
 
     @Test
     @DisplayName("알림 구독")
-    void subscribe() throws Exception{
+    void subscribe() throws Exception {
         // given
         Long userId = 1L;
         String lastEventId = "lastEventId";
@@ -37,7 +37,7 @@ class NotificationServiceTest {
 
     @Test
     @DisplayName("알림 전송")
-    void send() throws Exception{
+    void send() throws Exception {
         // given
         Long userId = 1L;
         User user = new User();
