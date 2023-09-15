@@ -31,10 +31,6 @@ class ChatMessageServiceTest {
 
         // when
         chatMessageService.messageSave(requestDto, roomId);
-
-        // then
-        // 여기서는 messageSave 메서드가 예외를 발생시키지 않는 것을 확인합니다.
-        // messageSave 메서드의 실제 결과를 검증하려면 추가적인 모킹이나 설정이 필요할 수 있습니다.
     }
 
     @Test
