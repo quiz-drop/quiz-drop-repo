@@ -29,24 +29,24 @@
 <div class="container">
     <h1 class="h1 fw-bold">회원가입</h1>
         <div class="mb-3">
-            <label for="username" class="form-label">ID</label>
+            <label for="username" class="form-label">*ID</label>
             <input type="text" class="form-control" id="username" name="username" placeholder="영문자, 숫자 4글자 이상" required>
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="password" class="form-label">*Password</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="영문자, 숫자, 특수문자가 포함된 4글자 이상" required>
         </div>
         <div class="mb-3">
-            <label for="chkPassword" class="form-label">Password Confirm</label>
+            <label for="chkPassword" class="form-label">*Password Confirm</label>
             <input type="password" class="form-control" id="chkPassword" name="chkPassword" required>
         </div>
         <div class="mb-3">
-            <label for="nickname" class="form-label">Nickname</label>
+            <label for="nickname" class="form-label">*Nickname</label>
             <input type="text" class="form-control" id="nickname" name="nickname" required>
         </div>
         <div class="mb-3">
             <div id="mail_input" name="mail_input">
-                <label for="mail" class="form-label">Mail</label>
+                <label for="mail" class="form-label">*Mail</label>
                 <input type="text" name="mail" class="form-control" id="mail" required>
                 <button type="button" id="sendBtn" class="btn btn-secondary mt-3" name="sendBtn" onclick="sendNumber()">인증번호</button>
             </div>
@@ -55,6 +55,7 @@
                 <div class="d-flex align-items-center">
                     <input type="text" name="number" id="number" placeholder="인증번호 입력">
                     <button type="button" name="confirmBtn"  class="btn btn-outline-secondary" id="confirmBtn" onclick="confirmNumber()">이메일 인증</button>
+                    <br><span class="ms-2 fw-bold" style="color:red;" id="timer"></span>
                 </div>
             </div>
             <br>
@@ -107,18 +108,68 @@
         }).open();
     }
 
-    function sendNumber(){
+
+    let countdown; // 타이머 변수
+    const timerDisplay = document.getElementById('timer'); // 타이머를 표시할 요소
+
+    function startTimer() {
+        // 타이머 시작 시간 (초 단위)
+        const startTime = 180;
+
+        // 현재 시간을 밀리초 단위로 가져오기
+        const now = Date.now();
+        // 타이머가 종료될 시간을 계산 (현재 시간 + 시작 시간 * 1000)
+        const endTime = now + startTime * 1000;
+
+        // 타이머 업데이트 함수 호출 (처음 한 번 호출)
+        displayTimeLeft(startTime);
+
+        // 1초마다 타이머 업데이트
+        countdown = setInterval(() => {
+            const secondsLeft = Math.round((endTime - Date.now()) / 1000);
+            if(isConfirm){
+                clearInterval(countdown);
+            }
+            // 남은 시간이 0보다 작거나 같으면 타이머 종료
+            if (secondsLeft <= 0) {
+                clearInterval(countdown);
+                timerDisplay.textContent = '시간 만료';
+                $("#confirmBtn").prop("disabled", true)
+            } else {
+                displayTimeLeft(secondsLeft);
+            }
+        }, 1000);
+    }
+
+    function displayTimeLeft(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainderSeconds = seconds % 60;
+
+        const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+        timerDisplay.textContent = display;
+    }
+
+        function sendNumber(){
+            let mail = $("#mail").val()
+        if(mail === ''){
+            alert("메일을 입력해주세요")
+            return
+        }
+
+            alert("인증번호 발송");
+            $("#confirmBtn").prop("disabled", false)
+            $("#sendBtn").text("재전송하기")
+            clearInterval(countdown);
+            startTimer();
     $("#mail_number").css("display","block");
     $.ajax({
     url:"/api/mail",
     type:"post",
     dataType:"json",
-    data:{"mail" : $("#mail").val()},
+    data:{"mail" : mail},
     success: function(data){
-    alert("인증번호 발송");
     $("#Confirm").attr("value",data);
 },error:function(request, status, error){
-    alert("메일을 입력해주세요");
 }
 }
     );
@@ -128,6 +179,10 @@
     function confirmNumber(){
     var number1 = $("#number").val();
     var number2 = $("#Confirm").val();
+
+    if(number1 === ''){
+        return
+    }
 
     if(number1 === number2){
     alert("인증되었습니다.");
@@ -155,8 +210,32 @@
         console.log(adminCheck)
         console.log(adminToken)
 
-        if(username === '' || password === '' || nickname === '' || mail === '' || postcode === ''  ){
-            alert("입력되지 않은 정보가 있습니다.")
+        if(username === ''){
+            alert("아이디를 입력해주세요.")
+            return;
+        }
+        if(password === '' ){
+            alert("비밀번호를 입력해주세요")
+            return;
+        }
+        if(nickname === '' ){
+            alert("닉네임을 입력해주세요.")
+            return;
+        }
+        if(mail === '' ){
+            alert("메일을 입력해주세요.")
+            return;
+        }
+        if(postcode === '' ){
+            alert("우편번호를 입력해주세요.")
+            return;
+        }
+        if(address === '' ){
+            alert("주소를 입력해주세요.")
+            return;
+        }
+        if(detailAddress === '' ){
+            alert("상세 주소를 입력해주세요.")
             return;
         }
 
@@ -192,9 +271,12 @@
                 // 이후 리디렉션 또는 다른 작업을 수행할 수 있습니다.
                 window.location.href = '/login'
             },
-            error: function (data, request, status, error) {
+            error: function (request, status, error) {
                 // 오류 처리
-                alert(data.responseText);
+                var responseJSON = JSON.parse(request.responseText);
+
+                // 서버에서 전달한 오류 메시지 출력
+                alert("회원 가입 실패\n" + responseJSON.msg);
             }
         });
     }

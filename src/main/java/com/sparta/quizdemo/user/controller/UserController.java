@@ -17,6 +17,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RestController
@@ -48,18 +50,17 @@ public class UserController {
     //정보 수정
     @Operation(summary = "유저 정보 수정")
     @PutMapping("/user/info")
-    public ResponseEntity<ApiResponseDto> updateUser(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody UserRequestDto requestDto,
-            @Valid  BindingResult bindingResult) {
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if(fieldErrors.size() > 0) {
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
+    public ResponseEntity<ApiResponseDto> updateUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody UserRequestDto requestDto
+            ) {
+        if (requestDto.getNewPassword() != null) {
+            // 수동으로 유효성 검사를 수행
+            if (!isValidNewPassword(requestDto.getNewPassword())) {
+                throw new IllegalArgumentException("비밀번호 형식에 맞게 입력해주세요");
             }
-            throw new IllegalArgumentException("형식에 맞게 입력해주세요");
         }
-        userService.updateUser(requestDto,userDetails.getUser());
+
+        userService.updateUser(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("정보 수정 완료", HttpStatus.OK.value()));
     }
 
@@ -68,7 +69,9 @@ public class UserController {
     @Operation(summary = "비밀번호 찾기 후 수정")
     @PatchMapping("/user/info/password")
     public ResponseEntity<ApiResponseDto> updatePassword(@RequestBody UserRequestDto requestDto) {
-
+        if (!isValidNewPassword(requestDto.getNewPassword())) {
+            throw new IllegalArgumentException("비밀번호 형식에 맞게 입력해주세요");
+        }
         userService.updatePassword(requestDto);
         return ResponseEntity.ok().body(new ApiResponseDto("비밀번호 수정 완료", HttpStatus.OK.value()));
     }
@@ -151,5 +154,14 @@ public class UserController {
                 HttpStatus.BAD_REQUEST
         );
     }
+    private boolean isValidNewPassword(String newPassword) {
+        // 정규 표현식 패턴
+        String pattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=!]).{4,}$";
 
+        // 패턴과 입력 문자열을 비교
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(newPassword);
+
+        return matcher.matches();
+    }
 }
