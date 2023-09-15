@@ -4,13 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.chat.dto.ChatMessageRequestDto;
 import com.sparta.quizdemo.chat.dto.ChatMessageResponseDto;
+import com.sparta.quizdemo.chat.dto.ChatRoomResponseDto;
 import com.sparta.quizdemo.chat.entity.ChatMessage;
 import com.sparta.quizdemo.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,21 +40,48 @@ public class ChatMessageService {
     }
 
     /* 메시지 조회 */
-    public List<ChatMessageResponseDto> getChatMessages(User user, String roomId) throws JsonProcessingException {
+//    public List<ChatMessageResponseDto> getChatMessages(User user, String roomId) throws JsonProcessingException {
+//        List<ChatMessageResponseDto> chatMessages = new ArrayList<>();
+//
+//        String redisKey = roomId + ":messages";
+//
+//        List<String> messageEntries = redisTemplate.opsForList().range(redisKey, 0, -1);
+//
+//        assert messageEntries != null;
+//
+//        for (String messageEntry : messageEntries) {
+//            ChatMessage chatMessage = objectMapper.readValue(messageEntry, ChatMessage.class);
+//            ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto(chatMessage);
+//
+//            chatMessages.add(chatMessageResponseDto);
+//        }
+//        return chatMessages;
+//    }
+
+    public List<ChatMessageResponseDto> getChatMessages(User user, String roomId) {
         List<ChatMessageResponseDto> chatMessages = new ArrayList<>();
 
-        String redisKey = roomId + ":messages";
+        ScanOptions options = ScanOptions.scanOptions().match("*:messages").count(100).build();
+        Cursor<String> cursor = redisTemplate.scan(options);
 
-        List<String> messageEntries = redisTemplate.opsForList().range(redisKey, 0, -1);
+        while (cursor.hasNext()) {
+            String messagesKey = cursor.next();
+            List<String> messages = redisTemplate.opsForList().range(messagesKey, 0, -1);
 
-        assert messageEntries != null;
+            assert messages != null;
+            for (String message : messages) {
+                ChatMessageResponseDto chatMessageResponseDto =
+                        ChatMessageResponseDto.builder()
+                                .roomId(roomId)
+                                .username(user.getUsername())
+                                .message(message)
+                                .formattedTimestamp(LocalDateTime.now().toString())
+                                .build();
 
-        for (String messageEntry : messageEntries) {
-            ChatMessage chatMessage = objectMapper.readValue(messageEntry, ChatMessage.class);
-            ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto(chatMessage);
-
-            chatMessages.add(chatMessageResponseDto);
+                chatMessages.add(chatMessageResponseDto);
+            }
         }
+        cursor.close();
         return chatMessages;
     }
 
