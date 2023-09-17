@@ -1,6 +1,5 @@
 package com.sparta.quizdemo.chat.controller;
 
-import com.sparta.quizdemo.chat.entity.ChatMessage;
 import com.sparta.quizdemo.chat.service.ChatRoomService;
 import com.sparta.quizdemo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class WebSocketController {
      */
     @MessageMapping("/chat/send")
     @SendTo
-    public void sendMsg(@Payload Map<String, Object> data, ChatMessage message) {
+    public void sendMsg(@Payload Map<String, Object> data) {
         simpMessagingTemplate.convertAndSend("/topic/" + data.get("roomId"), data);
         System.out.println("data = " + data);
     }
