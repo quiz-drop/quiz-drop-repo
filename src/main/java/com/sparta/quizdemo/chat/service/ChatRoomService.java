@@ -39,19 +39,17 @@ public class ChatRoomService {
 
         if (existingChatRoom) {
             log.info("채팅방 입장");
-            return new ChatRoom(roomId, findUser.getUsername());
+            log.info(roomId);
+            return new ChatRoom(roomId, findUser.getId().toString(), findUser.getUsername());
         } else {
             // 채팅방이 존재하지 않는 경우
             ChatRoom chatRoom = ChatRoom.create(findUser);
 
             Map<String, String> roomInfo = new HashMap<>();
+            roomInfo.put("userId", chatRoom.getUserId());
             roomInfo.put("username", chatRoom.getUsername());
 
             redisTemplate.opsForHash().putAll(roomId, roomInfo);
-
-            // 채팅방 목록에 roomId를 추가
-            redisTemplate.opsForList().leftPush("chatRooms", roomId);
-
             log.info("채팅방 생성");
             log.info(roomId);
             return chatRoom;
@@ -66,24 +64,16 @@ public class ChatRoomService {
 
         List<ChatRoomResponseDto> chatRooms = new ArrayList<>();
 
-        ScanOptions options = ScanOptions.scanOptions().match("chatRooms*").count(100).build();
+        ScanOptions options = ScanOptions.scanOptions().match("user_*").count(100).build();
         Cursor<String> cursor = redisTemplate.scan(options);
 
         while (cursor.hasNext()) {
             String chatRoomId = cursor.next();
-            List<String> usernames = redisTemplate.opsForList().range(chatRoomId, 0, -1);
-
-            assert usernames != null;
-            for (String username : usernames) {
-                ChatRoomResponseDto chatRoomResponseDto =
-                        ChatRoomResponseDto.builder()
-                                .roomId(chatRoomId)
-                                .username(username)
-                                .build();
-
-                chatRooms.add(chatRoomResponseDto);
-            }
+            Map<Object, Object> roomInfo = redisTemplate.opsForHash().entries(chatRoomId);
+            ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoomId, (String) roomInfo.get("userId"), (String) roomInfo.get("username"));
+            chatRooms.add(chatRoomResponseDto);
         }
+
         cursor.close();
         return chatRooms;
     }
@@ -101,7 +91,7 @@ public class ChatRoomService {
 
         try {
             redisTemplate.delete(roomId);
-            String redisKey = roomId + ":messages";
+            String redisKey = "messages:" + roomId;
             redisTemplate.delete(redisKey);
             redisTemplate.opsForList().remove("chatRooms", 0, roomId);
 
