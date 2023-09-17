@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.quizdemo.chat.dto.ChatMessageRequestDto;
 import com.sparta.quizdemo.chat.dto.ChatMessageResponseDto;
-import com.sparta.quizdemo.chat.dto.ChatRoomResponseDto;
 import com.sparta.quizdemo.chat.entity.ChatMessage;
 import com.sparta.quizdemo.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,35 +31,19 @@ public class ChatMessageService {
         String messageJson = objectMapper.writeValueAsString(chatMessage);
 
         // Redis에서 해당 방의 채팅 메시지를 저장
-        String redisKey = roomId + ":messages";
+        String redisKey = "messages:" + roomId;
 
         // 최신 메시지를 가장 마지막에 불러오기 위해 rightPush 사용
         redisTemplate.opsForList().rightPush(redisKey, messageJson);
     }
 
     /* 메시지 조회 */
-//    public List<ChatMessageResponseDto> getChatMessages(User user, String roomId) throws JsonProcessingException {
-//        List<ChatMessageResponseDto> chatMessages = new ArrayList<>();
-//
-//        String redisKey = roomId + ":messages";
-//
-//        List<String> messageEntries = redisTemplate.opsForList().range(redisKey, 0, -1);
-//
-//        assert messageEntries != null;
-//
-//        for (String messageEntry : messageEntries) {
-//            ChatMessage chatMessage = objectMapper.readValue(messageEntry, ChatMessage.class);
-//            ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto(chatMessage);
-//
-//            chatMessages.add(chatMessageResponseDto);
-//        }
-//        return chatMessages;
-//    }
-
-    public List<ChatMessageResponseDto> getChatMessages(User user, String roomId) {
+    public List<ChatMessageResponseDto> getChatMessages(User user, String roomId) throws JsonProcessingException {
         List<ChatMessageResponseDto> chatMessages = new ArrayList<>();
 
-        ScanOptions options = ScanOptions.scanOptions().match("*:messages").count(100).build();
+        String redisKey = "messages:" + roomId;
+
+        ScanOptions options = ScanOptions.scanOptions().match(redisKey).count(100).build();
         Cursor<String> cursor = redisTemplate.scan(options);
 
         while (cursor.hasNext()) {
@@ -70,13 +52,8 @@ public class ChatMessageService {
 
             assert messages != null;
             for (String message : messages) {
-                ChatMessageResponseDto chatMessageResponseDto =
-                        ChatMessageResponseDto.builder()
-                                .roomId(roomId)
-                                .username(user.getUsername())
-                                .message(message)
-                                .formattedTimestamp(LocalDateTime.now().toString())
-                                .build();
+                ChatMessage chatMessage = objectMapper.readValue(message, ChatMessage.class);
+                ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto(chatMessage);
 
                 chatMessages.add(chatMessageResponseDto);
             }
