@@ -2,8 +2,6 @@ package com.sparta.quizdemo.sse.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.quizdemo.common.security.UserDetailsImpl;
-import com.sparta.quizdemo.sse.dto.NotificationRequestDto;
 import com.sparta.quizdemo.sse.dto.NotificationResponseDto;
 import com.sparta.quizdemo.sse.entity.Notification;
 import com.sparta.quizdemo.sse.entity.NotificationType;
@@ -12,14 +10,12 @@ import com.sparta.quizdemo.sse.repository.EmitterRepositoryImpl;
 import com.sparta.quizdemo.sse.repository.NotificationRepository;
 import com.sparta.quizdemo.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +72,7 @@ public class NotificationService {
     }
 
     @Async
-    public void send(User user, NotificationType notificationType, String message, LocalDateTime createdAt) {
+    public void send(User user, NotificationType notificationType, String content) {
         Notification notification = notificationRepository.save(createNotification(user, notificationType));
 
         String userId = String.valueOf(user.getId());
@@ -94,6 +90,7 @@ public class NotificationService {
         return Notification.builder()
                 .user(user)
                 .notificationType(notificationType)
+                .content(notificationType.getMessage())
                 .build();
     }
 
@@ -115,8 +112,10 @@ public class NotificationService {
     }
 
     @Transactional
-    public void deleteAllByNotifications(UserDetailsImpl userDetails) {
-        Long userId = userDetails.getUser().getId();
+    public void deleteAllByNotifications(User user) {
+        Long userId = user.getId();
+        emitterRepository.deleteAllEmitterStartWithId(userId.toString());
+        emitterRepository.deleteAllEventCacheStartWithId(userId.toString());
         notificationRepository.deleteAllByUserId(userId);
     }
 }

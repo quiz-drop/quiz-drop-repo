@@ -43,7 +43,7 @@ public class NotificationController {
     @DeleteMapping("/delete")
     public ResponseEntity<ApiResponseDto> deleteNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        notificationService.deleteAllByNotifications(userDetails);
+        notificationService.deleteAllByNotifications(userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("알림 목록 전체삭제 성공", HttpStatus.OK.value()));
     }
 }

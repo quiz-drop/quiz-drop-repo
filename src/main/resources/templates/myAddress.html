@@ -74,7 +74,10 @@
           },
           error: function (request, status, error) {
               // 오류 처리
-              alert("주소 등록 실패\n"+request.responseText);
+              var responseJSON = JSON.parse(request.responseText);
+
+              // 서버에서 전달한 오류 메시지 출력
+              alert("주소 등록 실패\n" + responseJSON.msg);
           }
       });
   }

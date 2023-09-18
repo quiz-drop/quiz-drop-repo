@@ -1,6 +1,5 @@
 package com.sparta.quizdemo.chat.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.quizdemo.chat.dto.ChatRoomResponseDto;
 import com.sparta.quizdemo.chat.entity.ChatRoom;
 import com.sparta.quizdemo.chat.service.ChatRoomService;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -23,16 +21,16 @@ public class ChatRoomController {
 
     /* chatRoom 생성 */
     @PostMapping("/createAndEnterChatRoom")
-    public ResponseEntity<ChatRoomResponseDto> createAndEnterChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseEntity<ChatRoomResponseDto> createAndEnterChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         ChatRoom chatRoom = chatRoomService.createAndEnterChatRoom(userDetails.getUser());
-        ChatRoomResponseDto responseDto = new ChatRoomResponseDto(chatRoom.getRoomId());
+        ChatRoomResponseDto responseDto = new ChatRoomResponseDto(chatRoom.getRoomId(), chatRoom.getUserId(), chatRoom.getUsername());
 
         return ResponseEntity.ok().body(responseDto);
     }
 
     /* chatRoom 전체조회 */
     @GetMapping("/rooms")
-    public List<ChatRoomResponseDto> getChatRooms(@AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
+    public List<ChatRoomResponseDto> getChatRooms(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return chatRoomService.getAllChatRooms(userDetails.getUser());
     }
 

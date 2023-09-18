@@ -43,10 +43,12 @@
     </div>
 </div>
 <script>
+
     $(document).ready(function () {
         getUserData();
     });
 
+    let timerDisplay;
     function logout() {
         //리프레시 토큰 삭제 요청
 
@@ -100,7 +102,7 @@
                                     <input type="text" name="number" id="number" placeholder="인증번호 입력">
                                         <button type="button" class="btn btn-outline-secondary" name="confirmBtn" id="confirmBtn"
                                                 onClick="confirmNumber()">이메일 인증
-                                        </button>
+                                        </button><br><span class="ms-2 fw-bold" style="color:red;" id="timers"></span>
                                 </div>
                                 <br>
                                     <input type="text" id="Confirm" name="Confirm" style="display: none" value="">
@@ -138,7 +140,7 @@
                 }else{
                     $('#update-box').append(temp_html).append(temp_html3).append(temp_html5)
                 }
-
+                timerDisplay = document.getElementById('timers');
             });
     }
     let state = true;
@@ -183,19 +185,72 @@
             }
         }).open();
     }
+    let countdown; // 타이머 변수
+    console.log("timerDisplay"+timerDisplay)
+    function startTimer() {
+        // 타이머 시작 시간 (초 단위)
+        const startTime = 180;
 
+        // 현재 시간을 밀리초 단위로 가져오기
+        const now = Date.now();
+        // 타이머가 종료될 시간을 계산 (현재 시간 + 시작 시간 * 1000)
+        const endTime = now + startTime * 1000;
+
+        // 타이머 업데이트 함수 호출 (처음 한 번 호출)
+
+        console.log("시작시간 : "+startTime)
+        displayTimeLeft(startTime);
+
+        // 1초마다 타이머 업데이트
+        countdown = setInterval(() => {
+            console.log("countdown : "+countdown)
+            const secondsLeft = Math.round((endTime - Date.now()) / 1000);
+            if(isConfirm){
+                clearInterval(countdown);
+            }
+            // 남은 시간이 0보다 작거나 같으면 타이머 종료
+            if (secondsLeft <= 0) {
+                clearInterval(countdown);
+                timerDisplay.textContent = '시간 만료';
+                $("#confirmBtn").prop("disabled", true)
+            } else {
+                displayTimeLeft(secondsLeft);
+            }
+        }, 1000);
+    }
+
+    function displayTimeLeft(seconds) {
+
+        console.log("seconds : "+seconds)
+        const minutes = Math.floor(seconds / 60);
+        const remainderSeconds = seconds % 60;
+
+        console.log("minutes : "+minutes)
+        console.log("remainderSeconds : "+remainderSeconds)
+        const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+
+        console.log("display : "+display)
+        timerDisplay.textContent = display;
+    }
     function sendNumber(){
+        let mail = $("#mail").val();
+        if(mail === ''){
+            alert('메일을 입력해주세요')
+        }
         $("#mail_number").css("display","block");
+        alert("인증번호 발송");
+        $("#confirmBtn").prop("disabled", false)
+        $("#sendBtn").text("재전송하기")
+        clearInterval(countdown);
+        startTimer();
         $.ajax({
                 url:"/api/mail",
                 type:"post",
                 dataType:"json",
-                data:{"mail" : $("#mail").val()},
+                data:{"mail" : mail},
                 success: function(data){
-                    alert("인증번호 발송");
                     $("#Confirm").attr("value",data);
                 },error:function(request, status, error){
-                    alert("메일을 입력해주세요\ncode:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
                 }
             }
         );
@@ -206,6 +261,9 @@
         var number1 = $("#number").val();
         var number2 = $("#Confirm").val();
 
+        if(number1 === ''){
+            return
+        }
         if(number1 === number2){
             alert("인증되었습니다.");
             isConfirm = true;
@@ -225,8 +283,22 @@
         var detailAddress = $("#sample6_detailAddress").val();
 
 
-        if(nickname === '' || postcode === ''  ){
-            alert("입력되지 않은 정보가 있습니다.")
+        if(nickname === ''){
+            alert("닉네임을 입력해주세요.")
+            return;
+        }
+        if(postcode === ''  ){
+            alert("주소를 입력해주세요.")
+            return;
+        }
+
+        if(address === ''  ){
+            alert("주소를 입력해주세요.")
+            return;
+        }
+
+        if(detailAddress === ''  ){
+            alert("상세 주소를 입력해주세요.")
             return;
         }
 
@@ -250,7 +322,10 @@
             },
             error: function (request, status, error) {
                 // 오류 처리
-                alert("정보 수정 실패\n"+request.responseText);
+                var responseJSON = JSON.parse(request.responseText);
+
+                // 서버에서 전달한 오류 메시지 출력
+                alert("정보 수정 실패\n" + responseJSON.msg);
             }
         });
     }
@@ -272,12 +347,48 @@
         var postcode = $("#sample6_postcode").val();
         var address = $("#sample6_address").val();
         var detailAddress = $("#sample6_detailAddress").val();
-        console.log(password+"\n"+newPassword+"\n"+nickname+"\n"+mail+"\n"+postcode+"\n"+address+"\n"+detailAddress)
 
-        if(password === '' || nickname === '' || mail === '' || postcode === ''  ){
-            alert("입력되지 않은 정보가 있습니다.")
-            return;
+
+        if(state){
+            if(password === ''){
+                alert("기존 비밀번호를 입력해주세요")
+                return;
+            }
+            if(nickname === ''){
+                alert("닉네임을 입력해주세요")
+                return;
+            }
+            if(mail === ''){
+                alert("메일을 입력해주세요")
+                return;
+            }
+            if(postcode === ''){
+                alert("주소를 입력해주세요")
+                return;
+            }
+        }else{
+            if(password === ''){
+                alert("기존 비밀번호를 입력해주세요")
+                return;
+            }
+            if(nickname === ''){
+                alert("닉네임을 입력해주세요")
+                return;
+            }
+            if(mail === ''){
+                alert("메일을 입력해주세요")
+                return;
+            }
+            if(postcode === ''){
+                alert("주소를 입력해주세요")
+                return;
+            }
+            if(newPassword === ''){
+                alert("새로운 비밀번호를 입력해주세요")
+                return;
+            }
         }
+
         let formData;
 
         if(newPassword !=='' && newPasswordConfirm !== ''){
@@ -327,8 +438,16 @@
                 window.location.href = "/mypage"
             },
             error: function (request, status, error) {
-                // 오류 처리
-                alert("정보 수정 실패\n"+request.responseText);
+                try {
+                    // 서버 응답을 JSON으로 파싱
+                    var responseJSON = JSON.parse(request.responseText);
+
+                    // 서버에서 전달한 오류 메시지 출력
+                    alert("정보 수정 실패\n" + responseJSON.msg);
+                } catch (e) {
+                    // 서버 응답이 JSON 형식이 아닌 경우 또는 파싱에 실패한 경우에 대한 처리
+                    alert("정보 수정 실패\n" + request.responseText);
+                }
             }
         });
     }

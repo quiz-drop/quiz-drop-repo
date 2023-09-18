@@ -1,6 +1,5 @@
 package com.sparta.quizdemo.chat.dto;
 
-import com.sparta.quizdemo.chat.entity.ChatRoom;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,9 +9,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ChatRoomResponseDto {
     private String roomId;
+    private String userId;
     private String username;
 
-    public ChatRoomResponseDto(String roomId) {
+    public ChatRoomResponseDto(String roomId, String userId, String username) {
         this.roomId = roomId;
+        this.userId = userId;
+        this.username = username;
     }
 }
