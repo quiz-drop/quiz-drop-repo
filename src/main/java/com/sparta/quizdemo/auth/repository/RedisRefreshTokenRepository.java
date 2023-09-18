@@ -4,6 +4,7 @@ import com.sparta.quizdemo.config.RedisConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanCursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Repository;
 
@@ -88,9 +89,11 @@ public class RedisRefreshTokenRepository {
 
             }
 
-            refreshTokenKeys.close();
 
-        }}
+        }
+
+        refreshTokenKeys.close();
+    }
 
 
 

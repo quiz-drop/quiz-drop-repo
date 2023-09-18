@@ -43,10 +43,12 @@
     </div>
 </div>
 <script>
+
     $(document).ready(function () {
         getUserData();
     });
 
+    let timerDisplay;
     function logout() {
         //리프레시 토큰 삭제 요청
 
@@ -100,7 +102,7 @@
                                     <input type="text" name="number" id="number" placeholder="인증번호 입력">
                                         <button type="button" class="btn btn-outline-secondary" name="confirmBtn" id="confirmBtn"
                                                 onClick="confirmNumber()">이메일 인증
-                                        </button><br><span class="ms-2 fw-bold" style="color:red;" id="timer"></span>
+                                        </button><br><span class="ms-2 fw-bold" style="color:red;" id="timers"></span>
                                 </div>
                                 <br>
                                     <input type="text" id="Confirm" name="Confirm" style="display: none" value="">
@@ -138,7 +140,7 @@
                 }else{
                     $('#update-box').append(temp_html).append(temp_html3).append(temp_html5)
                 }
-
+                timerDisplay = document.getElementById('timers');
             });
     }
     let state = true;
@@ -184,8 +186,7 @@
         }).open();
     }
     let countdown; // 타이머 변수
-    const timerDisplay = document.getElementById('timer'); // 타이머를 표시할 요소
-
+    console.log("timerDisplay"+timerDisplay)
     function startTimer() {
         // 타이머 시작 시간 (초 단위)
         const startTime = 180;
@@ -196,10 +197,13 @@
         const endTime = now + startTime * 1000;
 
         // 타이머 업데이트 함수 호출 (처음 한 번 호출)
+
+        console.log("시작시간 : "+startTime)
         displayTimeLeft(startTime);
 
         // 1초마다 타이머 업데이트
         countdown = setInterval(() => {
+            console.log("countdown : "+countdown)
             const secondsLeft = Math.round((endTime - Date.now()) / 1000);
             if(isConfirm){
                 clearInterval(countdown);
@@ -216,10 +220,16 @@
     }
 
     function displayTimeLeft(seconds) {
+
+        console.log("seconds : "+seconds)
         const minutes = Math.floor(seconds / 60);
         const remainderSeconds = seconds % 60;
 
+        console.log("minutes : "+minutes)
+        console.log("remainderSeconds : "+remainderSeconds)
         const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+
+        console.log("display : "+display)
         timerDisplay.textContent = display;
     }
     function sendNumber(){
