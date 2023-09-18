@@ -2,7 +2,6 @@ package com.sparta.quizdemo.sse.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.quizdemo.common.security.UserDetailsImpl;
 import com.sparta.quizdemo.sse.dto.NotificationResponseDto;
 import com.sparta.quizdemo.sse.entity.Notification;
 import com.sparta.quizdemo.sse.entity.NotificationType;
@@ -113,8 +112,10 @@ public class NotificationService {
     }
 
     @Transactional
-    public void deleteAllByNotifications(UserDetailsImpl userDetails) {
-        Long userId = userDetails.getUser().getId();
+    public void deleteAllByNotifications(User user) {
+        Long userId = user.getId();
+        emitterRepository.deleteAllEmitterStartWithId(userId.toString());
+        emitterRepository.deleteAllEventCacheStartWithId(userId.toString());
         notificationRepository.deleteAllByUserId(userId);
     }
 }

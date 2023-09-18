@@ -1,6 +1,5 @@
 package com.sparta.quizdemo.chat.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.quizdemo.chat.dto.ChatRoomResponseDto;
 import com.sparta.quizdemo.chat.entity.ChatRoom;
 import com.sparta.quizdemo.chat.service.ChatRoomService;
@@ -24,14 +23,14 @@ public class ChatRoomController {
     @PostMapping("/createAndEnterChatRoom")
     public ResponseEntity<ChatRoomResponseDto> createAndEnterChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         ChatRoom chatRoom = chatRoomService.createAndEnterChatRoom(userDetails.getUser());
-        ChatRoomResponseDto responseDto = new ChatRoomResponseDto(chatRoom.getRoomId(), chatRoom.getUsername());
+        ChatRoomResponseDto responseDto = new ChatRoomResponseDto(chatRoom.getRoomId(), chatRoom.getUserId(), chatRoom.getUsername());
 
         return ResponseEntity.ok().body(responseDto);
     }
 
     /* chatRoom 전체조회 */
     @GetMapping("/rooms")
-    public List<ChatRoomResponseDto> getChatRooms(@AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
+    public List<ChatRoomResponseDto> getChatRooms(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return chatRoomService.getAllChatRooms(userDetails.getUser());
     }
 

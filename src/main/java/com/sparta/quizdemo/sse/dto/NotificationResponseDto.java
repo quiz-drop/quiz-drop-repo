@@ -17,12 +17,6 @@ public class NotificationResponseDto {
     private String content;
     private LocalDateTime createdAt;
 
-    public NotificationResponseDto(Notification notification) {
-        this.id = notification.getId();
-        this.content = notification.getContent();
-        this.createdAt = notification.getCreatedAt();
-    }
-
     public static NotificationResponseDto create(Notification notification) {
         return new NotificationResponseDto(
                 notification.getId(),

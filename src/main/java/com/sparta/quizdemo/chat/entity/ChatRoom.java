@@ -10,16 +10,19 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ChatRoom{
     private String roomId;
+    private String userId;
     private String username;
 
-    public ChatRoom(String roomId, String username) {
+    public ChatRoom(String roomId, String userId, String username) {
         this.roomId = roomId;
+        this.userId = userId;
         this.username = username;
     }
 
     public static ChatRoom create(User user) {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.roomId = "user_" + user.getId();
+        chatRoom.userId = user.getId().toString();
         chatRoom.username = user.getUsername();
         return chatRoom;
     }
