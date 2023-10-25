@@ -83,7 +83,7 @@
               const roomList = document.getElementById("room-list");
               data.forEach((room) => {
                 const listItem = document.createElement("li");
-                listItem.textContent = room.username;
+                listItem.textContent = room.id;
                 listItem.addEventListener("click", () => {
                   roomId = room.roomId;
 

@@ -2,7 +2,6 @@ package com.sparta.quizdemo.product.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.quizdemo.backoffice.dto.KeywordRequestDto;
 import com.sparta.quizdemo.cart.entity.CartItem;
 import com.sparta.quizdemo.cart.repository.CartItemRepository;
 import com.sparta.quizdemo.comment.entity.Comment;
@@ -17,7 +16,6 @@ import com.sparta.quizdemo.product.entity.Product;
 import com.sparta.quizdemo.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +28,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CartItemRepository cartItemRepository;
     private final OrderItemRepository orderItemRepository;
@@ -38,8 +36,8 @@ public class ProductServiceImpl implements ProductService{
     private final AwsS3Service awsS3Service;
 
     @Override
-    @CacheEvict(value = "Products", allEntries = true, cacheManager = "productCacheManager")
-    public ProductResponseDto createProduct(MultipartFile multipartFile,String productRequestDto_temp) throws JsonProcessingException {
+    @CacheEvict(value = "Products", allEntries = true, cacheManager = "cacheManager")
+    public ProductResponseDto createProduct(MultipartFile multipartFile, String productRequestDto_temp) throws JsonProcessingException {
 
         ProductRequestDto productRequestDto = conversionDto(productRequestDto_temp);
 
@@ -58,7 +56,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    @Cacheable(value = "Products", cacheManager = "productCacheManager")
+    @Cacheable(value = "Products", cacheManager = "cacheManager")
     public List<ProductResponseDto> getProducts() {
         List<Product> productList = productRepository.findAllByOrderByCreatedAtAsc();
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
@@ -72,7 +70,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    @Cacheable(value = "Products", key = "#category", cacheManager = "productCacheManager")
+    @Cacheable(value = "Products", key = "#category", cacheManager = "cacheManager")
     public List<ProductResponseDto> getProductsByCategory(String category) {
         List<Product> productList = productRepository.findAllByCategory(category);
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
@@ -103,15 +101,15 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    @Cacheable(value = "Products", key = "#productNo", cacheManager = "productCacheManager")
+    @Cacheable(value = "Products", key = "#productNo", cacheManager = "cacheManager")
     public ProductResponseDto getProduct(Long productNo) {
         Product product = productRepository.findById(productNo).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
         return new ProductResponseDto(product);
     }
 
     @Override
-    @CacheEvict(value = "Products", allEntries = true, cacheManager = "productCacheManager")
-    public ProductResponseDto updateProduct(Long productNo, MultipartFile multipartFile,String productRequestDto_temp) throws JsonProcessingException {
+    @CacheEvict(value = "Products", allEntries = true, cacheManager = "cacheManager")
+    public ProductResponseDto updateProduct(Long productNo, MultipartFile multipartFile, String productRequestDto_temp) throws JsonProcessingException {
         Product product = productRepository.findById(productNo).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
         ProductRequestDto productRequestDto = conversionDto(productRequestDto_temp);
 
@@ -124,7 +122,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    @CacheEvict(value = "Products", allEntries = true, cacheManager = "productCacheManager")
+    @CacheEvict(value = "Products", allEntries = true, cacheManager = "cacheManager")
     public ApiResponseDto deleteProduct(Long productNo) {
         Product product = productRepository.findById(productNo).orElseThrow(() -> new NullPointerException("해당 번호의 상품이 존재하지 않습니다."));
         List<CartItem> cartItemList = cartItemRepository.findAllByProductId(productNo);

@@ -2,7 +2,8 @@ package com.sparta.quizdemo.user.entity;
 
 import com.sparta.quizdemo.backoffice.dto.OneUserRequestDto;
 import com.sparta.quizdemo.cart.entity.Cart;
-import com.sparta.quizdemo.chat.entity.ChatRoom;
+import com.sparta.quizdemo.chat.entity.ChatMessages;
+import com.sparta.quizdemo.chat.entity.UserChatRooms;
 import com.sparta.quizdemo.comment.entity.Comment;
 import com.sparta.quizdemo.common.entity.TimeStamped;
 import com.sparta.quizdemo.common.entity.UserRoleEnum;
@@ -76,6 +77,12 @@ public class User extends TimeStamped {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ChatMessages> chatMessages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<UserChatRooms> userChatRooms = new ArrayList<>();
 
     //회원가입 생성자
     public User(SignupRequestDto requestDto, String password, UserRoleEnum role) {

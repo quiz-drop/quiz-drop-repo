@@ -208,34 +208,34 @@ public class BackofficeService implements HandlerInterceptor {
 //        Set<String> keys = redisTemplate.keys("*_*");
 
         // 성능 향상을 위해 keys 명령어가 아닌 scan 명령어 사용
-        ScanOptions scanOptions = ScanOptions.scanOptions().match("*:visitor").count(100).build();
-        Cursor<String> keys = redisTemplate.scan(scanOptions);
+//        ScanOptions scanOptions = ScanOptions.scanOptions().match("*:visitor").count(100).build();
+//        Cursor<String> keys = redisTemplate.scan(scanOptions);
+//
+//        while (keys.hasNext()) {
+//            String key = keys.next();
+//            String[] parts = key.split("_");
+//            String visitorIP = parts[0];
+//            LocalDate date = LocalDate.parse(parts[1]);
+//
+//            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+//            String userAgent = valueOperations.get(key);
+//
+//            if(!backofficeRepository.existsByVisitorIPAndDate(visitorIP, date)){
+//                Visitor visitor = Visitor.builder()
+//                        .userAgent(userAgent)
+//                        .visitorIP(visitorIP)
+//                        .date(date)
+//                        .build();
+//
+//                backofficeRepository.save(visitor);
+//            }
+//
+//            if (visitorList.size() > 1000) {
+//                backofficeRepository.delete(visitorList.remove(0));
+//            }
+//
+//            redisTemplate.delete(key);
 
-        while (keys.hasNext()) {
-            String key = keys.next();
-            String[] parts = key.split("_");
-            String visitorIP = parts[0];
-            LocalDate date = LocalDate.parse(parts[1]);
-
-            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-            String userAgent = valueOperations.get(key);
-
-            if(!backofficeRepository.existsByVisitorIPAndDate(visitorIP, date)){
-                Visitor visitor = Visitor.builder()
-                        .userAgent(userAgent)
-                        .visitorIP(visitorIP)
-                        .date(date)
-                        .build();
-
-                backofficeRepository.save(visitor);
-            }
-
-            if (visitorList.size() > 1000) {
-                backofficeRepository.delete(visitorList.remove(0));
-            }
-
-            redisTemplate.delete(key);
-
-        }
+//        }
     }
 }
