@@ -1,20 +1,17 @@
 package com.sparta.quizdemo.chat.dto;
 
+import com.sparta.quizdemo.chat.entity.ChatRooms;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class ChatRoomResponseDto {
+    private Long id;
     private String roomId;
-    private String userId;
-    private String username;
 
-    public ChatRoomResponseDto(String roomId, String userId, String username) {
-        this.roomId = roomId;
-        this.userId = userId;
-        this.username = username;
+    public ChatRoomResponseDto(ChatRooms chatRooms) {
+        this.id = chatRooms.getId();
+        this.roomId = chatRooms.getRoomId();
     }
 }
