@@ -1,7 +1,5 @@
 package com.sparta.quizdemo.chat.controller;
 
-import com.sparta.quizdemo.chat.service.ChatRoomService;
-import com.sparta.quizdemo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,8 +15,6 @@ import java.util.Map;
 @Slf4j
 public class WebSocketController {
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final UserService userService;
-    private final ChatRoomService chatRoomService;
 
     /*
      * publicher

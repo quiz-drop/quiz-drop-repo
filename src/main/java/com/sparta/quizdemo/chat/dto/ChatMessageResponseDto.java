@@ -1,23 +1,32 @@
 package com.sparta.quizdemo.chat.dto;
 
-import com.sparta.quizdemo.chat.entity.ChatMessage;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.sparta.quizdemo.chat.entity.ChatMessages;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public class ChatMessageResponseDto {
+    private String roomId;
     private String username;
     private String message;
-    private String timeStamped;
 
-    public ChatMessageResponseDto(ChatMessage chatMessage) {
-        this.username = chatMessage.getUsername();
-        this.message = chatMessage.getMessage();
-        this.timeStamped = LocalDateTime.now().toString();
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createdAt;
+
+    public ChatMessageResponseDto(ChatMessages chatMessages) {
+        this.roomId = chatMessages.getChatRooms().getRoomId();
+        this.username = chatMessages.getUser().getUsername();
+        this.message = chatMessages.getMessage();
+        this.createdAt = chatMessages.getCreatedAt();
     }
 }
