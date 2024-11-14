@@ -467,7 +467,7 @@ https://chb2005.tistory.com/201 (프로젝트에서의 Time Zone 변경)을 참�
 
 ## ERD
 
-<img width="821" alt="Untitled" src="https://file.notion.so/f/f/d00db562-2625-4cce-9cbc-a0f0008aa8e5/66b18282-8f29-43b0-95a8-47d7045c758f/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2023-10-25_154539.png?id=dc944c0c-1e72-4dc9-9238-9a88a0eef8b8&table=block&spaceId=d00db562-2625-4cce-9cbc-a0f0008aa8e5&expirationTimestamp=1698307200000&signature=3Cd5W70GO1ojEyQRwISf-7hAHR70rAVLO-CxJIyCiPI&downloadName=%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7+2023-10-25+154539.png">
+<img width="821" alt="Untitled" src="[https://file.notion.so/f/f/d00db562-2625-4cce-9cbc-a0f0008aa8e5/66b18282-8f29-43b0-95a8-47d7045c758f/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2023-10-25_154539.png?id=dc944c0c-1e72-4dc9-9238-9a88a0eef8b8&table=block&spaceId=d00db562-2625-4cce-9cbc-a0f0008aa8e5&expirationTimestamp=1698307200000&signature=3Cd5W70GO1ojEyQRwISf-7hAHR70rAVLO-CxJIyCiPI&downloadName=%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7+2023-10-25+154539.png](https://www.notion.so/1217c084427b8107b8a7c54a8b72c955?pvs=4#13e7c084427b805f8243c5ca82f1c8ef)">
 
 <br>
 
